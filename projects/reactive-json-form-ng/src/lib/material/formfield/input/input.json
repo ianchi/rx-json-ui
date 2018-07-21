@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+
+    "type": "object",
+    "properties": {
+        "type": { "enum": ["input"] },
+        "bind": { "type": "string" },
+        "validate": { "type": "string" },
+
+        "options": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "title": "Label to show on the control (fixed text)"
+                },
+                "title=": {
+                    "type": "string",
+                    "title": "Expression returning label to show on the control"
+                },
+                "description": {
+                    "type": "string",
+                    "title": "Description to show below the control (fixed text)"
+                },
+                "description=": {
+                    "type": "string",
+                    "title": "Expression returning description to show below the control"
+                },
+                "placeholder": {
+                    "type": "string",
+                    "title": "Label to show inside empty control (fixed text)"
+                },
+                "placeholder=": {
+                    "type": "string",
+                    "title": "Expression returning label to show inside empty control"
+                },
+                "required": {
+                    "type": "boolean",
+                    "title": "The control must have a value"
+                },
+                "required=": {
+                    "type": "string",
+                    "title": "Expression returning boolean indicating if the control is required"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+
+    "additionalProperties": false,
+    "required": ["bind"]
+}

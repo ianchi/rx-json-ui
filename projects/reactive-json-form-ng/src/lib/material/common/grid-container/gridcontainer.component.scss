@@ -1,0 +1,16 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+dyn-grid-container {
+    &.dyn-grid {
+        display: grid;
+        /* as many equal width, flexible sized columns as can fit inside the container */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-auto-flow: row dense;
+        & > * {}
+    }
+}

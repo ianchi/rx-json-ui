@@ -1,0 +1,23 @@
+<mat-form-field style.width="100%">
+
+    <mat-label *ngIf="title">
+        {{ title }}
+    </mat-label>
+
+    <input matInput
+           name="aaa"
+           [type]="type || 'text'"
+           [formControl]="formControl"
+           [placeholder]="placeholder"
+           [required]="required">
+
+    <mat-error [id]="null">
+
+    </mat-error>
+
+    <mat-hint *ngIf="description"
+              [id]="null">
+        {{ description }}
+    </mat-hint>
+
+</mat-form-field>

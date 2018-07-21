@@ -1,0 +1,24 @@
+<mat-form-field style.width="100%">
+
+  <mat-label *ngIf="title">
+    {{ title }}
+  </mat-label>
+
+  <input matInput name="aaa" [type]="type || 'text'" [formControl]="formControl" [placeholder]="placeholder"
+    [matAutocomplete]="auto">
+
+  <mat-error [id]="null">
+
+  </mat-error>
+
+  <mat-hint *ngIf="description" [id]="null">
+    {{ description }}
+  </mat-hint>
+
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let option of filteredOptions | async; index as optIndex" [value]="option">
+      {{option}}
+    </mat-option>
+  </mat-autocomplete>
+
+</mat-form-field>
