@@ -11,7 +11,7 @@ import { Observable, isObservable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { AbstractWidget, Context, Expressions, parseDefObject } from '../../../core';
+import { AbstractWidget, Context, Expressions, parseDefObject } from '../../../core/index';
 import { combineMixed } from 'espression';
 
 @Component({

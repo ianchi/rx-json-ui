@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 import { ChangeDetectorRef } from '@angular/core';
-import { Expressions, AbstractFormFieldWidget } from '../../../core';
+import { Expressions, AbstractFormFieldWidget } from '../../../core/index';
 export declare class CheckboxWidgetComponent extends AbstractFormFieldWidget {
     title: string;
     constructor(cdr: ChangeDetectorRef, expr: Expressions);

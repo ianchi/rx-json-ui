@@ -9,5 +9,5 @@
  * Public API Surface of reactive-json-form-ng
  */
 
-export * from './lib/core';
-export * from './lib/material';
+export * from './lib/core/index';
+export * from './lib/material/index';

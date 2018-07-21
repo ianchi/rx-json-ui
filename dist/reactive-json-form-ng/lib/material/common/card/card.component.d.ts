@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 import { ChangeDetectorRef } from '@angular/core';
-import { AbstractWidget, IWidgetDef, Expressions } from '../../../core';
+import { AbstractWidget, IWidgetDef, Expressions } from '../../../core/index';
 export declare class CardWidgetComponent extends AbstractWidget {
     title: string;
     description: string;

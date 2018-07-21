@@ -8,7 +8,7 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Expressions, AbstractFormFieldWidget } from '../../../core';
+import { Expressions, AbstractFormFieldWidget } from '../../../core/index';
 
 @Component({
   selector: 'wdg-autocomplete',

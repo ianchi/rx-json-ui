@@ -10,7 +10,7 @@ import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRe
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { isReactive } from 'espression';
-import { AbstractWidget, Expressions, IWidgetDef, } from '../../../core';
+import { AbstractWidget, Expressions, IWidgetDef, } from '../../../core/index';
 
 @Component({
   selector: 'wdg-button',

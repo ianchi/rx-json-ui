@@ -5,6 +5,5 @@
  * https://opensource.org/licenses/MIT
  */
 export * from './formfield/formfield.module';
-export * from '../core/formfieldwidget';
 export * from './common/common.module';
 export * from './material.module';

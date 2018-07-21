@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { AbstractWidget, Expressions } from '../../../core';
+import { AbstractWidget, Expressions } from '../../../core/index';
 
 @Component({
   selector: 'wdg-tabs',

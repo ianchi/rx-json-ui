@@ -9,7 +9,7 @@
 import { NgModule } from '@angular/core';
 
 import { MaterialModule } from '../material.module';
-import { WidgetsCoreModule } from '../../core';
+import { WidgetsCoreModule } from '../../core/index';
 
 import { CardWidgetComponent } from './card/card.component';
 import { TableWidgetComponent } from './table/table.component';

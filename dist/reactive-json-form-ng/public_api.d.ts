@@ -4,5 +4,5 @@
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
-export * from './lib/core';
-export * from './lib/material';
+export * from './lib/core/index';
+export * from './lib/material/index';

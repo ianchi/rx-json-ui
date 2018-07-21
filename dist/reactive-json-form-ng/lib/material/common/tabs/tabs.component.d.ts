@@ -1,5 +1,5 @@
 import { OnInit, ChangeDetectorRef } from '@angular/core';
-import { AbstractWidget, Expressions } from '../../../core';
+import { AbstractWidget, Expressions } from '../../../core/index';
 export declare class TabsWidgetComponent extends AbstractWidget implements OnInit {
     tabLabels: string[];
     constructor(cdr: ChangeDetectorRef, expr: Expressions);

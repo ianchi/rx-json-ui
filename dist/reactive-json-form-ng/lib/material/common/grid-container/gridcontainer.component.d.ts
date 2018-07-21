@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 import { ChangeDetectorRef } from '@angular/core';
-import { AbstractWidget, Expressions } from '../../../core';
+import { AbstractWidget, Expressions } from '../../../core/index';
 export declare class GridContainerWidgetComponent extends AbstractWidget {
     direction: string;
     constructor(cdr: ChangeDetectorRef, expr: Expressions);

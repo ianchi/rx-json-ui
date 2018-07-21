@@ -6,7 +6,7 @@
  */
 
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import { AbstractWidget, Expressions } from '../../../core';
+import { AbstractWidget, Expressions } from '../../../core/index';
 
 @Component({
     selector: 'wdg-code',

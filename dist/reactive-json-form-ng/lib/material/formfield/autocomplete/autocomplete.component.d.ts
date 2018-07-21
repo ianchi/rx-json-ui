@@ -6,7 +6,7 @@
  */
 import { ChangeDetectorRef, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Expressions, AbstractFormFieldWidget } from '../../../core';
+import { Expressions, AbstractFormFieldWidget } from '../../../core/index';
 export declare class AutocompleteWidgetComponent extends AbstractFormFieldWidget implements OnInit {
     title: string;
     description: string;

@@ -7,7 +7,7 @@
 
 
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import { AbstractWidget, IWidgetDef, Expressions } from '../../../core';
+import { AbstractWidget, IWidgetDef, Expressions } from '../../../core/index';
 
 @Component({
   selector: 'wdg-card',

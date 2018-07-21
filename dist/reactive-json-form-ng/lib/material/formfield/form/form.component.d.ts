@@ -6,7 +6,7 @@
  */
 import { ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AbstractWidget, IWidgetDef, Expressions } from '../../../core';
+import { AbstractWidget, IWidgetDef, Expressions } from '../../../core/index';
 export declare class FormWidgetComponent extends AbstractWidget {
     formGroup: FormGroup;
     constructor(cdr: ChangeDetectorRef, expr: Expressions);

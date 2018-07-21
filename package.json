@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-lib": "ng build reactive-json-form-ng --prod"
+    "build-lib": "ng build reactive-json-form-ng --prod",
+    "deploy-lib": "git subtree split --branch deploy --prefix dist/reactive-json-form-ng/"
   },
   "private": true,
   "dependencies": {

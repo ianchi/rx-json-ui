@@ -7,7 +7,7 @@
 
 
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Expressions, AbstractFormFieldWidget } from '../../../core';
+import { Expressions, AbstractFormFieldWidget } from '../../../core/index';
 
 @Component({
   selector: 'wdg-checkbox',

@@ -8,7 +8,7 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { RxObject } from 'espression';
-import { AbstractWidget, IWidgetDef, Context, Expressions, FORM_CONTROL } from '../../../core';
+import { AbstractWidget, IWidgetDef, Context, Expressions, FORM_CONTROL } from '../../../core/index';
 
 @Component({
   selector: 'wdg-form',

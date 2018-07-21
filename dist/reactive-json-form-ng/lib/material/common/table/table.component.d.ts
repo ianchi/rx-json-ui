@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { AbstractWidget, Expressions } from '../../../core';
+import { AbstractWidget, Expressions } from '../../../core/index';
 export declare class TableWidgetComponent extends AbstractWidget implements OnInit {
     title: string;
     dataSource: Observable<any[]> | any[];
