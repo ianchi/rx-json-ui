@@ -1,0 +1,38 @@
+{
+  "name": "reactive-json-form-ng",
+  "description": "Generates reactive UI/forms based on definitions made on json and json schema files",
+  "author": "Adrian Panella <ianchi74@outlook.com>",
+  "license": "MIT",
+  "repository": "https://github.com/ianchi/reactive-json-form-ng.git",
+  "version": "0.0.1",
+  "private": false,
+  "peerDependencies": {
+    "@angular/common": "^6.0.0",
+    "@angular/core": "^6.0.0",
+    "@angular/material": "^6.4.0",
+    "@angular/cdk": "^6.4.0",
+    "@angular/forms": "^6.0.0",
+    "@angular/router": "^6.0.0",
+    "rxjs": "^6.2.1",
+    "espression": "^0.4.0"
+  },
+  "keywords": [
+    "json forms",
+    "reactive",
+    "json ui",
+    "ui"
+  ],
+  "main": "bundles/reactive-json-form-ng.umd.js",
+  "module": "fesm5/reactive-json-form-ng.js",
+  "es2015": "fesm2015/reactive-json-form-ng.js",
+  "esm5": "esm5/reactive-json-form-ng.js",
+  "esm2015": "esm2015/reactive-json-form-ng.js",
+  "fesm5": "fesm5/reactive-json-form-ng.js",
+  "fesm2015": "fesm2015/reactive-json-form-ng.js",
+  "typings": "reactive-json-form-ng.d.ts",
+  "metadata": "reactive-json-form-ng.metadata.json",
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}
