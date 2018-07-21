@@ -1,0 +1,28 @@
+{
+  "name": "reactive-json-form-ng",
+  "description": "Generates reactive UI/forms based on definitions made on json and json schema files",
+  "author": "Adrian Panella <ianchi74@outlook.com>",
+  "license": "MIT",
+  "repository": "https://github.com/ianchi/reactive-json-form-ng.git",
+  "version": "0.0.1",
+  "private": false,
+
+  "peerDependencies": {
+    "@angular/common": "^6.0.0",
+    "@angular/core": "^6.0.0",
+    "@angular/material": "^6.4.0",
+    "@angular/cdk": "^6.4.0",
+    "@angular/forms": "^6.0.0",
+    "@angular/router": "^6.0.0",
+    "rxjs": "^6.2.1",
+    "espression": "^0.4.0"
+
+  },
+
+  "keywords": [
+    "json forms",
+    "reactive",
+    "json ui",
+    "ui"
+  ]
+}

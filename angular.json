@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "reactive-json-form-ng": {
+    "json-form-demo": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/reactive-json-form-ng",
+            "outputPath": "dist/json-form-demo",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "reactive-json-form-ng:build"
+            "browserTarget": "json-form-demo:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "reactive-json-form-ng:build:production"
+              "browserTarget": "json-form-demo:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "reactive-json-form-ng:build"
+            "browserTarget": "json-form-demo:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "reactive-json-form-ng-e2e": {
+    "json-form-demo-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -103,11 +103,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "reactive-json-form-ng:serve"
+            "devServerTarget": "json-form-demo:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "reactive-json-form-ng:serve:production"
+              "devServerTarget": "json-form-demo:serve:production"
             }
           }
         },
@@ -121,7 +121,63 @@
           }
         }
       }
+    },
+    "reactive-json-form-ng": {
+      "root": "projects/reactive-json-form-ng",
+      "sourceRoot": "projects/reactive-json-form-ng/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/reactive-json-form-ng/tsconfig.lib.json",
+            "project": "projects/reactive-json-form-ng/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/reactive-json-form-ng/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/reactive-json-form-ng/src/test.ts",
+            "tsConfig": "projects/reactive-json-form-ng/tsconfig.spec.json",
+            "karmaConfig": "projects/reactive-json-form-ng/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/reactive-json-form-ng/tsconfig.lib.json",
+              "projects/reactive-json-form-ng/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
-  "defaultProject": "reactive-json-form-ng"
+  "defaultProject": "json-form-demo",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "dyn",
+      "styleext": "scss",
+      "changeDetection": "OnPush",
+      "viewEncapsulation": "None",
+      "spec": false
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    },
+    "@schematics/angular:module": {
+      "flat": true,
+      "spec": false
+    }
+  }
 }
