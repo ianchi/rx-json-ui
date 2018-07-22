@@ -5,8 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
-dyn-grid-container {
-    &.dyn-grid {
+wdg-grid-container {
+    &.wdg-grid {
         display: grid;
         /* as many equal width, flexible sized columns as can fit inside the container */
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

@@ -5,8 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
-dyn-container {
-  &.dyn-flex {
+wdg-container {
+  &.wdg-flex {
     display: flex;
     flex-wrap: wrap;
     & > * {

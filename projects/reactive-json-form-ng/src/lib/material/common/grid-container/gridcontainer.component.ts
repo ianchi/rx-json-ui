@@ -15,7 +15,7 @@ import { AbstractWidget, Expressions } from '../../../core/index';
 
   // tslint:disable-next-line:use-host-property-decorator
   host: {
-    '[class.dyn-grid]': 'true',
+    '[class.wdg-grid]': 'true',
     '[style.flex-direction]': 'direction'
   },
   encapsulation: ViewEncapsulation.None,
