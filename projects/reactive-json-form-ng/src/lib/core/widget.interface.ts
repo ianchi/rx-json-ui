@@ -7,6 +7,9 @@
 
 import { IContextDef } from './context';
 
+export interface IOptionDef {
+  [prop: string]: any;
+}
 /** JSON definition of a widget */
 export interface IWidgetDef {
   /** Type of the Widget to instantiate */
@@ -22,7 +25,7 @@ export interface IWidgetDef {
    * Object with attributes to pass to the specific Widget.
    * Keys are specific to each Widget
    */
-  options?: { [prop: string]: any };
+  options?: IOptionDef;
 
   content?: IWidgetDef[];
 

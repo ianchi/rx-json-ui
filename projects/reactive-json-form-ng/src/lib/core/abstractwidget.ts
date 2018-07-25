@@ -9,14 +9,10 @@ import { ChangeDetectorRef, Input, OnChanges, OnDestroy, OnInit } from '@angular
 import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { Context } from './context';
+import { Context, IContextDef } from './context';
 import { Expressions } from './expressions';
 import { WidgetDirective } from './widget.directive';
-import { IWidgetDef } from './widget.interface';
-
-export interface IOptionDef {
-  [prop: string]: any;
-}
+import { IOptionDef, IWidgetDef } from './widget.interface';
 
 /**
  * Base class for all dynamic widget elements
@@ -40,7 +36,7 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
 
   content: IWidgetDef[];
 
-  element: WidgetDirective;
+  element: WidgetDirective | undefined;
 
   set addSubscription(subs: Subscription) {
     this._subscriptions.push(subs);
@@ -51,7 +47,7 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   constructor(protected _cdr: ChangeDetectorRef, protected _expr: Expressions) {}
 
   /** Initialices the widget from a json definition */
-  setup(element: WidgetDirective, def: IWidgetDef, context: Context): void {
+  setup(element: WidgetDirective | undefined, def: IWidgetDef, context: Context): void {
     def = def || { type: 'none' };
     def.options = def.options || {};
 
@@ -96,7 +92,7 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   }
 
   subscribeOptions(): void {
-    const observables = [];
+    const observables: Array<Observable<any>> = [];
 
     // call hook for cofiguration of options before updating the bound value
     this.dynOnBeforeBind();
@@ -138,7 +134,7 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
 }
 
 export function parseDefObject(
-  objDef: IOptionDef,
+  objDef: IOptionDef | undefined,
   context: Context,
   asObservable: boolean,
   expr: Expressions

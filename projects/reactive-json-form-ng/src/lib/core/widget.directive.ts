@@ -37,7 +37,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
   widget: AbstractWidget;
   context: Context;
-  private _widgetRef: ComponentRef<AbstractWidget>;
+  private _widgetRef: ComponentRef<AbstractWidget> | undefined;
   private _ifSubs: Subscription | undefined;
 
   constructor(
