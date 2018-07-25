@@ -5,19 +5,23 @@
  * https://opensource.org/licenses/MIT
  */
 
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
 
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import { AbstractWidget, IWidgetDef, Expressions } from '../../../core/index';
+import { AbstractWidget, Expressions, IWidgetDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardWidgetComponent extends AbstractWidget {
-
   title: string;
   description: string;
   actions: IWidgetDef[];
@@ -25,5 +29,4 @@ export class CardWidgetComponent extends AbstractWidget {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
-
 }

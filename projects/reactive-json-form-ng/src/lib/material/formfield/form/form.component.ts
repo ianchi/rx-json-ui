@@ -5,27 +5,37 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+import { FormArray, FormGroup } from '@angular/forms';
 import { RxObject } from 'espression';
-import { AbstractWidget, IWidgetDef, Context, Expressions, FORM_CONTROL } from '../../../core/index';
+
+import {
+  AbstractWidget,
+  Context,
+  Expressions,
+  FORM_CONTROL,
+  IWidgetDef,
+} from '../../../core/index';
 
 @Component({
   selector: 'wdg-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormWidgetComponent extends AbstractWidget {
-
   formGroup: FormGroup;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnSetup(def: IWidgetDef) {
-
+  dynOnSetup(def: IWidgetDef): IWidgetDef {
     this.formGroup = new FormGroup({});
 
     // register with parent form, if any
@@ -43,5 +53,4 @@ export class FormWidgetComponent extends AbstractWidget {
     this.context['$model'] = RxObject({});
     return def;
   }
-
 }

@@ -5,18 +5,17 @@
  * https://opensource.org/licenses/MIT
  */
 
-
 import { NgModule } from '@angular/core';
 
-import { MaterialModule } from '../material.module';
 import { WidgetsCoreModule } from '../../core/index';
+import { MaterialModule } from '../material.module';
 
 import { CardWidgetComponent } from './card/card.component';
-import { TableWidgetComponent } from './table/table.component';
+import { CodeWidgetComponent } from './code/code.component';
 import { ContainerWidgetComponent } from './container/container.component';
 import { GridContainerWidgetComponent } from './grid-container/gridcontainer.component';
+import { TableWidgetComponent } from './table/table.component';
 import { TabsWidgetComponent } from './tabs/tabs.component';
-import { CodeWidgetComponent } from './code/code.component';
 
 @NgModule({
   imports: [
@@ -26,12 +25,12 @@ import { CodeWidgetComponent } from './code/code.component';
       widgets: [
         { type: 'card', component: CardWidgetComponent },
         { type: 'table', component: TableWidgetComponent },
-        { type: 'container', component: ContainerWidgetComponent},
-        { type: 'grid-container', component: GridContainerWidgetComponent},
-        { type: 'tabs', component: TabsWidgetComponent},
-        { type: 'code', component: CodeWidgetComponent},
-      ]
-    })
+        { type: 'container', component: ContainerWidgetComponent },
+        { type: 'grid-container', component: GridContainerWidgetComponent },
+        { type: 'tabs', component: TabsWidgetComponent },
+        { type: 'code', component: CodeWidgetComponent },
+      ],
+    }),
   ],
   declarations: [
     CardWidgetComponent,
@@ -41,6 +40,6 @@ import { CodeWidgetComponent } from './code/code.component';
     TabsWidgetComponent,
     CodeWidgetComponent,
   ],
-  exports: []
+  exports: [],
 })
-export class CommonWidgetsModule { }
+export class CommonWidgetsModule {}

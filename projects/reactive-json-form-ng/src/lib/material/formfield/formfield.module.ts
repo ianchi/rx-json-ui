@@ -5,20 +5,18 @@
  * https://opensource.org/licenses/MIT
  */
 
-
 import { NgModule } from '@angular/core';
 
-import { MaterialModule } from '../material.module';
 import { WidgetsCoreModule } from '../../core/index';
+import { MaterialModule } from '../material.module';
 
-import { InputWidgetComponent } from './input/input.component';
-import { CheckboxWidgetComponent } from './checkbox/checkbox.component';
-import { ToggleWidgetComponent } from './toggle/toggle.component';
-import { SliderWidgetComponent } from './slider/slider.component';
-import { ButtonWidgetComponent } from './button/button.component';
-import { FormWidgetComponent } from './form/form.component';
 import { AutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
-
+import { ButtonWidgetComponent } from './button/button.component';
+import { CheckboxWidgetComponent } from './checkbox/checkbox.component';
+import { FormWidgetComponent } from './form/form.component';
+import { InputWidgetComponent } from './input/input.component';
+import { SliderWidgetComponent } from './slider/slider.component';
+import { ToggleWidgetComponent } from './toggle/toggle.component';
 
 @NgModule({
   imports: [
@@ -33,9 +31,8 @@ import { AutocompleteWidgetComponent } from './autocomplete/autocomplete.compone
         { type: 'button', component: ButtonWidgetComponent },
         { type: 'form', component: FormWidgetComponent },
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
-
-      ]
-    })
+      ],
+    }),
   ],
   declarations: [
     InputWidgetComponent,
@@ -44,8 +41,8 @@ import { AutocompleteWidgetComponent } from './autocomplete/autocomplete.compone
     SliderWidgetComponent,
     ButtonWidgetComponent,
     FormWidgetComponent,
-    AutocompleteWidgetComponent
+    AutocompleteWidgetComponent,
   ],
-  exports: []
+  exports: [],
 })
-export class FormFieldWidgetsModule { }
+export class FormFieldWidgetsModule {}

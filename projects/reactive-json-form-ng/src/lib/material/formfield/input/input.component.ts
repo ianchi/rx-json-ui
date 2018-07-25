@@ -5,19 +5,23 @@
  * https://opensource.org/licenses/MIT
  */
 
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
 
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Expressions, AbstractFormFieldWidget } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
 @Component({
   selector: 'wdg-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputWidgetComponent extends AbstractFormFieldWidget {
-
   title: string;
   description: string;
   placeholder: string;
@@ -26,5 +30,4 @@ export class InputWidgetComponent extends AbstractFormFieldWidget {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
-
 }

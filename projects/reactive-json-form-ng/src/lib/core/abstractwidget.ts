@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
  *
@@ -6,21 +5,23 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { OnDestroy, ChangeDetectorRef, Input, OnChanges, OnInit } from '@angular/core';
-import { Observable, of, Subscription, combineLatest, isObservable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
-import { IWidgetDef } from './widget.interface';
-import { WidgetDirective } from './widget.directive';
+import { ChangeDetectorRef, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
 import { Context } from './context';
 import { Expressions } from './expressions';
+import { WidgetDirective } from './widget.directive';
+import { IWidgetDef } from './widget.interface';
 
-export interface IOptionDef { [prop: string]: any; }
+export interface IOptionDef {
+  [prop: string]: any;
+}
 
 /**
  * Base class for all dynamic widget elements
  */
 export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
-
   /** Configuration of the widget */
   @Input() widgetDef: IWidgetDef;
   @Input() context: Context;
@@ -29,7 +30,8 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   type: string;
   /** Context to use for evaluations at this level */
 
-  /** Widget specific options all converted to observables, to unify between *expression* and
+  /**
+   * Widget specific options all converted to observables, to unify between *expression* and
    * *constant* notation in the properties definition.
    * Each binding then auto updates the corresponding property in the derived widget.
    */
@@ -46,12 +48,10 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
 
   private _subscriptions: Subscription[] = [];
 
-
-  constructor(protected _cdr: ChangeDetectorRef, protected _expr: Expressions) {
-  }
+  constructor(protected _cdr: ChangeDetectorRef, protected _expr: Expressions) {}
 
   /** Initialices the widget from a json definition */
-  setup(element: WidgetDirective, def: IWidgetDef, context: Context) {
+  setup(element: WidgetDirective, def: IWidgetDef, context: Context): void {
     def = def || { type: 'none' };
     def.options = def.options || {};
 
@@ -66,7 +66,11 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
 
     this.bindings = parseDefObject(def.options, this.context, true, this._expr);
 
-    this.content = Array.isArray(def.content) ? def.content : typeof def.content === 'object' ? [def.content] : [];
+    this.content = Array.isArray(def.content)
+      ? def.content
+      : typeof def.content === 'object'
+        ? [def.content]
+        : [];
 
     this.subscribeOptions();
   }
@@ -74,30 +78,31 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   /**
    * Helper function to add a `map` pipe to the corresponding input observable
    */
-  map(option: string, callback: (v: any) => any) {
+  map(option: string, callback: (v: any) => any): void {
     const opt: Observable<any> = this.bindings[option];
     if (opt) this.bindings[option] = opt.pipe(map(callback));
-
   }
   /**
    * Hook to customize the observable bindings befor subscribing.
    * Tipically using the `this.map()` function to add processing to specific options
    */
-  dynOnBeforeBind() { }
+  dynOnBeforeBind(): void {}
 
-  dynOnAfterBind() { }
+  dynOnAfterBind(): void {}
 
   /** Hook to customize widget definition before procesing it */
-  dynOnSetup(def: IWidgetDef) { return def; }
+  dynOnSetup(def: IWidgetDef): IWidgetDef {
+    return def;
+  }
 
-  subscribeOptions() {
+  subscribeOptions(): void {
     const observables = [];
 
     // call hook for cofiguration of options before updating the bound value
     this.dynOnBeforeBind();
 
     for (const prop in this.bindings) // tslint:disable-line:forin
-      this.bindings[prop] = this.bindings[prop].pipe(tap(res => this[prop] = res));
+      this.bindings[prop] = this.bindings[prop].pipe(tap(res => (this[prop] = res)));
 
     // call hook after updating the bound value
     this.dynOnAfterBind();
@@ -106,10 +111,9 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
       observables.push(this.bindings[prop]);
 
     this.addSubscription = combineLatest(observables).subscribe(() => this._cdr.markForCheck());
-
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this._unsubscribe();
   }
 
@@ -118,35 +122,38 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
    * It is intended to provide the same interface is the widget is used declarative in a template
    * instead of dynamically
    */
-  ngOnChanges() {
+  ngOnChanges(): void {
     console.log(`Widget OnChanges ${this.type}`, this);
     this._unsubscribe();
-    this.setup(null, this.widgetDef, this.context);
+    this.setup(undefined, this.widgetDef, this.context);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     console.log(`Widget OnInit ${this.type}`, this);
   }
 
-  private _unsubscribe() {
+  private _unsubscribe(): void {
     for (const subs of this._subscriptions) subs.unsubscribe();
   }
-
 }
 
-export function parseDefObject(objDef: IOptionDef, context: Context, asObservable: boolean, expr: Expressions) {
-
+export function parseDefObject(
+  objDef: IOptionDef,
+  context: Context,
+  asObservable: boolean,
+  expr: Expressions
+): IOptionDef {
   const result: IOptionDef = {};
 
-  if (!objDef) return null;
+  if (!objDef) return {};
 
   for (const prop in objDef) {
-
     if (prop.charAt(prop.length - 1) === '=') {
-      if (typeof objDef[prop] !== 'string') throw new SyntaxError('Binding options must be "string" Iexpressions');
+      if (typeof objDef[prop] !== 'string')
+        throw new SyntaxError('Binding options must be "string" Iexpressions');
       result[prop.slice(0, prop.length - 1)] = expr.eval(objDef[prop], context, asObservable);
-
-    } else result[prop] = asObservable && !isObservable(objDef[prop]) ? of(objDef[prop]) : objDef[prop];
+    } else
+      result[prop] = asObservable && !isObservable(objDef[prop]) ? of(objDef[prop]) : objDef[prop];
   }
   return result;
 }

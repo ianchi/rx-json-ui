@@ -5,23 +5,27 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+
 import { AbstractWidget, Expressions } from '../../../core/index';
 
 @Component({
-    selector: 'wdg-code',
-    templateUrl: './code.component.html',
-    styleUrls: ['./code.component.scss'],
+  selector: 'wdg-code',
+  templateUrl: './code.component.html',
+  styleUrls: ['./code.component.scss'],
 
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodeWidgetComponent extends AbstractWidget {
+  text: string;
 
-    text: string;
-
-    constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-        super(cdr, expr);
-    }
-
+  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
+    super(cdr, expr);
+  }
 }

@@ -5,7 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+
 import { AbstractWidget, Expressions } from '../../../core/index';
 
 @Component({
@@ -16,22 +22,19 @@ import { AbstractWidget, Expressions } from '../../../core/index';
   // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[class.wdg-flex]': 'true',
-    '[style.flex-direction]': 'direction'
+    '[style.flex-direction]': 'direction',
   },
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContainerWidgetComponent extends AbstractWidget {
-
   direction: string;
 
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnBeforeBind() {
-
+  dynOnBeforeBind(): void {
     this.map('direction', dir => dir || 'row');
   }
-
 }

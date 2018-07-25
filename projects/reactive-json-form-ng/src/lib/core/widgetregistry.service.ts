@@ -5,12 +5,12 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { Type, Inject, InjectionToken, Injectable } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Type } from '@angular/core';
+
 import { AbstractWidget } from './abstractwidget';
 import { DefaultWidgetComponent } from './defaultwidget.component';
 
 export const AF_CONFIG_TOKEN = new InjectionToken<IAutoFormConfig>('AF_CONFIG_TOKEN');
-
 
 export interface IWidgetConf {
   type: string;
@@ -22,23 +22,20 @@ export interface IAutoFormConfig {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WidgetRegistry {
-
   private _registry = new Map<string, Type<AbstractWidget>>();
 
   private _default: Type<AbstractWidget>;
 
-
   constructor(@Inject(AF_CONFIG_TOKEN) configs: IAutoFormConfig[] = []) {
-
     configs.forEach(conf => conf.widgets && this.register(conf.widgets));
 
     this._default = this._registry.get('default') || DefaultWidgetComponent;
   }
 
-  register(widgets: IWidgetConf[] | IWidgetConf) {
+  register(widgets: IWidgetConf[] | IWidgetConf): void {
     if (!widgets) return;
     if (!Array.isArray(widgets)) widgets = [widgets];
 
@@ -47,11 +44,7 @@ export class WidgetRegistry {
     });
   }
 
-
-
-
   get(type: string): Type<AbstractWidget> {
     return this._registry.get(type) || this._default;
   }
-
 }

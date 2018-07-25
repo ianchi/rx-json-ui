@@ -5,57 +5,54 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
-import { ChangeDetectorRef} from '@angular/core';
-import { GET_OBSERVABLE, isReactive, INode } from 'espression';
-import { take, map } from 'rxjs/operators';
+import { ChangeDetectorRef } from '@angular/core';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { GET_OBSERVABLE, INode, isReactive } from 'espression';
+import { map, take } from 'rxjs/operators';
+
 import { AbstractWidget } from './abstractwidget';
 import { Context } from './context';
-import { Expressions } from './expressions';
+import { Expressions, IAst } from './expressions';
 import { IWidgetDef } from './widget.interface';
-
 
 export const FORM_CONTROL = Symbol('FormControl');
 export class AbstractFormFieldWidget extends AbstractWidget {
-
-
   formControl: FormControl;
 
-  validate: INode;
+  validate: IAst | undefined;
   validateContext: Context;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
   dynOnSetup(def: IWidgetDef): IWidgetDef {
-
     // get bound model
-    if (!def.bind)
-      throw new Error('Form field widgets must have a "bind" property defined');
+    if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
     const lvalue = this._expr.lvalue(def.bind, this.context);
 
     if (!lvalue)
       throw new Error('Form field "bind" property must be an identifier or member expression');
 
-    if (!isReactive(lvalue.o))
-      throw new Error('Bound Key must be of Reactive Type');
-
+    if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
 
     // setup validation
 
+    // tslint:disable-next-line:no-conditional-assignment
+    if (def.validate) {
+      this.validate = this._expr.parse(def.validate);
+      if (this.validate) {
+        this.validateContext = Context.create(this.context);
 
-    if (def.validate && (this.validate = this._expr.parse(def.validate))) {// tslint:disable-line:whitespace
-      this.validateContext = Context.create(this.context);
-
-      this.formControl = new FormControl(null, null, (ctrl: AbstractControl) => {
-        this.validateContext['$value'] = ctrl.value;
-        return this._expr.evaluate(this.validate, this.validateContext, true).pipe(
-          take(1),
-          map(res => {
-            return res ? null : { validate: 'validation error' };
-          })
-        );
-      });
+        this.formControl = new FormControl(null, null, (ctrl: AbstractControl) => {
+          this.validateContext['$value'] = ctrl.value;
+          return this._expr.evaluate(this.validate, this.validateContext, true).pipe(
+            take(1),
+            map(res => {
+              return res ? null : { validate: 'validation error' };
+            })
+          );
+        });
+      }
     } else this.formControl = new FormControl();
 
     const parentForm: FormGroup | FormArray = this.context[FORM_CONTROL];
@@ -65,15 +62,14 @@ export class AbstractFormFieldWidget extends AbstractWidget {
     }
 
     // listen to bound context value and update on changes
-    this.addSubscription = lvalue.o[GET_OBSERVABLE](lvalue.m).subscribe(val =>
-      val !== this.formControl.value && this.formControl.setValue(val));
+    this.addSubscription = lvalue.o[GET_OBSERVABLE](lvalue.m).subscribe(
+      (val: any) => val !== this.formControl.value && this.formControl.setValue(val)
+    );
 
     // listen to control changes to update bound context value
-    this.addSubscription = this.formControl.valueChanges.subscribe(val => {
-      if (val !== lvalue.o[lvalue.m])
-        lvalue.o[lvalue.m] = val;
+    this.addSubscription = this.formControl.valueChanges.subscribe((val: any) => {
+      if (val !== lvalue.o[lvalue.m]) lvalue.o[lvalue.m] = val;
     });
-
 
     return def;
   }

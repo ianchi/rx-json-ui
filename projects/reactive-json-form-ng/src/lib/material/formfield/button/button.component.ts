@@ -5,42 +5,43 @@
  * https://opensource.org/licenses/MIT
  */
 
-
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+import { isReactive } from 'espression';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { isReactive } from 'espression';
-import { AbstractWidget, Expressions, IWidgetDef, } from '../../../core/index';
+
+import { AbstractWidget, Expressions, ILvalue, IWidgetDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-button',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonWidgetComponent extends AbstractWidget {
-
   title: string;
   click: string;
 
-  private _lvalue: { o, m };
-  private _clickSubs: Subscription;
+  private _lvalue: ILvalue;
+  private _clickSubs: Subscription | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnSetup(def: IWidgetDef) {
-
+  dynOnSetup(def: IWidgetDef): IWidgetDef {
     if (def.bind) {
-
       const lvalue = this._expr.lvalue(def.bind, this.context);
 
       if (!lvalue)
         throw new Error('Form field "bind" property must be an identifier or member expression');
 
-      if (!isReactive(lvalue.o))
-        throw new Error('Bound Key must be of Reactive Type');
+      if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
 
       this._lvalue = lvalue;
     }
@@ -48,17 +49,17 @@ export class ButtonWidgetComponent extends AbstractWidget {
     return def;
   }
 
-  clickEvent(_event) {
-
+  clickEvent(): void {
     if (this._clickSubs) {
       this._clickSubs.unsubscribe();
-      this._clickSubs = null;
+      this._clickSubs = undefined;
     }
 
     if (this.click) {
-      this._clickSubs = this._expr.eval(this.click, this.context, true).pipe(
-        take(1)).subscribe(res =>
-          this._lvalue.o[this._lvalue.m] = res);
+      this._clickSubs = this._expr
+        .eval(this.click, this.context, true)
+        .pipe(take(1))
+        .subscribe(res => (this._lvalue.o[this._lvalue.m] = res));
     }
   }
 }

@@ -18,14 +18,14 @@ export interface IWidgetDef {
   context?: IContextDef;
   contextName?: string;
 
-  /** Object with attributes to pass to the specific Widget.
+  /**
+   * Object with attributes to pass to the specific Widget.
    * Keys are specific to each Widget
-   *  */
+   */
   options?: { [prop: string]: any };
 
   content?: IWidgetDef[];
 
   class?: { [property: string]: string };
   style?: { [property: string]: string };
-
 }

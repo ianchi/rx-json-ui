@@ -5,23 +5,26 @@
  * https://opensource.org/licenses/MIT
  */
 
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
 
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Expressions, AbstractFormFieldWidget } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
 @Component({
   selector: 'wdg-slider',
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SliderWidgetComponent extends AbstractFormFieldWidget {
-
   title: string;
 
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
-
 }
