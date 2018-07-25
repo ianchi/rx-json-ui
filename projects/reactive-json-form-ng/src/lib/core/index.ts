@@ -5,7 +5,6 @@
  * https://opensource.org/licenses/MIT
  */
 
-
 export * from './context';
 
 export * from './abstractwidget';
@@ -16,4 +15,5 @@ export * from './core.module';
 export * from './format';
 export * from './routedwidget.component';
 export * from './expressions';
+export * from './expressionProvider';
 export * from './formfieldwidget';
