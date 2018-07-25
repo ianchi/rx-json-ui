@@ -1,17 +1,8 @@
 {
-    "extends": "../../tslint.json",
-    "rules": {
-        "directive-selector": [
-            true,
-            "attribute",
-            "wdg",
-            "camelCase"
-        ],
-        "component-selector": [
-            true,
-            "element",
-            "wdg",
-            "kebab-case"
-        ]
-    }
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [true, "attribute", "wdg", "camelCase"],
+    "component-selector": [true, "element", "wdg", "kebab-case"],
+    "component-class-suffix": [true, "WidgetComponent"]
+  }
 }
