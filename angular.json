@@ -89,7 +89,7 @@
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/reactive-json-form-ng/tsconfig.lib.json",
+            "tsConfig": "projects/reactive-json-form-ng/tsconfig.json",
             "project": "projects/reactive-json-form-ng/ng-package.json"
           },
           "configurations": {
@@ -110,7 +110,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/reactive-json-form-ng/tsconfig.lib.json",
+              "projects/reactive-json-form-ng/tsconfig.json",
               "projects/reactive-json-form-ng/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
