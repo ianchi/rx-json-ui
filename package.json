@@ -8,8 +8,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-lib": "ng build reactive-json-form-ng --prod",
-    "deploy-lib": "git subtree split --branch deploy --prefix dist/reactive-json-form-ng/",
+    "dist-lib-init": "rm rf dist/reactive-json-form-ng && git worktree add dist/reactive-json-form-ng deploy",
+    "build-lib": "rm -rf dist/reactive-json-form-ng/* && ng build reactive-json-form-ng --prod",
+    "deploy-lib": "cd dist/reactive-json-form-ng && git add --all && git commit -m 'release' && git push",
     "precise-commits": "precise-commits"
   },
   "husky": {
