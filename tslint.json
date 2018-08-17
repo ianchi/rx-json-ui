@@ -43,6 +43,7 @@
         "order": ["static-field", "instance-field", "static-method", "instance-method"]
       }
     ],
+    "no-any": false,
     "no-arg": true,
     "no-bitwise": true,
     "no-conditional-assignment": true,
@@ -64,7 +65,7 @@
     "no-invalid-this": [true, "check-function-in-method"],
     "no-misused-new": true,
     "no-namespace": true,
-    "no-non-null-assertion": true,
+    "no-non-null-assertion": false,
     "no-redundant-jsdoc": true,
     "no-reference": true,
     "no-reference-import": true,
@@ -75,6 +76,7 @@
     "no-string-throw": true,
     "no-switch-case-fall-through": true,
     "no-unnecessary-initializer": true,
+    "no-unsafe-any": true,
     "no-unused-expression": [true, "allow-fast-null-checks"],
     "no-use-before-declare": true,
     "no-var-keyword": true,

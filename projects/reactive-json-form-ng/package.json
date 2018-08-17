@@ -6,7 +6,6 @@
   "repository": "https://github.com/ianchi/reactive-json-form-ng.git",
   "version": "0.0.1",
   "private": false,
-
   "peerDependencies": {
     "@angular/common": "^6.0.0",
     "@angular/core": "^6.0.0",
@@ -15,10 +14,9 @@
     "@angular/forms": "^6.0.0",
     "@angular/router": "^6.0.0",
     "rxjs": "^6.2.1",
-    "espression": "^0.4.0"
-
+    "espression": "^1.1.0",
+    "espression-rx": "^0.1.1"
   },
-
   "keywords": [
     "json forms",
     "reactive",
