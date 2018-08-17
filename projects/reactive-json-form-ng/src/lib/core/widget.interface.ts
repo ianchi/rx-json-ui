@@ -8,6 +8,7 @@
 import { IContextDef } from './context';
 
 export interface IOptionDef {
+  // tslint:disable-next-line:no-any
   [prop: string]: any;
 }
 /** JSON definition of a widget */
@@ -27,7 +28,7 @@ export interface IWidgetDef {
    */
   options?: IOptionDef;
 
-  content?: IWidgetDef[];
+  content?: IWidgetDef | IWidgetDef[];
 
   class?: { [property: string]: string };
   style?: { [property: string]: string };

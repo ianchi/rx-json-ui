@@ -1,14 +1,14 @@
 <mat-card>
-    <mat-card-title *ngIf="title">{{ title }}</mat-card-title>
-    <mat-card-subtitle *ngIf="description">{{ description }}</mat-card-subtitle>
+    <mat-card-title *ngIf="options.title">{{ options.title }}</mat-card-title>
+    <mat-card-subtitle *ngIf="options.description">{{ options.description }}</mat-card-subtitle>
     <mat-card-content>
         <ng-container *ngFor="let element of content"
                       [wdgWidget]="element"
                       [parentContext]="context"></ng-container>
     </mat-card-content>
     <mat-card-actions align="end"
-                      *ngIf="actions">
-        <ng-container *ngFor="let element of actions"
+                      *ngIf="options.actions">
+        <ng-container *ngFor="let element of options.actions"
                       [wdgWidget]="element"
                       [parentContext]="context"></ng-container>
     </mat-card-actions>

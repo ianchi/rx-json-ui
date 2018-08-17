@@ -7,20 +7,21 @@
 
 import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { GET_OBSERVABLE, INode, isReactive } from 'espression';
+import { INode } from 'espression';
+import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { map, take } from 'rxjs/operators';
 
 import { AbstractWidget } from './abstractwidget';
 import { Context } from './context';
-import { Expressions, IAst } from './expressions';
+import { Expressions } from './expressions';
 import { IWidgetDef } from './widget.interface';
 
 export const FORM_CONTROL = Symbol('FormControl');
-export class AbstractFormFieldWidget extends AbstractWidget {
-  formControl: FormControl;
+export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
+  formControl: FormControl | undefined;
 
-  validate: IAst | undefined;
-  validateContext: Context;
+  validate: INode | undefined;
+  validateContext: Context | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
@@ -37,33 +38,30 @@ export class AbstractFormFieldWidget extends AbstractWidget {
 
     // setup validation
 
-    // tslint:disable-next-line:no-conditional-assignment
-    if (def.validate) {
-      this.validate = this._expr.parse(def.validate);
-      if (this.validate) {
-        this.validateContext = Context.create(this.context);
+    if (def.validate) this.validate = this._expr.parse(def.validate);
+    if (this.validate) {
+      this.validateContext = Context.create(this.context);
 
-        this.formControl = new FormControl(null, null, (ctrl: AbstractControl) => {
-          this.validateContext['$value'] = ctrl.value;
-          return this._expr.evaluate(this.validate, this.validateContext, true).pipe(
-            take(1),
-            map(res => {
-              return res ? null : { validate: 'validation error' };
-            })
-          );
-        });
-      }
+      this.formControl = new FormControl(null, null, (ctrl: AbstractControl) => {
+        this.validateContext!['$value'] = ctrl.value;
+        return this._expr.evaluate(this.validate, this.validateContext!, true).pipe(
+          take(1),
+          map(res => {
+            return res ? null : { validate: 'validation error' };
+          })
+        );
+      });
     } else this.formControl = new FormControl();
 
-    const parentForm: FormGroup | FormArray = this.context[FORM_CONTROL];
+    const parentForm: FormGroup | FormArray = (<any>this.context)[FORM_CONTROL];
     if (parentForm) {
       if (parentForm instanceof FormGroup) parentForm.addControl(lvalue.m, this.formControl);
       else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
     }
 
     // listen to bound context value and update on changes
-    this.addSubscription = lvalue.o[GET_OBSERVABLE](lvalue.m).subscribe(
-      (val: any) => val !== this.formControl.value && this.formControl.setValue(val)
+    this.addSubscription = (<any>lvalue.o)[GET_OBSERVABLE](lvalue.m).subscribe(
+      (val: any) => val !== this.formControl!.value && this.formControl!.setValue(val)
     );
 
     // listen to control changes to update bound context value

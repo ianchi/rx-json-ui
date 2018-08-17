@@ -14,6 +14,9 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
+export interface IGridContainerWidgetOptions {
+  direction: string;
+}
 @Component({
   selector: 'wdg-grid-container',
   templateUrl: './gridcontainer.component.html',
@@ -22,14 +25,12 @@ import { AbstractWidget, Expressions } from '../../../core/index';
   // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[class.wdg-grid]': 'true',
-    '[style.flex-direction]': 'direction',
+    '[style.flex-direction]': 'options.direction',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GridContainerWidgetComponent extends AbstractWidget {
-  direction: string;
-
+export class GridContainerWidgetComponent extends AbstractWidget<IGridContainerWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

@@ -21,7 +21,7 @@ import { Expressions } from './expressions';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DefaultWidgetComponent extends AbstractWidget {
+export class DefaultWidgetComponent extends AbstractWidget<{}> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

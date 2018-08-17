@@ -14,6 +14,12 @@ import {
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
+export interface IInputWidgetOptions {
+  title: string;
+  description: string;
+  placeholder: string;
+  required: boolean;
+}
 @Component({
   selector: 'wdg-input',
   templateUrl: './input.component.html',
@@ -21,12 +27,7 @@ import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputWidgetComponent extends AbstractFormFieldWidget {
-  title: string;
-  description: string;
-  placeholder: string;
-  required: boolean;
-
+export class InputWidgetComponent extends AbstractFormFieldWidget<IInputWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

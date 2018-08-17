@@ -19,8 +19,8 @@ import { IWidgetDef } from './widget.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoutedWidgetComponent implements OnInit {
-  widgetDef: IWidgetDef;
-  parentContext: Context;
+  widgetDef: IWidgetDef | undefined;
+  parentContext: Context | undefined;
 
   constructor(private _route: ActivatedRoute) {}
   ngOnInit(): void {

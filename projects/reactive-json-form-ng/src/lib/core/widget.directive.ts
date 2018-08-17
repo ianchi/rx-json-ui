@@ -32,13 +32,16 @@ export const ROOT_CONTEXT = new InjectionToken<Context>('Widgets Root Context');
   selector: '[wdgWidget]',
 })
 export class WidgetDirective implements OnChanges, OnDestroy {
-  @Input() wdgWidget: IWidgetDef;
-  @Input() parentContext: Context;
+  /** Object with the widget definition */
+  @Input('wdgWidget') widgetDef: IWidgetDef | undefined;
+  @Input() parentContext: Context | undefined;
 
-  widget: AbstractWidget;
-  context: Context;
-  private _widgetRef: ComponentRef<AbstractWidget> | undefined;
-  private _ifSubs: Subscription | undefined;
+  /** Reference to widget class instance */
+  widget: AbstractWidget<any> | undefined;
+  context: Context | undefined;
+  /** Reference to widget Component instance */
+  private _widgetRef: ComponentRef<AbstractWidget<any>> | undefined;
+  private _ifSubscription: Subscription | undefined;
 
   constructor(
     private _container: ViewContainerRef,
@@ -46,7 +49,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     private _cfr: ComponentFactoryResolver,
     @Optional()
     @Inject(ROOT_CONTEXT)
-    private _rootContext: Context,
+    private _rootContext: Context | undefined,
     private _expr: Expressions
   ) {}
 
@@ -55,51 +58,64 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._destroy();
-    this._unsuscribe();
+    this._unsuscribeIF();
+    this._destroyComponent();
   }
 
+  /**
+   * Initialization before creating the widget instance
+   * It creates the context and validates de IF condition and observes to finish
+   * the actual Component creation
+   */
   private _preCreate(): void {
-    this.wdgWidget = this.wdgWidget || { type: 'none' };
-    this.parentContext = this.parentContext || this._rootContext;
+    this.widgetDef = this.widgetDef || { type: 'none' };
+
+    // reset state
+    this._unsuscribeIF();
+    this._destroyComponent();
+
+    // Creates child context
+    this.parentContext = this.parentContext || this._rootContext || new Context();
     this.context = Context.create(
       this.parentContext,
-      parseDefObject(this.wdgWidget.context, this.parentContext, false, this._expr)
+      parseDefObject(this.widgetDef.context, this.parentContext, false, this._expr)
     );
 
-    this._destroy();
-    this._unsuscribe();
-
-    if (this.wdgWidget.if) {
-      this._ifSubs = this._expr
-        .eval(this.wdgWidget.if, this.context, true)
-        .subscribe((cond: any) => {
-          if (cond && !this._widgetRef) this._create();
-          else this._destroy();
+    // validate IF condition and listen for changes
+    if (this.widgetDef.if) {
+      this._ifSubscription = this._expr
+        .eval(this.widgetDef.if, this.context, true)
+        .subscribe((result: any) => {
+          if (result && !this._widgetRef) this._createComponent();
+          else if (!result) this._destroyComponent();
         });
-    } else this._create();
+    } else this._createComponent();
   }
 
-  private _create(): void {
-    const widgetClass = this._registry.get(this.wdgWidget.type);
+  private _createComponent(): void {
+    if (!this.widgetDef) return;
+
+    const widgetClass = this._registry.get(this.widgetDef.type);
     const factory = this._cfr.resolveComponentFactory(widgetClass);
     this._widgetRef = this._container.createComponent(factory);
     this.widget = this._widgetRef.instance;
 
-    this.widget.setup(this, this.wdgWidget, this.context);
+    this.widget.setup(this, this.widgetDef, this.context);
   }
 
-  private _destroy(): void {
+  /** Destroys the WidgetComponent instance */
+  private _destroyComponent(): void {
     if (this._widgetRef) {
       this._widgetRef.destroy();
       this._widgetRef = undefined;
     }
   }
 
-  private _unsuscribe(): void {
-    if (this._ifSubs) {
-      this._ifSubs.unsubscribe();
-      this._ifSubs = undefined;
+  /** Stops observig IF condition */
+  private _unsuscribeIF(): void {
+    if (this._ifSubscription) {
+      this._ifSubscription.unsubscribe();
+      this._ifSubscription = undefined;
     }
   }
 }

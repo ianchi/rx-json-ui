@@ -7,17 +7,19 @@
 
 import {
   BinaryOperatorRule,
-  es5Rules,
+  ES5Parser,
   IdentifierRule,
-  MEMBER_EXP,
+  ILvalue,
+  INode,
+  MEMBER_TYPE,
   Parser,
-  ReactiveEval,
   StaticEval,
 } from 'espression';
+import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of } from 'rxjs';
 
 import { Context } from './context';
-import { Expressions, IAst, ILvalue } from './expressions';
+import { Expressions } from './expressions';
 
 /**
  * Service for Parsing and for evaluating expressions in Widget's configuration
@@ -32,29 +34,20 @@ export class ESpression extends Expressions {
 
   constructor() {
     super();
-    const es5 = es5Rules();
 
     // remove Progam / Statements rules, and keep only expressions
-    es5[0] = [];
+    this._parser = new ES5Parser(true);
 
-    this._parser = new Parser(es5);
-
-    const identifierRule = new IdentifierRule({ thisStr: undefined, literals: {} });
-    this._keyParser = new Parser([
-      [
-        new BinaryOperatorRule({
-          '.': {
-            type: MEMBER_EXP,
-            extra: { computed: false },
-            noop: true,
-            left: 'object',
-            right: 'property',
-            rules: [[identifierRule]],
-          },
-        }),
-      ],
-      [identifierRule],
-    ]);
+    this._keyParser = new Parser(
+      {
+        lvalue: [
+          new BinaryOperatorRule({ '.': MEMBER_TYPE }),
+          new IdentifierRule({ reserved: ['this', 'true', 'false'] }),
+        ],
+        property: [new IdentifierRule()],
+      },
+      'lvalue'
+    );
 
     this._rxEval = new ReactiveEval();
   }
@@ -64,8 +57,8 @@ export class ESpression extends Expressions {
    *
    * * @param expression
    */
-  parse(expression: string): IAst | undefined {
-    let result: IAst;
+  parse(expression: string): INode | undefined {
+    let result: INode | undefined;
     try {
       result = this._parser.parse(expression);
     } catch (e) {
@@ -80,11 +73,9 @@ export class ESpression extends Expressions {
    * Parses the string expression using the restricted 'key' parsing rules,
    * intended to parse bindings to model keys.
    * As they must be lvalues the rules are more limited.
-   *
-   * @param expression
    */
-  parseKey(expression: string): IAst | undefined {
-    let result: IAst;
+  parseKey(expression: string): INode | undefined {
+    let result: INode | undefined;
     try {
       result = this._keyParser.parse(expression);
     } catch (e) {
@@ -97,14 +88,15 @@ export class ESpression extends Expressions {
 
   /**
    * Evaluate an AST in the given context.
-   *
-   * @param ast Parsed expression to evaluate
-   * @param context
    * @param asObservable Always converts result to observable
    */
-  evaluate(ast: IAst | undefined, context: Context, asObservable?: boolean): any;
-  evaluate(ast: IAst | undefined, context: Context, asObservable: true): Observable<any>;
-  evaluate(ast: IAst | undefined, context: Context, asObservable?: boolean): Observable<any> | any {
+  evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;
+  evaluate(ast: INode | undefined, context: Context, asObservable: true): Observable<any>;
+  evaluate(
+    ast: INode | undefined,
+    context: Context,
+    asObservable?: boolean
+  ): Observable<any> | any {
     if (!ast) return asObservable ? EMPTY : undefined;
 
     let result;
@@ -121,9 +113,6 @@ export class ESpression extends Expressions {
   /**
    * Evaluates an expression using *key* parsing rules and returns and lvalue object:
    * {o: evaluated_object, m: member}
-   *
-   * @param expression
-   * @param context
    */
   lvalue(expression: string, context: Context): ILvalue | undefined {
     let result;
@@ -172,7 +161,7 @@ export class ESpression extends Expressions {
         );
       }
       if (typeof obj === 'object') {
-        const result = {};
+        const result: any = {};
 
         for (const prop in obj) // tslint:disable-line:forin
           result[prop] = self._rxEval.eval(
@@ -180,7 +169,7 @@ export class ESpression extends Expressions {
             // tslint:disable-next-line:no-invalid-this
             Context.create(this, {
               $object: obj,
-              $value: obj[prop],
+              $value: (<any>obj)[prop],
               $key: prop,
             })
           );
@@ -200,9 +189,6 @@ export class ESpression extends Expressions {
    * `$index` for arrays, the current index being replaced
    * `$key` for objects, the current key
    * `$prev` the previously returned value (the acumulation)
-   * @param obj
-   * @param expression
-   * @param initValue
    */
   reduceFactory(): (obj: any[] | object, expression: string, initValue: any) => any {
     const self = this;
@@ -243,7 +229,7 @@ export class ESpression extends Expressions {
             // tslint:disable-next-line:no-invalid-this
             Context.create(this, {
               $prev: result,
-              $value: obj[prop],
+              $value: (<any>obj)[prop],
               $key: prop,
             })
           );

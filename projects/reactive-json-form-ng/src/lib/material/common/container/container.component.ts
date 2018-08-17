@@ -14,6 +14,9 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
+export interface IContainerWidgetOptions {
+  direction: string;
+}
 @Component({
   selector: 'wdg-container',
   templateUrl: './container.component.html',
@@ -22,14 +25,12 @@ import { AbstractWidget, Expressions } from '../../../core/index';
   // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[class.wdg-flex]': 'true',
-    '[style.flex-direction]': 'direction',
+    '[style.flex-direction]': 'options.direction',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContainerWidgetComponent extends AbstractWidget {
-  direction: string;
-
+export class ContainerWidgetComponent extends AbstractWidget<IContainerWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

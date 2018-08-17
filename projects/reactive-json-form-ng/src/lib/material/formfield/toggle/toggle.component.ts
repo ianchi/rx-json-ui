@@ -14,6 +14,9 @@ import {
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
+export interface IToggleWidgetOptions {
+  title: string;
+}
 @Component({
   selector: 'wdg-toggle',
   templateUrl: './toggle.component.html',
@@ -21,9 +24,7 @@ import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleWidgetComponent extends AbstractFormFieldWidget {
-  title: string;
-
+export class ToggleWidgetComponent extends AbstractFormFieldWidget<IToggleWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

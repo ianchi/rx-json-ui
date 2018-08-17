@@ -14,7 +14,7 @@ export const AF_CONFIG_TOKEN = new InjectionToken<IAutoFormConfig>('AF_CONFIG_TO
 
 export interface IWidgetConf {
   type: string;
-  component: Type<AbstractWidget>;
+  component: Type<AbstractWidget<any>>;
 }
 
 export interface IAutoFormConfig {
@@ -25,9 +25,9 @@ export interface IAutoFormConfig {
   providedIn: 'root',
 })
 export class WidgetRegistry {
-  private _registry = new Map<string, Type<AbstractWidget>>();
+  private _registry = new Map<string, Type<AbstractWidget<any>>>();
 
-  private _default: Type<AbstractWidget>;
+  private _default: Type<AbstractWidget<any>>;
 
   constructor(@Inject(AF_CONFIG_TOKEN) configs: IAutoFormConfig[] = []) {
     configs.forEach(conf => conf.widgets && this.register(conf.widgets));
@@ -44,7 +44,7 @@ export class WidgetRegistry {
     });
   }
 
-  get(type: string): Type<AbstractWidget> {
+  get(type: string): Type<AbstractWidget<any>> {
     return this._registry.get(type) || this._default;
   }
 }

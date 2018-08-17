@@ -14,6 +14,9 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
+export interface ICodeWidgetOptions {
+  text: string;
+}
 @Component({
   selector: 'wdg-code',
   templateUrl: './code.component.html',
@@ -22,9 +25,7 @@ import { AbstractWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodeWidgetComponent extends AbstractWidget {
-  text: string;
-
+export class CodeWidgetComponent extends AbstractWidget<ICodeWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

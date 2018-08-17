@@ -5,29 +5,18 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { ILvalue, INode } from 'espression';
 import { Observable } from 'rxjs';
 
 import { Context } from './context';
 
-export interface IAst {
-  type: string;
-  [prop: string]: any;
-}
-
-export interface ILvalue {
-  o: object;
-  m: string;
-}
-
 export abstract class Expressions {
-  abstract parseKey(expression: string): IAst | undefined;
-  abstract parse(expression: string): IAst | undefined;
+  abstract parseKey(expression: string): INode | undefined;
+  abstract parse(expression: string): INode | undefined;
   /**
    * Evaluates an expression in the given context.
    * It uses the general parser.
    *
-   * @param expression String expression
-   * @param context
    * @param asObservable Always converts result to observable
    */
   eval(expression: string, context: Context, asObservable?: boolean): any;
@@ -37,10 +26,10 @@ export abstract class Expressions {
 
     return this.evaluate(ast, context, asObservable);
   }
-  abstract evaluate(ast: IAst | undefined, context: Context, asObservable?: boolean): any;
-  abstract evaluate(ast: IAst | undefined, context: Context, asObservable: true): Observable<any>;
+  abstract evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;
+  abstract evaluate(ast: INode | undefined, context: Context, asObservable: true): Observable<any>;
   abstract evaluate(
-    ast: IAst | undefined,
+    ast: INode | undefined,
     context: Context,
     asObservable?: boolean
   ): Observable<any> | any;

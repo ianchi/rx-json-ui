@@ -14,16 +14,24 @@ import { Expressions } from './expressions';
 import { WidgetDirective } from './widget.directive';
 import { IOptionDef, IWidgetDef } from './widget.interface';
 
+// tslint:disable-next-line:no-any
+export interface IDictionary<T = any> {
+  [key: string]: T;
+}
+
+export type Bindings<T> = { [P in keyof T]: Observable<T[P]> };
+
+export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<T[P]> };
 /**
  * Base class for all dynamic widget elements
  */
-export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
-  /** Configuration of the widget */
-  @Input() widgetDef: IWidgetDef;
-  @Input() context: Context;
+export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit {
+  /** Configuration object for the widget */
+  @Input() widgetDef: IWidgetDef | undefined;
+  @Input() context = new Context();
 
   /** String identifing the 'type' of the widget */
-  type: string;
+  type = '';
   /** Context to use for evaluations at this level */
 
   /**
@@ -31,14 +39,21 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
    * *constant* notation in the properties definition.
    * Each binding then auto updates the corresponding property in the derived widget.
    */
-  bindings: { [prop: string]: Observable<any> } = {};
-  /** The input configuration of this object */
+  bindings = {} as Bindings<T>;
+  /** Resolved options */
 
-  content: IWidgetDef[];
+  options = {} as T;
+  content = [] as IWidgetDef[];
 
   element: WidgetDirective | undefined;
 
-  set addSubscription(subs: Subscription) {
+  /**
+   * Initialization state of the widget
+   * It becomes `true` once all bound options are resolved for the first time
+   */
+  isInitialized = false;
+  /** stores subscriptios to automatically unsubscribe onDestroy */
+  protected set addSubscription(subs: Subscription) {
     this._subscriptions.push(subs);
   }
 
@@ -47,20 +62,18 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   constructor(protected _cdr: ChangeDetectorRef, protected _expr: Expressions) {}
 
   /** Initialices the widget from a json definition */
-  setup(element: WidgetDirective | undefined, def: IWidgetDef, context: Context): void {
+  setup(element?: WidgetDirective, def?: IWidgetDef, context?: Context): void {
     def = def || { type: 'none' };
     def.options = def.options || {};
 
     this.type = def.type || 'none';
     this.element = element;
 
-    console.log(`Widget setup ${this.type}`, this);
+    this.context = context || new Context();
 
-    this.context = context;
+    this.widgetDef = def = this.dynOnSetup(def);
 
-    this.widgetDef = def = this.dynOnSetup(def) || def;
-
-    this.bindings = parseDefObject(def.options, this.context, true, this._expr);
+    this.bindings = parseDefObject<T>(def.options, this.context, true, this._expr);
 
     this.content = Array.isArray(def.content)
       ? def.content
@@ -74,16 +87,23 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   /**
    * Helper function to add a `map` pipe to the corresponding input observable
    */
-  map(option: string, callback: (v: any) => any): void {
-    const opt: Observable<any> = this.bindings[option];
+  // tslint:disable-next-line:no-any
+  map(option: keyof T, callback: (v: any) => any): void {
+    const opt = this.bindings[option];
     if (opt) this.bindings[option] = opt.pipe(map(callback));
   }
   /**
-   * Hook to customize the observable bindings befor subscribing.
-   * Tipically using the `this.map()` function to add processing to specific options
+   * Hook to customize the observable bindings *before* updating the bound value.
+   * Tipically using the `this.map()` function to add processing to specific options.
+   * Modifications to value here affect the bound value.
    */
   dynOnBeforeBind(): void {}
 
+  /**
+   * Hook to customize the observable bindings *after* updating the bound value.
+   * Perform some side effect, knowing that the value is updated.
+   * Modifications to the observed value here are ignored
+   */
   dynOnAfterBind(): void {}
 
   /** Hook to customize widget definition before procesing it */
@@ -91,14 +111,18 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
     return def;
   }
 
-  subscribeOptions(): void {
+  /** Hook called once all bound values are updated and each time that a bound value changes */
+  dynOnChange(): void {}
+
+  private subscribeOptions(): void {
+    // tslint:disable-next-line:no-any
     const observables: Array<Observable<any>> = [];
 
     // call hook for cofiguration of options before updating the bound value
     this.dynOnBeforeBind();
 
     for (const prop in this.bindings) // tslint:disable-line:forin
-      this.bindings[prop] = this.bindings[prop].pipe(tap(res => (this[prop] = res)));
+      this.bindings[prop] = this.bindings[prop].pipe(tap(res => (this.options[prop] = res)));
 
     // call hook after updating the bound value
     this.dynOnAfterBind();
@@ -106,7 +130,11 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
     for (const prop in this.bindings) // tslint:disable-line:forin
       observables.push(this.bindings[prop]);
 
-    this.addSubscription = combineLatest(observables).subscribe(() => this._cdr.markForCheck());
+    this.addSubscription = combineLatest(observables).subscribe(() => {
+      this.isInitialized = true;
+      this.dynOnChange();
+      this._cdr.markForCheck();
+    });
   }
 
   ngOnDestroy(): void {
@@ -115,11 +143,10 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
 
   /**
    * OnChanges is never called on dynamic widget instantiation
-   * It is intended to provide the same interface is the widget is used declarative in a template
+   * It is intended to provide the same interface if the widget is used declarative in a template
    * instead of dynamically
    */
   ngOnChanges(): void {
-    console.log(`Widget OnChanges ${this.type}`, this);
     this._unsubscribe();
     this.setup(undefined, this.widgetDef, this.context);
   }
@@ -133,23 +160,41 @@ export abstract class AbstractWidget implements OnDestroy, OnChanges, OnInit {
   }
 }
 
-export function parseDefObject(
+export function parseDefObject<T>(
+  objDef: IOptionDef | undefined,
+  context: Context,
+  asObservable: true,
+  expr: Expressions
+): Bindings<T>;
+export function parseDefObject<T>(
+  objDef: IOptionDef | undefined,
+  context: Context,
+  asObservable: false,
+  expr: Expressions
+): ParsedObject<T>;
+export function parseDefObject<T>(
   objDef: IOptionDef | undefined,
   context: Context,
   asObservable: boolean,
   expr: Expressions
-): IOptionDef {
-  const result: IOptionDef = {};
+): ParsedObject<T> {
+  const result = {} as ParsedObject<T>;
 
-  if (!objDef) return {};
+  if (!objDef) return result;
 
   for (const prop in objDef) {
     if (prop.charAt(prop.length - 1) === '=') {
       if (typeof objDef[prop] !== 'string')
         throw new SyntaxError('Binding options must be "string" Iexpressions');
-      result[prop.slice(0, prop.length - 1)] = expr.eval(objDef[prop], context, asObservable);
+
+      result[prop.slice(0, prop.length - 1) as keyof T] = expr.eval(
+        objDef[prop],
+        context,
+        asObservable
+      );
     } else
-      result[prop] = asObservable && !isObservable(objDef[prop]) ? of(objDef[prop]) : objDef[prop];
+      result[prop as keyof T] =
+        asObservable && !isObservable(objDef[prop]) ? of(objDef[prop]) : objDef[prop];
   }
   return result;
 }

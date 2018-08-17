@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { RxObject } from 'espression';
+import { RxObject } from 'espression-rx';
 
 import {
   AbstractWidget,
@@ -29,8 +29,8 @@ import {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormWidgetComponent extends AbstractWidget {
-  formGroup: FormGroup;
+export class FormWidgetComponent extends AbstractWidget<{}> {
+  formGroup: FormGroup | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
@@ -39,7 +39,7 @@ export class FormWidgetComponent extends AbstractWidget {
     this.formGroup = new FormGroup({});
 
     // register with parent form, if any
-    const parentForm: FormGroup | FormArray = this.context[FORM_CONTROL];
+    const parentForm: FormGroup | FormArray = (<any>this.context)[FORM_CONTROL];
     if (parentForm) {
       if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formGroup);
       else if (parentForm instanceof FormArray) parentForm.push(this.formGroup);

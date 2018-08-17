@@ -17,6 +17,14 @@ import { map, startWith } from 'rxjs/operators';
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
+export interface IAutocompleteWidgetOptions {
+  title: string;
+  description: string;
+  placeholder: string;
+
+  enum: string[];
+  enumLabel: string[];
+}
 @Component({
   selector: 'wdg-autocomplete',
   templateUrl: './autocomplete.component.html',
@@ -24,14 +32,9 @@ import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AutocompleteWidgetComponent extends AbstractFormFieldWidget implements OnInit {
-  title: string;
-  description: string;
-  placeholder: string;
-
-  enum: string[] = [];
-  enumLabel: string[];
-  filteredOptions: Observable<string[]>;
+export class AutocompleteWidgetComponent extends AbstractFormFieldWidget<IAutocompleteWidgetOptions>
+  implements OnInit {
+  filteredOptions: Observable<string[]> | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
@@ -43,12 +46,12 @@ export class AutocompleteWidgetComponent extends AbstractFormFieldWidget impleme
   }
 
   dynOnAfterBind(): void {
-    this.map('enum', val => (this._filter(this.formControl.value), val));
+    this.map('enum', val => (this._filter(this.formControl!.value), val));
   }
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.filteredOptions = this.formControl.valueChanges.pipe(
+    this.filteredOptions = this.formControl!.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
     );
@@ -57,6 +60,6 @@ export class AutocompleteWidgetComponent extends AbstractFormFieldWidget impleme
   private _filter(value: string): string[] {
     const filterValue = value && value.toLowerCase();
 
-    return this.enum.filter(option => option.toLowerCase().includes(filterValue));
+    return this.options.enum.filter(option => option.toLowerCase().includes(filterValue));
   }
 }

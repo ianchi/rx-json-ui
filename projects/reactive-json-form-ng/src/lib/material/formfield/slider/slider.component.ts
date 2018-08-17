@@ -14,6 +14,9 @@ import {
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
+export interface ISliderWidgetOptions {
+  title: string;
+}
 @Component({
   selector: 'wdg-slider',
   templateUrl: './slider.component.html',
@@ -21,9 +24,7 @@ import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SliderWidgetComponent extends AbstractFormFieldWidget {
-  title: string;
-
+export class SliderWidgetComponent extends AbstractFormFieldWidget<ISliderWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

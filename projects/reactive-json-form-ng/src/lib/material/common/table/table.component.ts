@@ -16,11 +16,33 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { combineMixed } from 'espression';
+import { combineMixed } from 'espression-rx';
 import { isObservable, Observable } from 'rxjs';
 
-import { AbstractWidget, Context, Expressions, parseDefObject } from '../../../core/index';
+import {
+  AbstractWidget,
+  Context,
+  Expressions,
+  IDictionary,
+  parseDefObject,
+} from '../../../core/index';
 
+export interface ITableWidgetOptions {
+  title: string;
+  dataSource: Observable<any[]> | any[];
+  colKeys: string[];
+  colHeaders: string[];
+  colsVisible: string[];
+  pageSizes: number[];
+  filterBy: string[];
+  disableSort: string[];
+
+  colTransform: string[];
+  colFormat: string[];
+
+  actions: Array<{ icon: string; label: string; action: string }>;
+  actionsHeader: string;
+}
 @Component({
   selector: 'wdg-table',
   templateUrl: './table.component.html',
@@ -28,27 +50,15 @@ import { AbstractWidget, Context, Expressions, parseDefObject } from '../../../c
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableWidgetComponent extends AbstractWidget implements OnInit {
-  title: string;
-  dataSource: Observable<any[]> | any[];
-  tableDataSource: MatTableDataSource<{ [prop: string]: any }>;
+export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions> implements OnInit {
+  tableDataSource: MatTableDataSource<IDictionary>;
 
-  colKeys: string[];
-  colHeaders: string[];
-  colsVisible: string[];
-  pageSizes: number[];
-  filterBy: string[];
-  disableSort: string[] = [];
+  showCols: string[] = [];
 
-  colTransform: string[];
-  colFormat: string[];
-
-  actions: Array<{ icon: string; label: string; action: string }> = [];
-  actionsHeader: string;
-  showCols: string[];
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator | undefined;
+  @ViewChild(MatSort)
+  sort: MatSort | undefined;
 
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
@@ -56,22 +66,20 @@ export class TableWidgetComponent extends AbstractWidget implements OnInit {
   }
 
   dynOnBeforeBind(): void {
-    const opt = this.widgetDef.options;
+    const opt = this.widgetDef!.options;
 
     // if the only source is a static array, lets check if it has 'property=' columns to evaluate
     // and add the auto binding
     if (opt && !opt['dataSource='] && Array.isArray(opt.dataSource)) {
-      const dataSource = <Observable<any[]>>(
-        combineMixed(
-          opt.dataSource.map(
-            row => combineMixed(parseDefObject(row, this.context, false, this._expr)),
-            false
-          ),
+      const dataSource = combineMixed(
+        opt.dataSource.map(
+          row => combineMixed(parseDefObject(row, this.context, false, this._expr)),
           false
-        )
+        ),
+        false
       );
       if (isObservable(dataSource)) this.bindings.dataSource = dataSource;
-      else this.dataSource = dataSource;
+      else this.options.dataSource = <any[]>dataSource;
     }
 
     this.map('disableSort', sort => {
@@ -91,12 +99,16 @@ export class TableWidgetComponent extends AbstractWidget implements OnInit {
             this._expr
           );
 
-          if (Array.isArray(this.colTransform)) {
-            for (let i = 0; i < this.colTransform.length; i++) {
-              if (this.colTransform[i]) {
+          if (Array.isArray(this.options.colTransform)) {
+            for (let i = 0; i < this.options.colTransform.length; i++) {
+              if (this.options.colTransform[i]) {
                 const context: any = Context.create(this.context);
-                context.$data = row[this.colKeys[i]];
-                row[this.colKeys[i]] = this._expr.eval(this.colTransform[i], context, false);
+                context.$data = row[this.options.colKeys[i]];
+                row[this.options.colKeys[i]] = this._expr.eval(
+                  this.options.colTransform[i],
+                  context,
+                  false
+                );
               }
             }
           }
@@ -110,18 +122,21 @@ export class TableWidgetComponent extends AbstractWidget implements OnInit {
         this.tableDataSource.paginator = null;
         return null;
       }
-      this.tableDataSource.paginator = this.paginator;
+      this.tableDataSource.paginator = this.paginator || null;
       return value;
     });
 
     this.map('colKeys', keys => {
-      this.showCols = this.actions && this.actions.length ? keys.concat('__actions__') : keys;
+      this.showCols =
+        this.options.actions && this.options.actions.length ? keys.concat('__actions__') : keys;
       return keys;
     });
     this.map('actions', actions => {
       if (!Array.isArray(actions)) actions = [];
 
-      this.showCols = actions.length ? this.colKeys.concat('__actions__') : this.colKeys;
+      this.showCols = actions.length
+        ? this.options.colKeys.concat('__actions__')
+        : this.options.colKeys;
 
       return actions;
     });
@@ -130,7 +145,7 @@ export class TableWidgetComponent extends AbstractWidget implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.tableDataSource.sort = this.sort;
+    this.tableDataSource.sort = this.sort || null;
   }
   applyFilter(filterValue: string): void {
     this.tableDataSource.filter = filterValue;
@@ -144,7 +159,7 @@ export class TableWidgetComponent extends AbstractWidget implements OnInit {
     const context = Context.create(this.context, { $data: rowData });
 
     this.addSubscription = this._expr
-      .eval(this.actions[actionIndex].action, context, true)
+      .eval(this.options.actions[actionIndex].action, context, true)
       .subscribe(() => {
         // TODO logic to reload table
       });

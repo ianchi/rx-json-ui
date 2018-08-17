@@ -11,12 +11,17 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { isReactive } from 'espression';
+import { ILvalue } from 'espression';
+import { isReactive } from 'espression-rx';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AbstractWidget, Expressions, ILvalue, IWidgetDef } from '../../../core/index';
+import { AbstractWidget, Expressions, IWidgetDef } from '../../../core/index';
 
+export interface IButtonWidgetOptions {
+  title: string;
+  click: string;
+}
 @Component({
   selector: 'wdg-button',
   templateUrl: './button.component.html',
@@ -24,11 +29,8 @@ import { AbstractWidget, Expressions, ILvalue, IWidgetDef } from '../../../core/
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonWidgetComponent extends AbstractWidget {
-  title: string;
-  click: string;
-
-  private _lvalue: ILvalue;
+export class ButtonWidgetComponent extends AbstractWidget<IButtonWidgetOptions> {
+  private _lvalue: ILvalue | undefined;
   private _clickSubs: Subscription | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
@@ -55,11 +57,11 @@ export class ButtonWidgetComponent extends AbstractWidget {
       this._clickSubs = undefined;
     }
 
-    if (this.click) {
+    if (this.options.click && this._lvalue) {
       this._clickSubs = this._expr
-        .eval(this.click, this.context, true)
+        .eval(this.options.click, this.context, true)
         .pipe(take(1))
-        .subscribe(res => (this._lvalue.o[this._lvalue.m] = res));
+        .subscribe(res => (this._lvalue!.o[this._lvalue!.m] = res));
     }
   }
 }

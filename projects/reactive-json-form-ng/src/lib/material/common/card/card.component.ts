@@ -14,6 +14,11 @@ import {
 
 import { AbstractWidget, Expressions, IWidgetDef } from '../../../core/index';
 
+export interface ICardWidgetOptions {
+  title: string;
+  description: string;
+  actions: IWidgetDef[];
+}
 @Component({
   selector: 'wdg-card',
   templateUrl: './card.component.html',
@@ -21,11 +26,7 @@ import { AbstractWidget, Expressions, IWidgetDef } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardWidgetComponent extends AbstractWidget {
-  title: string;
-  description: string;
-  actions: IWidgetDef[];
-
+export class CardWidgetComponent extends AbstractWidget<ICardWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

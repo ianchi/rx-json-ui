@@ -15,6 +15,9 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
+export interface ITabsWidgetOptions {
+  tabLabels: string[];
+}
 @Component({
   selector: 'wdg-tabs',
   templateUrl: './tabs.component.html',
@@ -22,8 +25,7 @@ import { AbstractWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabsWidgetComponent extends AbstractWidget {
-  tabLabels: string[];
+export class TabsWidgetComponent extends AbstractWidget<ITabsWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

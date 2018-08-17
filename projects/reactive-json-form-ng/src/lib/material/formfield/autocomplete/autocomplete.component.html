@@ -1,23 +1,23 @@
 <mat-form-field style.width="100%">
 
-    <mat-label *ngIf="title">
-        {{ title }}
+    <mat-label *ngIf="options.title">
+        {{ options.title }}
     </mat-label>
 
     <input matInput
            name="aaa"
            [type]="type || 'text'"
            [formControl]="formControl"
-           [placeholder]="placeholder"
+           [placeholder]="options.placeholder"
            [matAutocomplete]="auto">
 
     <mat-error [id]="null">
 
     </mat-error>
 
-    <mat-hint *ngIf="description"
+    <mat-hint *ngIf="options.description"
               [id]="null">
-        {{ description }}
+        {{ options.description }}
     </mat-hint>
 
     <mat-autocomplete #auto="matAutocomplete">

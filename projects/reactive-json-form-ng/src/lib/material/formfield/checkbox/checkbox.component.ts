@@ -14,6 +14,9 @@ import {
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
+export interface ICheckboxWidgetOptions {
+  title: string;
+}
 @Component({
   selector: 'wdg-checkbox',
   templateUrl: './checkbox.component.html',
@@ -21,8 +24,7 @@ import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxWidgetComponent extends AbstractFormFieldWidget {
-  title: string;
+export class CheckboxWidgetComponent extends AbstractFormFieldWidget<ICheckboxWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

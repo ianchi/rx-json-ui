@@ -32,13 +32,12 @@ export class Context {
     Object,
   };
 
+  /** User defined properties */
+  [key: string]: any;
+
   /**
    * Creates a Context object, inheriting from an optional `parent` and adding custom properties
    * and optionally builtin objects
-   * @param parent
-   * @param publicProps
-   * @param readonlyProps
-   * @param hiddenProps
    * @param builtins Boolean. If true adds builtinobjects as public properties,
    */
   static create(
