@@ -9,7 +9,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
 

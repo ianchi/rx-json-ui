@@ -1,34 +1,93 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/draft-07/schema",
 
-    "type": "object",
-    "properties": {
-        "type": { "enum": ["table"] },
+  "type": "object",
+  "properties": {
+    "type": { "const": "table" },
 
-        "options": {
-            "type": "object",
-            "properties": {
-                "title": {
-                    "type": "string",
-                    "title": "Label to show on the control (fixed text)"
-                },
-                "title=": {
-                    "type": "string",
-                    "title": "Expression returning label to show on the control"
-                },
-                "dataSource": {
-                  "type":"array",
-                  "items": { "type":"object"}
-                },
-                "dataSource=": {
-                  "type":"string"
-                }
+    "options": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Label to show on the control (fixed text)"
+        },
+        "title=": {
+          "type": "string",
+          "description": "Expression returning label to show on the control"
+        },
+        "dataSource": {
+          "type": "array",
+          "description": "Fixed table's data. Each element's key maps to a column",
+          "items": { "type": "object" }
+        },
+        "dataSource=": {
+          "type": "string",
+          "description": "Expression returning the dynamic data source. It must evaluate to an array of objects, whose keys map to columns."
+        },
 
+        "colKeys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Order list of column keys (each maps to a property of the row element)."
+        },
+        "colHeaders": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Order list of column headers (if omitted the key is used as header)."
+        },
+        "pageSizes": {
+          "type": "array",
+          "items": { "type": "number" },
+          "description": "If set, the table has paging footer, with multiple options of page sizes"
+        },
+        "filterBy": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Allow filtering by the content of the listed columns (provided as array of keys).\nIf not set, filter field is not present. If empty array, all columns are used"
+        },
+        "disableSort": {
+          "type": ["array", "boolean"],
+          "items": { "type": "string" },
+          "description": "Disable sorting for the listed columns (provided as array of keys)\nIf not set or false, all columns allow sorting. If `true`, sorting is disabled for all columns"
+        },
+        "colTransform": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Expression to apply to each column's data\nThe following local variables are available in the expression's context:  "
+        },
+        "colFormat": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Format to apply to each column's data for rendering\nIt must be a valid *Angular* format pipe string"
+        },
+        "actions": {
+          "type": "object",
+          "description": "Adds a menu in each row with fixed actions",
+          "properties": {
+            "icon": {
+              "type": "string",
+              "description": "SVG icon name to show"
             },
-            "additionalProperties": true
+            "label": {
+              "type": "string",
+              "description": "Label for the action"
+            },
+            "action": {
+              "type": "string",
+              "description": "Expression to evaluate when the actions is selected"
+            }
+          }
+        },
+        "actionsHeader": {
+          "type": "string",
+          "description": "Label to show on the actions column"
         }
-    },
+      },
+      "additionalProperties": true
+    }
+  },
 
-    "additionalProperties": false,
-    "required": ["bind"]
+  "additionalProperties": true,
+  "required": ["bind"]
 }

@@ -40,6 +40,6 @@ import { TabsWidgetComponent } from './tabs/tabs.component';
     TabsWidgetComponent,
     CodeWidgetComponent,
   ],
-  exports: [],
+  exports: [WidgetsCoreModule],
 })
 export class CommonWidgetsModule {}

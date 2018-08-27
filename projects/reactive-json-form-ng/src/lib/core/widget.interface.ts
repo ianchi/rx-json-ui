@@ -16,6 +16,7 @@ export interface IWidgetDef {
   /** Type of the Widget to instantiate */
   type: string;
   bind?: string;
+  exportAs?: string;
   if?: string;
   validate?: string;
 

@@ -15,7 +15,7 @@ import {
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, IWidgetDef } from '../../../core/index';
 
 export interface IAutocompleteWidgetOptions {
   title: string;
@@ -48,18 +48,22 @@ export class AutocompleteWidgetComponent extends AbstractFormFieldWidget<IAutoco
   dynOnAfterBind(): void {
     this.map('enum', val => (this._filter(this.formControl!.value), val));
   }
-  ngOnInit(): void {
-    super.ngOnInit();
+  dynOnSetup(def: IWidgetDef): IWidgetDef {
+    const result = super.dynOnSetup(def);
 
     this.filteredOptions = this.formControl!.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
     );
+
+    return result;
   }
 
   private _filter(value: string): string[] {
     const filterValue = value && value.toLowerCase();
 
-    return this.options.enum.filter(option => option.toLowerCase().includes(filterValue));
+    return this.options.enum
+      ? this.options.enum.filter(option => option.toLowerCase().includes(filterValue))
+      : [];
   }
 }

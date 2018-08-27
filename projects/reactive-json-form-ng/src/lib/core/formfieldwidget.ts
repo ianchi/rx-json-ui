@@ -42,7 +42,7 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
     if (this.validate) {
       this.validateContext = Context.create(this.context);
 
-      this.formControl = new FormControl(null, null, (ctrl: AbstractControl) => {
+      this.formControl = new FormControl(lvalue.o[lvalue.m], null, (ctrl: AbstractControl) => {
         this.validateContext!['$value'] = ctrl.value;
         return this._expr.evaluate(this.validate, this.validateContext!, true).pipe(
           take(1),
@@ -51,7 +51,7 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
           })
         );
       });
-    } else this.formControl = new FormControl();
+    } else this.formControl = new FormControl(lvalue.o[lvalue.m]);
 
     const parentForm: FormGroup | FormArray = (<any>this.context)[FORM_CONTROL];
     if (parentForm) {
@@ -60,9 +60,9 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
     }
 
     // listen to bound context value and update on changes
-    this.addSubscription = (<any>lvalue.o)[GET_OBSERVABLE](lvalue.m).subscribe(
-      (val: any) => val !== this.formControl!.value && this.formControl!.setValue(val)
-    );
+    this.addSubscription = (<any>lvalue.o)
+      [GET_OBSERVABLE](lvalue.m)
+      .subscribe((val: any) => val !== this.formControl!.value && this.formControl!.setValue(val));
 
     // listen to control changes to update bound context value
     this.addSubscription = this.formControl.valueChanges.subscribe((val: any) => {

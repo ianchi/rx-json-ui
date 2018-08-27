@@ -26,15 +26,17 @@ import { IWidgetDef } from './widget.interface';
 import { WidgetRegistry } from './widgetregistry.service';
 
 /** Injection token used to provide the default root context for widgets */
-export const ROOT_CONTEXT = new InjectionToken<Context>('Widgets Root Context');
+export const ROOT_EXPR_CONTEXT = new InjectionToken<Context>('Widgets Root Context');
 
 @Directive({
   selector: '[wdgWidget]',
 })
 export class WidgetDirective implements OnChanges, OnDestroy {
   /** Object with the widget definition */
-  @Input('wdgWidget') widgetDef: IWidgetDef | undefined;
-  @Input() parentContext: Context | undefined;
+  @Input('wdgWidget')
+  widgetDef: IWidgetDef | undefined;
+  @Input()
+  parentContext: Context | undefined;
 
   /** Reference to widget class instance */
   widget: AbstractWidget<any> | undefined;
@@ -48,7 +50,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     private _registry: WidgetRegistry,
     private _cfr: ComponentFactoryResolver,
     @Optional()
-    @Inject(ROOT_CONTEXT)
+    @Inject(ROOT_EXPR_CONTEXT)
     private _rootContext: Context | undefined,
     private _expr: Expressions
   ) {}

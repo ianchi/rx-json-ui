@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { RxObject } from 'espression-rx';
+import { isReactive, RxObject } from 'espression-rx';
 
 import {
   AbstractWidget,
@@ -31,6 +31,7 @@ import {
 })
 export class FormWidgetComponent extends AbstractWidget<{}> {
   formGroup: FormGroup | undefined;
+  boundData: object | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
@@ -49,8 +50,22 @@ export class FormWidgetComponent extends AbstractWidget<{}> {
     Context.defineHidden(this.context, { [FORM_CONTROL]: this.formGroup });
 
     // create a Store for the variables
+    if (!def.bind) this.boundData = RxObject({}, true);
+    else {
+      const lvalue = this._expr.lvalue(def.bind, this.context);
 
-    this.context['$model'] = RxObject({});
+      if (!lvalue)
+        throw new Error('Form field "bind" property must be an identifier or member expression');
+
+      if (!isReactive(lvalue.o[lvalue.m])) {
+        if (isReactive(lvalue.o) && !(lvalue.m in lvalue.o))
+          lvalue.o[lvalue.m] = this.boundData = RxObject({}, true);
+        else throw new Error(`Bound Key '${def.bind}' must of Reactive Type`);
+      }
+
+      this.boundData = lvalue.o[lvalue.m];
+    }
+    this.context[def.exportAs || '$model'] = this.boundData;
     return def;
   }
 }

@@ -29,7 +29,7 @@ import {
 
 export interface ITableWidgetOptions {
   title: string;
-  dataSource: Observable<any[]> | any[];
+  dataSource: Observable<object[]> | object[];
   colKeys: string[];
   colHeaders: string[];
   colsVisible: string[];

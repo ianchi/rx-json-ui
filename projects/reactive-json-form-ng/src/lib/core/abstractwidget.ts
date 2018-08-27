@@ -9,7 +9,7 @@ import { ChangeDetectorRef, Input, OnChanges, OnDestroy, OnInit } from '@angular
 import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { Context, IContextDef } from './context';
+import { Context } from './context';
 import { Expressions } from './expressions';
 import { WidgetDirective } from './widget.directive';
 import { IOptionDef, IWidgetDef } from './widget.interface';
@@ -27,8 +27,10 @@ export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<T[P]> };
  */
 export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit {
   /** Configuration object for the widget */
-  @Input() widgetDef: IWidgetDef | undefined;
-  @Input() context = new Context();
+  @Input()
+  widgetDef: IWidgetDef | undefined;
+  @Input()
+  context = new Context();
 
   /** String identifing the 'type' of the widget */
   type = '';
@@ -185,7 +187,7 @@ export function parseDefObject<T>(
   for (const prop in objDef) {
     if (prop.charAt(prop.length - 1) === '=') {
       if (typeof objDef[prop] !== 'string')
-        throw new SyntaxError('Binding options must be "string" Iexpressions');
+        throw new SyntaxError(`Binding option "${prop}" must be "string" expressions`);
 
       result[prop.slice(0, prop.length - 1) as keyof T] = expr.eval(
         objDef[prop],

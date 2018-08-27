@@ -101,7 +101,7 @@ export class ESpression extends Expressions {
 
     let result;
     try {
-      result = this._rxEval.eval(ast, context);
+      result = this._rxEval.evaluate(ast, context);
     } catch (e) {
       console.warn('Error evaluating expression: ', e.message);
       return asObservable ? of(undefined) : undefined;
