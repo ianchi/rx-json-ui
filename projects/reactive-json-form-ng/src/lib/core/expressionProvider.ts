@@ -149,7 +149,7 @@ export class ESpression extends Expressions {
 
       if (Array.isArray(obj)) {
         return obj.map((value, index) =>
-          self._rxEval.eval(
+          self._rxEval.evaluate(
             ast,
             // tslint:disable-next-line:no-invalid-this
             Context.create(this, {
@@ -164,7 +164,7 @@ export class ESpression extends Expressions {
         const result: any = {};
 
         for (const prop in obj) // tslint:disable-line:forin
-          result[prop] = self._rxEval.eval(
+          result[prop] = self._rxEval.evaluate(
             ast,
             // tslint:disable-next-line:no-invalid-this
             Context.create(this, {
@@ -207,7 +207,7 @@ export class ESpression extends Expressions {
       if (Array.isArray(obj)) {
         return obj.reduce(
           (prev, value, index) =>
-            self._rxEval.eval(
+            self._rxEval.evaluate(
               ast,
               // tslint:disable-next-line:no-invalid-this
               Context.create(this, {
@@ -224,7 +224,7 @@ export class ESpression extends Expressions {
         let result = initValue;
 
         for (const prop in obj) // tslint:disable-line:forin
-          result = self._rxEval.eval(
+          result = self._rxEval.evaluate(
             ast,
             // tslint:disable-next-line:no-invalid-this
             Context.create(this, {
