@@ -1,7 +1,7 @@
 <mat-tab-group>
 
     <mat-tab *ngFor="let tab of content; index as tabIndex"
-             [label]="options.tabLabels[tabIndex] || ('Tab'+tabIndex)">
+             [label]="options.tabLabels && options.tabLabels[tabIndex] || ('Tab'+tabIndex)">
 
         <ng-template matTabContent>
             <ng-container [wdgWidget]="tab"
