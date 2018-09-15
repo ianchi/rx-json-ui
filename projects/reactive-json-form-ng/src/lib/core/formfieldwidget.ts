@@ -11,21 +11,25 @@ import { INode } from 'espression';
 import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { map, take } from 'rxjs/operators';
 
+import { ISchema, schemaValidator, ValidatorFn } from '../schema';
+
 import { AbstractWidget } from './abstractwidget';
 import { Context } from './context';
 import { Expressions } from './expressions';
-import { IWidgetDef } from './widget.interface';
+import { IFieldWidgetDef, IWidgetDef } from './widget.interface';
 
-export const FORM_CONTROL = Symbol('FormControl');
+export const FORM_CONTROL = '$form';
 export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
   formControl: FormControl | undefined;
 
   validate: INode | undefined;
   validateContext: Context | undefined;
+
+  schemaValidator: ValidatorFn | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
-  dynOnSetup(def: IWidgetDef): IWidgetDef {
+  dynOnSetup(def: IFieldWidgetDef): IWidgetDef {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
@@ -38,7 +42,10 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
 
     // setup validation
 
-    if (def.validate) this.validate = this._expr.parse(def.validate);
+    if (def.options && def.options['validate=']) {
+      this.validate = this._expr.parse(def.options['validate=']);
+      delete def.options['validate='];
+    }
     if (this.validate) {
       this.validateContext = Context.create(this.context);
 
@@ -53,7 +60,8 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
       });
     } else this.formControl = new FormControl(lvalue.o[lvalue.m]);
 
-    const parentForm: FormGroup | FormArray = (<any>this.context)[FORM_CONTROL];
+    const parentForm: FormGroup | FormArray =
+      this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
       if (parentForm instanceof FormGroup) parentForm.addControl(lvalue.m, this.formControl);
       else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
@@ -70,5 +78,14 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
     });
 
     return def;
+  }
+
+  dynOnChange(): void {
+    // once bound options are resolved, update schema Validator
+    if (this.widgetDef!.options) {
+      this.schemaValidator = schemaValidator(<ISchema>this.widgetDef!.options);
+
+      this.formControl!.setValidators((ctrl: AbstractControl) => this.schemaValidator!(ctrl.value));
+    }
   }
 }
