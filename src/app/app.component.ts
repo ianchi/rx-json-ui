@@ -7,9 +7,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { IWidgetDef } from 'reactive-json-form-ng';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { ISchema, IWidgetDef } from 'reactive-json-form-ng';
 
 @Component({
   selector: 'app-root',
@@ -20,29 +18,34 @@ export class AppComponent {
   title = 'app';
 
   widgetDef: IWidgetDef;
+  schema: ISchema;
 
   constructor(private http: HttpClient) {
+    http.get('assets/schema.json').subscribe((sch: ISchema) => {
+      this.schema = sch;
+      this.widgetDef = { widget: 'schema-form', options: { schema: sch, bind: 'data' } };
+    });
     this.widgetDef = {
-      type: 'card',
+      widget: 'card',
       options: {
         title: 'Card Title',
         description: 'this is a description',
       },
       content: [
         {
-          type: 'form',
+          widget: 'form',
           bind: 'data',
 
           content: [
             {
-              type: 'input',
+              widget: 'input',
               bind: '$model.field1',
               options: {
                 title: 'Input field',
               },
             },
             {
-              type: 'form-array',
+              widget: 'form-array',
               bind: '$model.children',
               options: {
                 newRow: '{}',
@@ -50,18 +53,18 @@ export class AppComponent {
               },
               content: [
                 {
-                  type: 'form',
+                  widget: 'form',
                   bind: '$data',
                   content: [
                     {
-                      type: 'input',
+                      widget: 'input',
                       bind: '$data.subfield1',
                       options: {
                         title: 'Row field1',
                       },
                     },
                     {
-                      type: 'input',
+                      widget: 'input',
                       bind: '$data.subfield2',
                       options: {
                         title: 'Row field2',
@@ -72,12 +75,12 @@ export class AppComponent {
               ],
             },
             {
-              type: 'button',
+              widget: 'button',
               bind: '$model.$click',
               options: { title: 'Show data', click: 'true' },
             },
             {
-              type: 'code',
+              widget: 'code',
               options: { 'text=': 'JSON.stringify($model.$click && $model,undefined,2)' },
             },
           ],
