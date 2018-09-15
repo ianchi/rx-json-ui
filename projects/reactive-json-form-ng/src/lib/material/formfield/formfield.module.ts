@@ -16,6 +16,7 @@ import { CheckboxWidgetComponent } from './checkbox/checkbox.component';
 import { FormWidgetComponent } from './form/form.component';
 import { FormArrayWidgetComponent } from './formArray/formArray.component';
 import { InputWidgetComponent } from './input/input.component';
+import { SchemaWidgetComponent } from './schema/schema.component';
 import { SliderWidgetComponent } from './slider/slider.component';
 import { ToggleWidgetComponent } from './toggle/toggle.component';
 
@@ -32,6 +33,7 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'button', component: ButtonWidgetComponent },
         { type: 'form', component: FormWidgetComponent },
         { type: 'form-array', component: FormArrayWidgetComponent },
+        { type: 'schema-form', component: SchemaWidgetComponent },
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
       ],
     }),
@@ -44,6 +46,7 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
     ButtonWidgetComponent,
     FormWidgetComponent,
     FormArrayWidgetComponent,
+    SchemaWidgetComponent,
     AutocompleteWidgetComponent,
   ],
   exports: [],
