@@ -6,13 +6,15 @@
 
     <input matInput
            name="aaa"
-           [type]="type || 'text'"
+           [type]="options.inputType || 'text'"
            [formControl]="formControl"
-           [placeholder]="options.placeholder"
            [required]="options.required">
 
-    <mat-error [id]="null">
-
+    <mat-error [id]="null"
+               *ngIf="formControl?.invalid && formControl?.hasError('message')">
+        <span>
+            {{ formControl?.getError('message') }}
+        </span>
     </mat-error>
 
     <mat-hint *ngIf="options.description"

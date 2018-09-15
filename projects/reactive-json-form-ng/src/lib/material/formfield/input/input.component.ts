@@ -13,11 +13,11 @@ import {
 } from '@angular/core';
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { ISchemaBase } from '../../../schema/interface';
 
-export interface IInputWidgetOptions {
-  title: string;
-  description: string;
-  placeholder: string;
+export interface IInputWidgetOptions extends ISchemaBase<any> {
+  type: string;
+  inputType: string;
   required: boolean;
 }
 @Component({
