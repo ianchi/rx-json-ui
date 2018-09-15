@@ -14,11 +14,13 @@ import {
 import { FormArray, FormGroup } from '@angular/forms';
 import { isReactive, RxObject } from 'espression-rx';
 
+import { FieldControl } from '../../../core/fieldcontrol';
 import {
   AbstractWidget,
   Context,
   Expressions,
   FORM_CONTROL,
+  IFieldGroupWidgetDef,
   IWidgetDef,
 } from '../../../core/index';
 
@@ -36,36 +38,35 @@ export class FormWidgetComponent extends AbstractWidget<{}> {
     super(cdr, expr);
   }
 
-  dynOnSetup(def: IWidgetDef): IWidgetDef {
+  dynOnSetup(def: IFieldGroupWidgetDef): IWidgetDef {
+    // get bound model
+    if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
+
     this.formGroup = new FormGroup({});
 
     // register with parent form, if any
-    const parentForm: FormGroup | FormArray = (<any>this.context)[FORM_CONTROL];
+    const parentForm: FormGroup | FormArray =
+      this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
       if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formGroup);
       else if (parentForm instanceof FormArray) parentForm.push(this.formGroup);
     }
 
     // save this FormGroup as parent form for the children
-    Context.defineHidden(this.context, { [FORM_CONTROL]: this.formGroup });
+    Context.defineReadonly(this.context, { [FORM_CONTROL]: new FieldControl(this.formGroup) });
 
-    // create a Store for the variables
-    if (!def.bind) this.boundData = RxObject({}, true);
-    else {
-      const lvalue = this._expr.lvalue(def.bind, this.context);
+    // binding is always on the parent context directly, so it can't get shadowed in the child
+    const lvalue = this._expr.lvalue(def.bind, this.context.$parentContext);
 
-      if (!lvalue)
-        throw new Error('Form field "bind" property must be an identifier or member expression');
+    if (!lvalue)
+      throw new Error('Form field "bind" property must be an identifier or member expression');
 
-      if (!isReactive(lvalue.o[lvalue.m])) {
-        if (isReactive(lvalue.o) && !(lvalue.m in lvalue.o))
-          lvalue.o[lvalue.m] = this.boundData = RxObject({}, true);
-        else throw new Error(`Bound Key '${def.bind}' must of Reactive Type`);
-      }
-
-      this.boundData = lvalue.o[lvalue.m];
+    if (!isReactive(lvalue.o[lvalue.m])) {
+      if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject({}, true);
+      else throw new Error(`Bound Key '${def.bind}' must be of Reactive Type`);
     }
-    this.context[def.exportAs || '$model'] = this.boundData;
+
+    this.context[def.exportAs || '$model'] = this.boundData = lvalue.o[lvalue.m];
     return def;
   }
 }
