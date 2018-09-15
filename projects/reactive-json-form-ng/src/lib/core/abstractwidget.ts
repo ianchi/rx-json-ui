@@ -19,9 +19,9 @@ export interface IDictionary<T = any> {
   [key: string]: T;
 }
 
-export type Bindings<T> = { [P in keyof T]: Observable<T[P]> };
+export type Bindings<T> = { [P in keyof T]-?: Observable<NonNullable<T[P]>> };
 
-export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<T[P]> };
+export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<NonNullable<T[P]>> };
 /**
  * Base class for all dynamic widget elements
  */
@@ -65,10 +65,10 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
 
   /** Initialices the widget from a json definition */
   setup(element?: WidgetDirective, def?: IWidgetDef, context?: Context): void {
-    def = def || { type: 'none' };
+    def = def || { widget: 'none' };
     def.options = def.options || {};
 
-    this.type = def.type || 'none';
+    this.type = def.widget || 'none';
     this.element = element;
 
     this.context = context || new Context();

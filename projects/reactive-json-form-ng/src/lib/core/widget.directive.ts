@@ -18,8 +18,9 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
-import { AbstractWidget, parseDefObject } from './abstractwidget';
+import { AbstractWidget } from './abstractwidget';
 import { Context } from './context';
 import { Expressions } from './expressions';
 import { IWidgetDef } from './widget.interface';
@@ -34,7 +35,7 @@ export const ROOT_EXPR_CONTEXT = new InjectionToken<Context>('Widgets Root Conte
 export class WidgetDirective implements OnChanges, OnDestroy {
   /** Object with the widget definition */
   @Input('wdgWidget')
-  widgetDef: IWidgetDef | undefined;
+  widgetDef: IWidgetDef = { widget: 'none' };
   @Input()
   parentContext: Context | undefined;
 
@@ -45,6 +46,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   private _widgetRef: ComponentRef<AbstractWidget<any>> | undefined;
   private _ifSubscription: Subscription | undefined;
 
+  private _waitSubscription: Subscription | undefined;
   constructor(
     private _container: ViewContainerRef,
     private _registry: WidgetRegistry,
@@ -60,7 +62,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._unsuscribeIF();
+    this._unsuscribe();
     this._destroyComponent();
   }
 
@@ -70,23 +72,30 @@ export class WidgetDirective implements OnChanges, OnDestroy {
    * the actual Component creation
    */
   private _preCreate(): void {
-    this.widgetDef = this.widgetDef || { type: 'none' };
+    this.widgetDef = this.widgetDef || { widget: 'none' };
 
     // reset state
-    this._unsuscribeIF();
+    this._unsuscribe();
     this._destroyComponent();
 
     // Creates child context
     this.parentContext = this.parentContext || this._rootContext || new Context();
-    this.context = Context.create(
-      this.parentContext,
-      parseDefObject(this.widgetDef.context, this.parentContext, false, this._expr)
-    );
+    this.context = Context.create(this.parentContext);
 
+    // run initialization expressions
+    if (this.widgetDef.onInit) this._expr.eval(this.widgetDef.onInit, this.context);
+    if (this.widgetDef.waitFor)
+      this._waitSubscription = this._expr
+        .eval(this.widgetDef.waitFor, this.context, true)
+        .pipe(take(1))
+        .subscribe(() => this._checkIf());
+    else this._checkIf();
+  }
+  private _checkIf(): void {
     // validate IF condition and listen for changes
-    if (this.widgetDef.if) {
+    if (this.widgetDef.displayIf) {
       this._ifSubscription = this._expr
-        .eval(this.widgetDef.if, this.context, true)
+        .eval(this.widgetDef.displayIf, this.context!, true)
         .subscribe((result: any) => {
           if (result && !this._widgetRef) this._createComponent();
           else if (!result) this._destroyComponent();
@@ -96,8 +105,9 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
   private _createComponent(): void {
     if (!this.widgetDef) return;
-
-    const widgetClass = this._registry.get(this.widgetDef.type);
+    this._destroyComponent();
+    
+    const widgetClass = this._registry.get(this.widgetDef.widget);
     const factory = this._cfr.resolveComponentFactory(widgetClass);
     this._widgetRef = this._container.createComponent(factory);
     this.widget = this._widgetRef.instance;
@@ -114,10 +124,14 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   }
 
   /** Stops observig IF condition */
-  private _unsuscribeIF(): void {
+  private _unsuscribe(): void {
     if (this._ifSubscription) {
       this._ifSubscription.unsubscribe();
       this._ifSubscription = undefined;
+    }
+    if (this._waitSubscription) {
+      this._waitSubscription.unsubscribe();
+      this._waitSubscription = undefined;
     }
   }
 }
