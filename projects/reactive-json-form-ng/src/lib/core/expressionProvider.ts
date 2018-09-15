@@ -12,8 +12,10 @@ import {
   ILvalue,
   INode,
   MEMBER_TYPE,
+  MEMBER_TYPE_COMP,
   Parser,
   StaticEval,
+  StringRule,
 } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of } from 'rxjs';
@@ -41,9 +43,14 @@ export class ESpression extends Expressions {
     this._keyParser = new Parser(
       {
         lvalue: [
-          new BinaryOperatorRule({ '.': MEMBER_TYPE }),
-          new IdentifierRule({ reserved: ['this', 'true', 'false'] }),
+          new BinaryOperatorRule({
+            '.': MEMBER_TYPE,
+            '[': { ...MEMBER_TYPE_COMP, subRules: 'computed' },
+          }),
+          'identifier',
         ],
+        identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
+        computed: [new StringRule(), 'identifier'],
         property: [new IdentifierRule()],
       },
       'lvalue'
