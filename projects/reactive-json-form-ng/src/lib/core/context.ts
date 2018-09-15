@@ -54,6 +54,9 @@ export class Context {
     if (readonlyProps) Context.defineReadonly(context, readonlyProps);
     if (hiddenProps) Context.defineHidden(context, hiddenProps);
 
+    // save reference to parent Context
+    if (parent) context.$parentContext = parent;
+
     return context;
   }
 
