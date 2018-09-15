@@ -24,7 +24,7 @@ export class RoutedWidgetComponent implements OnInit {
 
   constructor(private _route: ActivatedRoute) {}
   ngOnInit(): void {
-    this.widgetDef = this._route.snapshot.data.widgetDef || { type: 'empty' };
+    this.widgetDef = this._route.snapshot.data.widgetDef || { widget: 'empty' };
     this.parentContext = this._route.snapshot.data.parentContext;
   }
 }
