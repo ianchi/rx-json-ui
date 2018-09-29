@@ -14,19 +14,21 @@ import {
 
 import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
 
-export interface IFormArrayWidgetOptions {
+export interface IFormAccordionWidgetOptions {
+  title: string;
+  description: string;
   newRow: string;
   allowDel: boolean;
 }
 @Component({
-  selector: 'wdg-form-array',
-  templateUrl: './formArray.component.html',
-  styleUrls: ['./formArray.component.scss'],
+  selector: 'wdg-form-accordion',
+  templateUrl: './formAccordion.component.html',
+  styleUrls: ['./formAccordion.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  IFormArrayWidgetOptions
+export class FormAccordionWidgetComponent extends AbstractArrayWidgetComponent<
+  IFormAccordionWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

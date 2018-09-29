@@ -10,6 +10,7 @@ import { NgModule } from '@angular/core';
 import { WidgetsCoreModule } from '../../core/index';
 import { MaterialModule } from '../material.module';
 
+import { AccordionWidgetComponent } from './accordion/accordion.component';
 import { CardWidgetComponent } from './card/card.component';
 import { CodeWidgetComponent } from './code/code.component';
 import { ContainerWidgetComponent } from './container/container.component';
@@ -31,6 +32,7 @@ import { TabsWidgetComponent } from './tabs/tabs.component';
         { type: 'tabs', component: TabsWidgetComponent },
         { type: 'code', component: CodeWidgetComponent },
         { type: 'dynamic', component: DynamicWidgetComponent },
+        { type: 'accordion', component: AccordionWidgetComponent },
       ],
     }),
   ],
@@ -42,6 +44,7 @@ import { TabsWidgetComponent } from './tabs/tabs.component';
     TabsWidgetComponent,
     CodeWidgetComponent,
     DynamicWidgetComponent,
+    AccordionWidgetComponent,
   ],
   exports: [WidgetsCoreModule],
 })

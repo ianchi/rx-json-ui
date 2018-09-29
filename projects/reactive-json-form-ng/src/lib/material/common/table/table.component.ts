@@ -17,19 +17,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { combineMixed } from 'espression-rx';
-import { isObservable, Observable } from 'rxjs';
+import { isObservable } from 'rxjs';
 
-import {
-  AbstractWidget,
-  Context,
-  Expressions,
-  IDictionary,
-  parseDefObject,
-} from '../../../core/index';
+import { AbstractWidget, Context, Expressions, IDictionary, parseDefObject } from '../../../core';
 
 export interface ITableWidgetOptions {
   title: string;
-  dataSource: Observable<object[]> | object[];
+  dataSource: object[];
   colKeys: string[];
   colHeaders: string[];
   colsVisible: string[];
@@ -78,12 +72,12 @@ export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions> im
         ),
         false
       );
-      if (isObservable(dataSource)) this.bindings.dataSource = dataSource;
+      if (isObservable<object[]>(dataSource)) this.bindings.dataSource = dataSource;
       else this.options.dataSource = <any[]>dataSource;
     }
 
     this.map('disableSort', sort => {
-      if (sort === true) return null;
+      if (sort === true) return undefined;
       if (!Array.isArray(sort)) return [];
       return sort;
     });

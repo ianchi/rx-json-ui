@@ -64,7 +64,9 @@ export function schemaValidator(schema: ISchema): ValidatorFn {
   return val => {
     const type = Array.isArray(val) ? 'array' : typeof val;
     if (types && types.indexOf(type) < 0) return { code: ERR_TYPE, type };
-    return validators[type](val);
+    if (type in validators) return validators[type](val);
+
+    return null;
   };
 }
 

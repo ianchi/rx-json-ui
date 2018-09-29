@@ -15,20 +15,11 @@ import {
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
-import {
-  AbstractFormFieldWidget,
-  Expressions,
-  IFieldWidgetDef,
-  IWidgetDef,
-} from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core/index';
+import { ISchemaBase } from '../../../schema';
 
-export interface IAutocompleteWidgetOptions {
-  title: string;
-  description: string;
-  placeholder: string;
-
-  enum: string[];
-  enumLabel: string[];
+export interface IAutocompleteWidgetOptions extends ISchemaBase<any> {
+  required: boolean;
 }
 @Component({
   selector: 'wdg-autocomplete',

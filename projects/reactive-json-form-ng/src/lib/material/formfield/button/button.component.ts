@@ -16,11 +16,12 @@ import { isReactive } from 'espression-rx';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AbstractWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core/index';
+import { AbstractWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core';
 
 export interface IButtonWidgetOptions {
   title: string;
   click: string;
+  disabled: boolean;
 }
 @Component({
   selector: 'wdg-button',

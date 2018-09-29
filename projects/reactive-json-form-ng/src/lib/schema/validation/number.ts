@@ -22,6 +22,9 @@ export function numberValidator(schema: ISchemaNumber): ValidatorFn {
     base = baseValidator(schema);
 
   return (value: any) => {
+    if (value === '' || typeof value === 'undefined') return base(value);
+
+    if (typeof value === 'string') value = parseFloat(value);
     if (typeof value !== 'number')
       return { code: ERR_TYPE, type: isInteger ? 'integer' : 'number' };
     if (isInteger && !Number.isInteger(value)) return { code: ERR_TYPE, type: 'integer' };

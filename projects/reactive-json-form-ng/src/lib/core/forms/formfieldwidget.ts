@@ -11,12 +11,12 @@ import { INode } from 'espression';
 import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { map, take } from 'rxjs/operators';
 
-import { ISchema, schemaValidator, ValidatorFn } from '../schema';
+import { schemaValidator, ValidatorFn } from '../../schema';
 
-import { AbstractWidget } from './abstractwidget';
-import { Context } from './context';
-import { Expressions } from './expressions';
-import { IFieldWidgetDef, IWidgetDef } from './widget.interface';
+import { AbstractWidget } from '../abstractwidget';
+import { Context } from '../context';
+import { Expressions } from '../expressions';
+import { IFieldWidgetDef, IWidgetDef } from '../widget.interface';
 
 export const FORM_CONTROL = '$form';
 export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
@@ -67,14 +67,19 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
       else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
     }
 
+    const defaultValue = def.options && def.options.default;
+
     // listen to bound context value and update on changes
-    this.addSubscription = (<any>lvalue.o)
-      [GET_OBSERVABLE](lvalue.m)
-      .subscribe((val: any) => val !== this.formControl!.value && this.formControl!.setValue(val));
+    this.addSubscription = (<any>lvalue.o)[GET_OBSERVABLE](lvalue.m).subscribe((val: any) => {
+      if (val === this.formControl!.value) return;
+      this.formControl!.setValue((val === undefined && defaultValue) || val);
+    });
 
     // listen to control changes to update bound context value
     this.addSubscription = this.formControl.valueChanges.subscribe((val: any) => {
-      if (val !== lvalue.o[lvalue.m]) lvalue.o[lvalue.m] = val;
+      if (val === lvalue.o[lvalue.m] || (val === defaultValue && lvalue.o[lvalue.m] === undefined))
+        return;
+      lvalue.o[lvalue.m] = val;
     });
 
     return def;
@@ -82,10 +87,8 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
 
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
-    if (this.widgetDef!.options) {
-      this.schemaValidator = schemaValidator(<ISchema>this.widgetDef!.options);
+    this.schemaValidator = schemaValidator(<any>this.options);
 
-      this.formControl!.setValidators((ctrl: AbstractControl) => this.schemaValidator!(ctrl.value));
-    }
+    this.formControl!.setValidators((ctrl: AbstractControl) => this.schemaValidator!(ctrl.value));
   }
 }

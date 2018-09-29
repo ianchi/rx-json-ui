@@ -132,11 +132,16 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
     for (const prop in this.bindings) // tslint:disable-line:forin
       observables.push(this.bindings[prop]);
 
-    this.addSubscription = combineLatest(observables).subscribe(() => {
+    if (observables.length)
+      this.addSubscription = combineLatest(observables).subscribe(() => {
+        this.isInitialized = true;
+        this.dynOnChange();
+        this._cdr.markForCheck();
+      });
+    else {
       this.isInitialized = true;
-      this.dynOnChange();
       this._cdr.markForCheck();
-    });
+    }
   }
 
   ngOnDestroy(): void {

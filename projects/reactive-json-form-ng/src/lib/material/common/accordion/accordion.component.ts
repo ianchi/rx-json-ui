@@ -12,22 +12,20 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
+import { AbstractWidgetComponent, Expressions } from '../../../core/index';
 
-export interface IFormArrayWidgetOptions {
-  newRow: string;
-  allowDel: boolean;
+export interface IAccordionWidgetOptions {
+  title: string;
+  description: string;
 }
 @Component({
-  selector: 'wdg-form-array',
-  templateUrl: './formArray.component.html',
-  styleUrls: ['./formArray.component.scss'],
+  selector: 'wdg-accordion',
+  templateUrl: './accordion.component.html',
+  styleUrls: ['./accordion.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  IFormArrayWidgetOptions
-> {
+export class AccordionWidgetComponent extends AbstractWidgetComponent<IAccordionWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

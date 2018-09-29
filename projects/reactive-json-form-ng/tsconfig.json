@@ -24,6 +24,7 @@
     "types": []
   },
   "angularCompilerOptions": {
+    "preserveWhitespaces": false,
     "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,

@@ -16,4 +16,5 @@ export * from './format';
 export * from './routedwidget.component';
 export * from './expressions';
 export * from './expressionProvider';
-export * from './formfieldwidget';
+export * from './forms/formfieldwidget';
+export * from './forms/formarraywidget';

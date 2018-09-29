@@ -1,4 +1,5 @@
 <button mat-button
-        (click)="clickEvent()">
-  {{ options.title }}
+        (click)="clickEvent()"
+        [disabled]="options.disabled">
+    {{ options.title }}
 </button>

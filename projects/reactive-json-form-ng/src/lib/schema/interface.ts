@@ -25,6 +25,8 @@ export interface ISchemaBase<T> {
   enumDescription?: string[];
   default?: T;
 
+  'depends='?: string;
+  required?: boolean;
   ui?: ISchemaUI;
 }
 
@@ -182,6 +184,8 @@ export interface ISchemaUI {
   exportAs?: string;
   elementAs?: string;
   indexAs?: string;
+  onInit?: string;
+  waitFor?: string;
 
   fieldset?: number;
   fieldsets?: {

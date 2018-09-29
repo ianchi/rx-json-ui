@@ -12,21 +12,23 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
+import { AbstractFormWidgetComponent } from '../../../core/forms/formwidget';
+import { Expressions } from '../../../core/index';
 
-export interface IFormArrayWidgetOptions {
-  newRow: string;
-  allowDel: boolean;
+export interface IFormExpanssionWidgetOptions {
+  title: string;
+  description: string;
 }
+
 @Component({
-  selector: 'wdg-form-array',
-  templateUrl: './formArray.component.html',
-  styleUrls: ['./formArray.component.scss'],
+  selector: 'wdg-form',
+  templateUrl: './formExpanssion.component.html',
+  styleUrls: ['./formExpanssion.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  IFormArrayWidgetOptions
+export class FormExpanssionWidgetComponent extends AbstractFormWidgetComponent<
+  IFormExpanssionWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

@@ -9,9 +9,9 @@ import { IFieldGroupWidgetDef, IWidgetDef } from '../core/index';
 
 import { ISchema, ISchemaArray, ISchemaObject, ISchemaUI } from './interface';
 
-export function buildUI(schema: ISchema, bind: string): IWidgetDef {
+export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetDef {
   let widget: IFieldGroupWidgetDef = { widget: '', bind };
-  const ui = schema.ui || {};
+  if (!ui) ui = schema.ui || {};
 
   switch (schema.type) {
     case 'number':
@@ -24,7 +24,7 @@ export function buildUI(schema: ISchema, bind: string): IWidgetDef {
       break;
 
     case 'boolean':
-      widget.widget = 'toggle';
+      widget.widget = 'checkbox';
       break;
 
     case 'array':
@@ -41,11 +41,14 @@ export function buildUI(schema: ISchema, bind: string): IWidgetDef {
   }
 
   if (ui.widget) widget.widget = ui.widget;
+  if (ui.onInit) widget.onInit = ui.onInit;
+  if (ui.waitFor) widget.waitFor = ui.waitFor;
+  if (schema['depends=']) widget.displayIf = schema['depends='];
 
   widget.options = { ...schema, ...widget.options, ...ui.options };
   delete widget.options.ui;
   delete widget.options.properties;
-
+  delete widget.options['depends='];
   return widget;
 }
 
@@ -137,14 +140,19 @@ function buildObject(schema: ISchemaObject, bind: string): IFieldGroupWidgetDef 
 
       widget.content = [];
       for (const fset of sets) {
-        widget.content.push({
-          widget: 'form',
-          bind,
-          exportAs: widget.exportAs,
-          content: fset.fields.map(prop =>
-            buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`)
-          ),
-        });
+        // ignore fields not present in properties
+        const fields = fset.fields.filter(prop => prop in schema.properties!);
+
+        // hide empty fieldsets
+        if (fields.length)
+          widget.content.push({
+            widget: 'form',
+            bind: widget.exportAs,
+            exportAs: widget.exportAs,
+            content: fields.map(prop =>
+              buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`)
+            ),
+          });
       }
       widget.content = {
         widget: 'tabs',

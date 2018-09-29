@@ -7,14 +7,16 @@
 
 import { NgModule } from '@angular/core';
 
-import { WidgetsCoreModule } from '../../core/index';
+import { WidgetsCoreModule } from '../../core';
 import { MaterialModule } from '../material.module';
 
 import { AutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
 import { ButtonWidgetComponent } from './button/button.component';
 import { CheckboxWidgetComponent } from './checkbox/checkbox.component';
 import { FormWidgetComponent } from './form/form.component';
+import { FormAccordionWidgetComponent } from './formAccordion/formAccordion.component';
 import { FormArrayWidgetComponent } from './formArray/formArray.component';
+import { FormExpanssionWidgetComponent } from './formExpanssion/formExpanssion.component';
 import { InputWidgetComponent } from './input/input.component';
 import { SchemaWidgetComponent } from './schema/schema.component';
 import { SliderWidgetComponent } from './slider/slider.component';
@@ -33,6 +35,8 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'button', component: ButtonWidgetComponent },
         { type: 'form', component: FormWidgetComponent },
         { type: 'form-array', component: FormArrayWidgetComponent },
+        { type: 'form-accordion', component: FormAccordionWidgetComponent },
+        { type: 'form-expanssion', component: FormExpanssionWidgetComponent },
         { type: 'schema-form', component: SchemaWidgetComponent },
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
       ],
@@ -46,6 +50,8 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
     ButtonWidgetComponent,
     FormWidgetComponent,
     FormArrayWidgetComponent,
+    FormAccordionWidgetComponent,
+    FormExpanssionWidgetComponent,
     SchemaWidgetComponent,
     AutocompleteWidgetComponent,
   ],

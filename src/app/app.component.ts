@@ -33,16 +33,23 @@ export class AppComponent {
       },
       content: [
         {
-          widget: 'form',
+          widget: 'form-expanssion',
           bind: 'data',
+          options: {
+            "title=": "`${$model.field1} - ${$model.field2}`",
+            "description=": "`This has ${$model.children.length} elements`"
+          },
 
           content: [
             {
               widget: 'input',
               bind: '$model.field1',
-              options: {
-                title: 'Input field',
-              },
+              options: {title: 'Input field',},
+            },
+            {
+              widget: 'input',
+              bind: '$model.field2',
+              options: {title: 'Input field 2',},
             },
             {
               widget: 'form-array',
