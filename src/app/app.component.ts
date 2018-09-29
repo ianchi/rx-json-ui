@@ -27,56 +27,29 @@ export class AppComponent {
     });
     this.widgetDef = {
       widget: 'card',
-      options: {
-        title: 'Card Title',
-        description: 'this is a description',
-      },
+      options: { title: 'Card Title', description: 'this is a description' },
       content: [
         {
           widget: 'form-expanssion',
           bind: 'data',
           options: {
-            "title=": "`${$model.field1} - ${$model.field2}`",
-            "description=": "`This has ${$model.children.length} elements`"
+            'title=': '`${$model.field1} - ${$model.field2}`',
+            'description=': '`This has ${$model.children.length} elements`',
           },
-
           content: [
-            {
-              widget: 'input',
-              bind: '$model.field1',
-              options: {title: 'Input field',},
-            },
-            {
-              widget: 'input',
-              bind: '$model.field2',
-              options: {title: 'Input field 2',},
-            },
+            { widget: 'input', bind: '$model.field1', options: { title: 'Input field' } },
+            { widget: 'input', bind: '$model.field2', options: { title: 'Input field 2' } },
             {
               widget: 'form-array',
               bind: '$model.children',
-              options: {
-                newRow: '{}',
-                allowDel: true,
-              },
+              options: { newRow: '{}', allowDel: true },
               content: [
                 {
                   widget: 'form',
                   bind: '$data',
                   content: [
-                    {
-                      widget: 'input',
-                      bind: '$data.subfield1',
-                      options: {
-                        title: 'Row field1',
-                      },
-                    },
-                    {
-                      widget: 'input',
-                      bind: '$data.subfield2',
-                      options: {
-                        title: 'Row field2',
-                      },
-                    },
+                    { widget: 'input', bind: '$data.subfield1', options: { title: 'Row field1' } },
+                    { widget: 'input', bind: '$data.subfield2', options: { title: 'Row field2' } },
                   ],
                 },
               ],

@@ -5,7 +5,6 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {} from '@angular/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
