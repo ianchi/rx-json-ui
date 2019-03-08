@@ -16,7 +16,7 @@ import { isReactive } from 'espression-rx';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AbstractWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core';
+import { AbstractWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core/index';
 
 export interface IButtonWidgetOptions {
   title: string;

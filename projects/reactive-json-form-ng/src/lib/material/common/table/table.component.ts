@@ -19,7 +19,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { combineMixed } from 'espression-rx';
 import { isObservable } from 'rxjs';
 
-import { AbstractWidget, Context, Expressions, IDictionary, parseDefObject } from '../../../core';
+import {
+  AbstractWidget,
+  Context,
+  Expressions,
+  IDictionary,
+  parseDefObject,
+} from '../../../core/index';
 
 export interface ITableWidgetOptions {
   title: string;

@@ -7,7 +7,7 @@
 
 import { NgModule } from '@angular/core';
 
-import { WidgetsCoreModule } from '../../core';
+import { WidgetsCoreModule } from '../../core/index';
 import { MaterialModule } from '../material.module';
 
 import { AutocompleteWidgetComponent } from './autocomplete/autocomplete.component';

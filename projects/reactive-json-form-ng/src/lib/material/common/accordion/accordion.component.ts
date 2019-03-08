@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidgetComponent, Expressions } from '../../../core/index';
+import { AbstractWidget, Expressions } from '../../../core/index';
 
 export interface IAccordionWidgetOptions {
   title: string;
@@ -25,7 +25,7 @@ export interface IAccordionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccordionWidgetComponent extends AbstractWidgetComponent<IAccordionWidgetOptions> {
+export class AccordionWidgetComponent extends AbstractWidget<IAccordionWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
