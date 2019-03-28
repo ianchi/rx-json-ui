@@ -1,0 +1,43 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+set-section {
+  display: block;
+
+  .settings-sections-title {
+    color: rgb(32, 33, 36);
+
+    font-weight: 400;
+    font-size: 108%;
+    letter-spacing: 0.25px;
+    margin-bottom: 0px;
+    margin-top: 21px;
+    padding-top: 8px;
+    margin-bottom: 12px;
+  }
+
+  .settings-section-card {
+    background-color: white;
+
+    font-size: 100%;
+    color: rgb(32, 33, 36);
+  }
+
+  .settings-row {
+    min-height: 48px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .settings-subrows-wrapper {
+    padding-left: 20px;
+  }
+}
+
+.settings-row + .settings-row {
+  border-top: 2px solid rgba(0, 0, 0, 0.06);
+}

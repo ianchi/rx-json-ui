@@ -1,0 +1,8 @@
+<ng-container *ngFor="let row of boundData; index as idx">
+  <ng-container
+    *ngFor="let element of content"
+    [wdgWidget]="element"
+    [parentContext]="rowContext[idx]"
+  >
+  </ng-container>
+</ng-container>

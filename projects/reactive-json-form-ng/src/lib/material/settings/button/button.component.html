@@ -1,0 +1,19 @@
+<div class="settings-row-label-wrapper">
+  <div class="settings-row-title">
+    {{ options.title }}
+  </div>
+
+  <div class="settings-row-description">
+    {{ options.description }}
+  </div>
+</div>
+
+<button
+  mat-stroked-button
+  color="primary"
+  class="settings-button"
+  (click)="clickEvent()"
+  [disabled]="options.disabled"
+>
+  {{ options.buttonTitle }}
+</button>

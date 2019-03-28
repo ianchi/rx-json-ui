@@ -1,0 +1,77 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+set-subpage {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: stretch;
+  align-content: stretch;
+
+  overflow: auto;
+
+  .settings-page-column {
+    flex: 1 1 auto;
+
+    max-width: 680px;
+
+    display: block;
+    flex-flow: column nowrap;
+    justify-items: flex-start;
+    align-items: center;
+  }
+
+  .settings-subpage {
+    background-color: white;
+
+    font-size: 100%;
+    color: rgb(32, 33, 36);
+
+    min-height: 100%;
+
+    .mat-elevation-z2,
+    .mat-elevation-z1 {
+      box-shadow: none;
+    }
+  }
+
+  .settings-row {
+    min-height: 48px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .settings-subpage-header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    align-items: center;
+
+    min-height: 40px;
+    padding: 8px 20px;
+  }
+
+  .header-icon {
+    flex: 0 0 auto;
+    margin-right: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-title {
+    flex: 1 1 auto;
+
+    color: rgb(90, 90, 90);
+    font-size: 108%;
+    font-weight: 500;
+  }
+}

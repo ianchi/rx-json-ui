@@ -1,0 +1,17 @@
+<div class="settings-row-wrapper">
+  <div class="settings-row-label-wrapper">
+    <div class="settings-row-title">
+      {{ options.title }}
+    </div>
+
+    <div class="settings-row-description">
+      {{ options.description }}
+    </div>
+  </div>
+
+  <mat-slide-toggle [formControl]="formControl" class="settings-toggle"> </mat-slide-toggle>
+</div>
+<div *ngIf="content?.length && formControl?.value" class="settings-subrows-wrapper">
+  <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
+  </ng-container>
+</div>

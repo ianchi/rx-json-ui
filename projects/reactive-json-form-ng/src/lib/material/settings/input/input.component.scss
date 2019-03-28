@@ -1,0 +1,48 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+set-input {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  align-content: center;
+
+  .settings-row-label-wrapper {
+    flex: 1 1 auto;
+    text-align: start;
+  }
+
+  .settings-input {
+    flex: 0 0 auto;
+    min-width: 150px;
+    max-width: 250px;
+  }
+
+  .settings-row-description {
+    color: rgb(95, 99, 104);
+  }
+
+  .mat-form-field-wrapper {
+    padding: 0px;
+
+    .mat-form-field-flex {
+      padding: 0px;
+
+      .mat-form-field-infix {
+        padding: 0 0 6px 0;
+      }
+    }
+
+    .mat-form-field-underline {
+      bottom: 0px;
+    }
+
+    .mat-form-field-ripple {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+}

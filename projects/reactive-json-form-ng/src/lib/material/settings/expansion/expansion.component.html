@@ -1,0 +1,22 @@
+<div class="settings-row-wrapper" (click)="toggle()">
+  <div class="settings-row-label-wrapper">
+    <div class="settings-row-title">
+      {{ options.title }}
+    </div>
+
+    <div class="settings-row-description">
+      {{ options.description }}
+    </div>
+  </div>
+
+  <div class="settings-expansion" [ngClass]="{ expanded: expanded, collapsed: !expanded }">
+    <mat-icon svgIcon="chevron-down" class="rotating-icon"></mat-icon>
+  </div>
+</div>
+
+<div class="expansion-content" [ngClass]="{ expanded: expanded, collapsed: !expanded }">
+  <div *ngIf="content?.length && expanded" class="settings-subrows-wrapper">
+    <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
+    </ng-container>
+  </div>
+</div>

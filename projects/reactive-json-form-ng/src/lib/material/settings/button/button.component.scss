@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+set-button {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  align-content: center;
+
+  .settings-row-label-wrapper {
+    flex: 1 1 auto;
+    text-align: start;
+  }
+
+  .settings-button {
+    flex: 0 0 auto;
+    min-width: 100px;
+    max-width: 150px;
+  }
+
+  .settings-row-description {
+    color: rgb(95, 99, 104);
+  }
+}
