@@ -7,6 +7,7 @@
 
 import { CommonModule } from '@angular/common';
 import { ANALYZE_FOR_ENTRY_COMPONENTS, ModuleWithProviders, NgModule } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { DefaultWidgetComponent } from './defaultwidget.component';
 import { FormatPipe } from './format';
@@ -15,7 +16,7 @@ import { WidgetDirective } from './widget.directive';
 import { AF_CONFIG_TOKEN, IAutoFormConfig } from './widgetregistry.service';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, MatDialogModule],
   declarations: [WidgetDirective, RoutedWidgetComponent, DefaultWidgetComponent, FormatPipe],
   entryComponents: [DefaultWidgetComponent],
   exports: [WidgetDirective, RoutedWidgetComponent, FormatPipe],
