@@ -23,9 +23,9 @@ export abstract class Expressions {
   eval(expression: string, context: Context, asObservable: true): Observable<any>;
   eval(expression: string, context: Context, asObservable?: boolean): Observable<any> | any {
     try {
-    return this.evaluate(this.parse(expression), context, asObservable);
-    } catch(e) {
-      
+      return this.evaluate(this.parse(expression), context, asObservable);
+    } catch (e) {
+      console.warn(`${e.message} evaluating expression: ${expression}`);
     }
   }
   abstract evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;

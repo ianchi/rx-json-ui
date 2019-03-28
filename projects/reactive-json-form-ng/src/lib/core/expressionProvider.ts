@@ -16,6 +16,7 @@ import {
   Parser,
   StaticEval,
   StringRule,
+  NumberRule,
 } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of } from 'rxjs';
@@ -50,7 +51,7 @@ export class ESpression extends Expressions {
           'identifier',
         ],
         identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
-        computed: [new StringRule(), 'identifier'],
+        computed: [new StringRule(), new NumberRule(), 'identifier'],
         property: [new IdentifierRule()],
       },
       'lvalue'
@@ -130,7 +131,7 @@ export class ESpression extends Expressions {
     try {
       result = this._rxEval.lvalue(ast, context);
     } catch (e) {
-      console.warn('Error evaluating expression: ', e.message);
+      console.warn(`${e.message} evaluating expression: ${expression}`);
       return undefined;
     }
 

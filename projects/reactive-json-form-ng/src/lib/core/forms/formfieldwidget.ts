@@ -12,7 +12,6 @@ import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { map, take } from 'rxjs/operators';
 
 import { schemaValidator, ValidatorFn } from '../../schema';
-
 import { AbstractWidget } from '../abstractwidget';
 import { Context } from '../context';
 import { Expressions } from '../expressions';
@@ -36,9 +35,11 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
     const lvalue = this._expr.lvalue(def.bind, this.context);
 
     if (!lvalue)
-      throw new Error('Form field "bind" property must be an identifier or member expression');
+      throw new Error(
+        `Form field "bind" property must be an identifier or member expression (${def.bind})`
+      );
 
-    if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
+    if (!isReactive(lvalue.o)) throw new Error(`Bound Key must be of Reactive Type (${def.bind})`);
 
     // setup validation
 
