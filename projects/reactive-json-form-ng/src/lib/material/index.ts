@@ -8,3 +8,4 @@
 export * from './formfield/formfield.module';
 export * from './common/common.module';
 export * from './material.module';
+export * from './settings/settings.module';
