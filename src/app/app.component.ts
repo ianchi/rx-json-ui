@@ -7,6 +7,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ISchema, IWidgetDef } from 'reactive-json-form-ng';
 
 @Component({
@@ -20,7 +22,10 @@ export class AppComponent {
   widgetDef: IWidgetDef;
   schema: ISchema;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    iconRegistry.addSvgIconSet(sanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg'));
+
+    /* 
     http.get('assets/schema.json').subscribe((sch: ISchema) => {
       this.schema = sch;
       this.widgetDef = { widget: 'schema-form', options: { schema: sch, bind: 'data' } };
@@ -66,6 +71,6 @@ export class AppComponent {
           ],
         },
       ],
-    };
+    }; */
   }
 }

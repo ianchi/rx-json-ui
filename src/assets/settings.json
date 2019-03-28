@@ -1,0 +1,300 @@
+{
+  "widget": "set-page",
+  "content": [
+    {
+      "widget": "set-section",
+      "options": { "title": "General" },
+      "content": [
+        {
+          "widget": "set-input",
+          "bind": "data.hostname",
+          "options": { "title": "Hostname" }
+        }
+      ]
+    },
+    {
+      "widget": "set-section",
+      "options": { "title": "Time & Date" },
+      "content": [
+        {
+          "widget": "set-input",
+          "bind": "data.timezone",
+          "options": {
+            "title": "Timezone",
+            "description": "Description for row 2",
+            "required": true
+          }
+        },
+        {
+          "widget": "set-button",
+          "bind": "data.set_time",
+          "onInit": "a = new Date(Date.now())",
+          "options": {
+            "title": "Local Time",
+            "description=": "a.toDateString() + ' ' + a.toLocaleTimeString()",
+            "buttonTitle": "Sync with Browser"
+          }
+        },
+
+        {
+          "widget": "set-expansion",
+          "options": {
+            "title": "Time Synchronization",
+            "description=": "`NTP is ${data.ntp ? 'enabled': 'disabled'}`"
+          },
+
+          "content": [
+            {
+              "widget": "set-toggle",
+              "bind": "data.ntp",
+              "options": { "title": "Use NTP", "description": "Enable use of time server" }
+            },
+            {
+              "widget": "set-input",
+              "bind": "data.servers",
+              "displayIf": "data.ntp",
+              "options": {
+                "title": "Servers",
+                "description": "NTP candidates",
+                "required": true
+              }
+            },
+            {
+              "widget": "set-toggle",
+              "bind": "data.ntp_server",
+              "displayIf": "data.ntp",
+              "options": { "title": "NTP Server", "description": "Provide local NTP server" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "widget": "set-section",
+      "options": { "title": "Administration" },
+      "content": [
+        {
+          "widget": "set-popup",
+          "options": {
+            "title": "Password",
+            "description": "Changes the administrator password for accessing the device",
+            "popupTitle": "Change Password"
+          },
+          "content": [
+            {
+              "widget": "input",
+              "bind": "data.pss1",
+              "options": { "title": "New password" }
+            },
+            {
+              "widget": "input",
+              "bind": "data.pss2",
+              "options": { "title": "Retype password" }
+            }
+          ]
+        },
+        {
+          "widget": "set-expansion",
+          "options": {
+            "title": "SSH Access",
+            "description=": "`${data.dropbear.length} instances`"
+          },
+          "content": [
+            {
+              "widget": "set-rowarray",
+              "bind": "data.dropbear",
+
+              "content": [
+                {
+                  "widget": "set-expansion",
+
+                  "options": {
+                    "title=": "`Port ${$data.port} [${$data.interfaces.join('-') || '*'}]`"
+                  },
+
+                  "content": [
+                    {
+                      "widget": "set-input",
+                      "bind": "$data.port",
+                      "options": { "title": "Port" }
+                    },
+                    {
+                      "widget": "set-expansion",
+                      "options": {
+                        "title": "Interface",
+                        "description=": "`${$data.interfaces.join('-')}`"
+                      }
+                    },
+                    {
+                      "widget": "set-expansion",
+                      "options": { "title": "Advanced" }
+                    }
+                  ]
+                }
+              ]
+            },
+
+            {
+              "widget": "set-expansion",
+              "options": { "title": "SSH Keys", "description": "Manage authorization keys" }
+            }
+          ]
+        },
+
+        {
+          "widget": "set-button",
+          "options": {
+            "title": "Reboot",
+            "buttonTitle": "Go"
+          }
+        },
+        {
+          "widget": "set-button",
+          "options": {
+            "title": "Firmware",
+            "description": "Flash new firmware image",
+            "buttonTitle": "Flash"
+          }
+        },
+        {
+          "widget": "set-button",
+          "options": {
+            "title": "Backup",
+            "description": "Download a tar archive of the current configuration files",
+            "buttonTitle": "Generate"
+          }
+        },
+        {
+          "widget": "set-button",
+          "options": {
+            "title": "Restore",
+            "description": "Upload a previously generated backup archive",
+            "buttonTitle": "Upload"
+          }
+        }
+      ]
+    },
+    {
+      "widget": "set-section",
+      "options": { "title": "Programs & Tasks" },
+      "content": [
+        {
+          "widget": "set-link",
+          "options": {
+            "title": "Startup",
+            "description": "Manage installed init scripts",
+            "link": "startup"
+          }
+        },
+        {
+          "widget": "set-link",
+          "options": {
+            "title": "Software",
+            "description": "Install & manage programs",
+            "link": "software"
+          }
+        },
+        {
+          "widget": "set-link",
+          "options": {
+            "title": "Scheduled Tasks",
+            "description": "Manage Crontab tasks",
+            "link": "schedule"
+          }
+        }
+      ]
+    },
+    {
+      "widget": "set-sectiongroup",
+      "options": { "title": "Advanced" },
+      "content": [
+        {
+          "widget": "set-section",
+          "options": { "title": "Logging" },
+          "content": [
+            {
+              "widget": "set-toggle",
+              "bind": "data.tog1",
+              "options": { "title": "Use NTP", "description": "Enable use of time server" }
+            },
+            {
+              "widget": "set-input",
+              "bind": "data.tog2",
+              "options": {
+                "title": "Input text box",
+                "description": "Description for row 2",
+                "required": true
+              }
+            },
+            {
+              "widget": "set-expansion",
+              "options": {
+                "title": "Expanding section",
+                "description=": "'NTP is ' + (data.togl ? 'enabled' : 'disabled')"
+              },
+              "content": [
+                {
+                  "widget": "set-toggle",
+                  "bind": "data.tog1",
+                  "options": { "title": "Use NTP", "description": "Enable use of time server" }
+                },
+                {
+                  "widget": "set-input",
+                  "bind": "data.tog2",
+                  "options": {
+                    "title": "Input text box",
+                    "description": "Description for row 2",
+                    "required": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "widget": "set-section",
+          "options": { "title": "Leds" },
+          "content": [
+            {
+              "widget": "set-toggle",
+              "bind": "data.tog1",
+              "options": { "title": "Use NTP", "description": "Enable use of time server" }
+            },
+            {
+              "widget": "set-input",
+              "bind": "data.tog2",
+              "options": {
+                "title": "Input text box",
+                "description": "Description for row 2",
+                "required": true
+              }
+            },
+            {
+              "widget": "set-expansion",
+              "options": {
+                "title": "Expanding section",
+                "description=": "'NTP is ' + (data.togl ? 'enabled' : 'disabled')"
+              },
+              "content": [
+                {
+                  "widget": "set-toggle",
+                  "bind": "data.tog1",
+                  "options": { "title": "Use NTP", "description": "Enable use of time server" }
+                },
+                {
+                  "widget": "set-input",
+                  "bind": "data.tog2",
+                  "options": {
+                    "title": "Input text box",
+                    "description": "Description for row 2",
+                    "required": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
