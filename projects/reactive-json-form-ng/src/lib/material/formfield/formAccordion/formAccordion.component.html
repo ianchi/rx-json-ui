@@ -1,20 +1,16 @@
-<h2 mat-header
-    *ngIf="options.title">
-    {{options.title}}
+<h2 mat-header *ngIf="options.title">
+  {{ options.title }}
 </h2>
-<h3 mat-subheader
-    *ngIf="options.description">
-    {{options.description}}
+<h3 mat-subheader *ngIf="options.description">
+  {{ options.description }}
 </h3>
 
 <mat-accordion>
-
-    <ng-container *ngFor="let element of content; index as idx"
-                  [wdgWidget]="element"
-                  [parentContext]="rowContext[idx]"></ng-container>
-
+  <ng-container
+    *ngFor="let element of content; index as idx"
+    [wdgWidget]="element"
+    [parentContext]="rowContext[idx]"
+  ></ng-container>
 </mat-accordion>
 
-<button mat-button
-        *ngIf="options.newRow"
-        (click)="addRow()">Add</button>
+<button mat-button *ngIf="options.newRow" (click)="addRow()">Add</button>

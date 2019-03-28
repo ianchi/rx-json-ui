@@ -12,9 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { buildUI, ISchema } from '../../../schema';
-
 import { AbstractWidget, Expressions } from '../../../core/index';
+import { buildUI, ISchema } from '../../../schema';
 
 export interface ISchemaWidgetDef {
   schema: ISchema;

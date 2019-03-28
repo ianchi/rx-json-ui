@@ -1,76 +1,76 @@
 <div>
-    <section class="table-title">
-        <h6>{{ options.title }}</h6>
+  <section class="table-title">
+    <h6>{{ options.title }}</h6>
 
-        <div class="spacer"></div>
+    <div class="spacer"></div>
 
-        <mat-form-field *ngIf="options.filterBy">
-            <input matInput
-                   (keyup)="applyFilter($event.target.value)"
-                   placeholder="Filter">
-        </mat-form-field>
-    </section>
+    <mat-form-field *ngIf="options.filterBy">
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
+    </mat-form-field>
+  </section>
 
-    <section class="mat-elevation-z1">
-        <table mat-table
-               [dataSource]="tableDataSource"
-               matSort
-               [matSortDisabled]="!options.disableSort">
+  <section class="mat-elevation-z1">
+    <table
+      mat-table
+      [dataSource]="tableDataSource"
+      matSort
+      [matSortDisabled]="!options.disableSort"
+    >
+      <!-- Dynamic Column definitions-->
+      <ng-container
+        [matColumnDef]="colKey"
+        *ngFor="let colKey of options.colKeys; index as colIndex"
+      >
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [disabled]="options.disableSort?.indexOf(colKey) >= 0"
+        >
+          {{ options.colHeaders[colIndex] || colKey }}
+        </th>
+        <ng-container
+          *ngIf="options.colFormat && options.colFormat[colIndex]; else noFormatCellDef"
+        >
+          <td mat-cell *matCellDef="let rowData">
+            {{ rowData[colKey] | format: options.colFormat[colIndex] }}
+          </td>
+        </ng-container>
+        <ng-template #noFormatCellDef>
+          <td mat-cell *matCellDef="let rowData">{{ rowData[colKey] }}</td>
+        </ng-template>
+      </ng-container>
 
-            <!-- Dynamic Column definitions-->
-            <ng-container [matColumnDef]="colKey"
-                          *ngFor="let colKey of options.colKeys; index as colIndex">
-                <th mat-header-cell
-                    *matHeaderCellDef
-                    mat-sort-header
-                    [disabled]="options.disableSort?.indexOf(colKey) >= 0"> {{ options.colHeaders[colIndex] || colKey }}
-                </th>
-                <ng-container *ngIf="options.colFormat && options.colFormat[colIndex]; else noFormatCellDef">
-                    <td mat-cell
-                        *matCellDef="let rowData">{{ rowData[colKey] | format:options.colFormat[colIndex] }}</td>
-                </ng-container>
-                <ng-template #noFormatCellDef>
-                    <td mat-cell
-                        *matCellDef="let rowData">{{ rowData[colKey] }}</td>
-                </ng-template>
-            </ng-container>
+      <ng-container *ngIf="options.actions?.length" [matColumnDef]="'__actions__'">
+        <th mat-header-cell *matHeaderCellDef>{{ options.actionsHeader || 'Actions' }}</th>
+        <td mat-cell *matCellDef="let rowData">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon svgIcon="dots-vertical"></mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button
+              mat-menu-item
+              *ngFor="let action of options.actions; index as actionIndex"
+              (click)="actionClick(rowData, actionIndex)"
+            >
+              <mat-icon [svgIcon]="options.actions[actionIndex].icon"></mat-icon>
+              <span>{{ options.actions[actionIndex].label }}</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
 
-            <ng-container *ngIf="options.actions?.length"
-                          [matColumnDef]="'__actions__'">
-                <th mat-header-cell
-                    *matHeaderCellDef> {{ options.actionsHeader || 'Actions' }} </th>
-                <td mat-cell
-                    *matCellDef="let rowData">
-                    <button mat-icon-button
-                            [matMenuTriggerFor]="menu">
-                        <mat-icon svgIcon="dots-vertical"></mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
+      <!-- Row definitions-->
+      <ng-container *ngIf="options.colHeaders">
+        <tr mat-header-row *matHeaderRowDef="showCols" class="header-row"></tr>
+      </ng-container>
+      <tr mat-row *matRowDef="let element; columns: showCols" class="data-row"></tr>
+    </table>
 
-                        <button mat-menu-item
-                                *ngFor="let action of options.actions; index as actionIndex"
-                                (click)="actionClick(rowData, actionIndex)">
-                            <mat-icon [svgIcon]="options.actions[actionIndex].icon"></mat-icon>
-                            <span>{{ options.actions[actionIndex].label }}</span>
-                        </button>
-                    </mat-menu>
-                </td>
-            </ng-container>
-
-
-            <!-- Row definitions-->
-            <ng-container *ngIf="options.colHeaders">
-                <tr mat-header-row
-                    *matHeaderRowDef="showCols"
-                    class="header-row"></tr>
-            </ng-container>
-            <tr mat-row
-                *matRowDef="let element; columns: showCols;"
-                class="data-row"></tr>
-        </table>
-
-        <mat-paginator [class.hiddenPaginator]="!options.pageSizes"
-                       [pageSizeOptions]="options.pageSizes"
-                       [hidePageSize]="options.pageSizes?.length<=1"></mat-paginator>
-    </section>
+    <mat-paginator
+      [class.hiddenPaginator]="!options.pageSizes"
+      [pageSizeOptions]="options.pageSizes"
+      [hidePageSize]="options.pageSizes?.length <= 1"
+    ></mat-paginator>
+  </section>
 </div>
