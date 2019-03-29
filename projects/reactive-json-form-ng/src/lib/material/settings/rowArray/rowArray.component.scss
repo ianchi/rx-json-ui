@@ -4,4 +4,8 @@ set-row-array {
   &.settings-row {
     padding: 0px;
   }
+
+  & > .add-button {
+    padding-bottom: 6px;
+  }
 }
