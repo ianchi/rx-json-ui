@@ -9,22 +9,37 @@ import { IFieldGroupWidgetDef, IWidgetDef } from '../core/index';
 
 import { ISchema, ISchemaArray, ISchemaObject, ISchemaUI } from './interface';
 
+export const BUILDER_WIDGETS = {
+  default: 'default',
+  number: 'set-input',
+  integer: 'set-input',
+  string: 'set-input',
+  enum: 'set-input',
+  boolean: 'set-toggle',
+  array: 'set-rowarray',
+  list: 'set-rowarray',
+  object: 'set-expansion',
+  set: '',
+};
+
 export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetDef {
-  let widget: IFieldGroupWidgetDef = { widget: '', bind };
+  let widget: IFieldGroupWidgetDef = { widget: BUILDER_WIDGETS.default, bind, options: {} };
+
+  if (!schema) return widget;
   if (!ui) ui = schema.ui || {};
 
   switch (schema.type) {
     case 'number':
     case 'integer':
-      widget.options = { inputType: 'number' };
+      widget.options!.inputType = 'number';
 
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'string':
-      widget.widget = hasProp('enum', schema) ? 'autocomplete' : 'input';
+      widget.widget = hasProp('enum', schema) ? BUILDER_WIDGETS.enum : BUILDER_WIDGETS.string;
       break;
 
     case 'boolean':
-      widget.widget = 'checkbox';
+      widget.widget = BUILDER_WIDGETS.boolean;
       break;
 
     case 'array':
@@ -37,7 +52,7 @@ export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetD
       break;
 
     default:
-      widget.widget = 'empty';
+      widget.widget = BUILDER_WIDGETS.default;
   }
 
   if (ui.widget) widget.widget = ui.widget;
@@ -55,7 +70,7 @@ export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetD
 function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
   const ui = schema.ui || {},
     widget: IFieldGroupWidgetDef = {
-      widget: 'form-array',
+      widget: BUILDER_WIDGETS.array,
       bind,
       exportAs: ui.exportAs || '$model',
       elementAs: ui.elementAs,
@@ -101,7 +116,7 @@ function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
 function buildObject(schema: ISchemaObject, bind: string): IFieldGroupWidgetDef {
   const ui: ISchemaUI = schema.ui || {},
     widget: IFieldGroupWidgetDef = {
-      widget: 'form',
+      widget: BUILDER_WIDGETS.object,
       exportAs: ui.exportAs || '$model',
       bind,
     };
@@ -146,7 +161,7 @@ function buildObject(schema: ISchemaObject, bind: string): IFieldGroupWidgetDef 
         // hide empty fieldsets
         if (fields.length)
           widget.content.push({
-            widget: 'form',
+            widget: BUILDER_WIDGETS.set,
             bind: widget.exportAs,
             exportAs: widget.exportAs,
             content: fields.map(prop =>
