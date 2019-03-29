@@ -25,9 +25,6 @@ export class AbstractFormWidgetComponent<T> extends AbstractWidget<T> {
   }
 
   dynOnSetup(def: IFieldGroupWidgetDef): IWidgetDef {
-    // get bound model
-    if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
-
     this.formGroup = new FormGroup({});
 
     // register with parent form, if any
@@ -41,18 +38,23 @@ export class AbstractFormWidgetComponent<T> extends AbstractWidget<T> {
     // save this FormGroup as parent form for the children
     Context.defineReadonly(this.context, { [FORM_CONTROL]: new FieldControl(this.formGroup) });
 
-    // binding is always on the parent context directly, so it can't get shadowed in the child
-    const lvalue = this._expr.lvalue(def.bind, this.context.$parentContext);
+    // get bound model if it has one or create aux unbound model
+    if (def.bind) {
+      // binding is always on the parent context directly, so it can't get shadowed in the child
+      const lvalue = this._expr.lvalue(def.bind, this.context.$parentContext);
 
-    if (!lvalue)
-      throw new Error('Form field "bind" property must be an identifier or member expression');
+      if (!lvalue)
+        throw new Error('Form field "bind" property must be an identifier or member expression');
 
-    if (!isReactive(lvalue.o[lvalue.m])) {
-      if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject({}, true);
-      else throw new Error(`Bound Key '${def.bind}' must be of Reactive Type`);
-    }
+      if (!isReactive(lvalue.o[lvalue.m])) {
+        if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject({}, true);
+        else throw new Error(`Bound Key '${def.bind}' must be of Reactive Type`);
+      }
 
-    this.context[def.exportAs || '$model'] = this.boundData = lvalue.o[lvalue.m];
+      this.boundData = lvalue.o[lvalue.m];
+    } else this.boundData = RxObject({});
+
+    this.context[def.exportAs || '$model'] = this.boundData;
     return def;
   }
 }

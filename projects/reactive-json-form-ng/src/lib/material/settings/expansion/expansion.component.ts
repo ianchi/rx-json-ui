@@ -12,11 +12,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { AbstractFormWidgetComponent } from '../../../core/forms/index';
+import { Expressions } from '../../../core/index';
 
 export interface ISetExpansionWidgetOptions {
   title: string;
   description: string;
+  expanded: boolean;
 }
 @Component({
   selector: 'set-expansion',
@@ -26,12 +28,17 @@ export interface ISetExpansionWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'settings-row' },
 })
-export class SetExpansionWidgetComponent extends AbstractWidget<ISetExpansionWidgetOptions> {
+export class SetExpansionWidgetComponent extends AbstractFormWidgetComponent<
+  ISetExpansionWidgetOptions
+> {
   expanded = false;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
+  dynOnAfterBind(): void {
+    this.map('expanded', e => (this.expanded = !!e));
+  }
   toggle(): void {
     this.expanded = !this.expanded;
   }

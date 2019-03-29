@@ -8,3 +8,4 @@
 export * from './fieldcontrol';
 export * from './formarraywidget';
 export * from './formfieldwidget';
+export * from './formwidget';
