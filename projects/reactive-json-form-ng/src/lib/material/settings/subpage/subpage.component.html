@@ -2,9 +2,9 @@
   <div class="settings-subpage mat-elevation-z2">
     <div class="settings-subpage-header" (click)="goBack()">
       <mat-icon svgIcon="arrow-left" class="header-icon"></mat-icon>
-      <h1 class="header-title">
+      <h2 class="header-title">
         {{ options.title }}
-      </h1>
+      </h2>
     </div>
 
     <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
