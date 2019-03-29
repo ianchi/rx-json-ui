@@ -80,8 +80,8 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
     this.content = Array.isArray(def.content)
       ? def.content
       : typeof def.content === 'object'
-        ? [def.content]
-        : [];
+      ? [def.content]
+      : [];
 
     this.subscribeOptions();
   }
@@ -145,6 +145,7 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
   }
 
   ngOnDestroy(): void {
+    console.log('destroying widget:', this.widgetDef);
     this._unsubscribe();
   }
 
@@ -163,7 +164,9 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
   }
 
   private _unsubscribe(): void {
+    console.log('unsubscribing:', this._subscriptions);
     for (const subs of this._subscriptions) subs.unsubscribe();
+    this._subscriptions = [];
   }
 }
 
