@@ -6,3 +6,7 @@
   >
   </ng-container>
 </ng-container>
+
+<div class="add-button settings-row" *ngIf="options.newRow">
+  <button mat-button (click)="addRow()" color="primary">Add</button>
+</div>
