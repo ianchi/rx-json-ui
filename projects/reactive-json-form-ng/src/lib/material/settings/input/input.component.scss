@@ -6,26 +6,6 @@
  */
 
 set-input {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  align-content: center;
-
-  .settings-row-label-wrapper {
-    flex: 1 1 auto;
-    text-align: start;
-  }
-
-  .settings-input {
-    flex: 0 0 auto;
-    min-width: 150px;
-    max-width: 250px;
-  }
-
-  .settings-row-description {
-    color: rgb(95, 99, 104);
-  }
-
   .mat-form-field-wrapper {
     padding: 0px;
 

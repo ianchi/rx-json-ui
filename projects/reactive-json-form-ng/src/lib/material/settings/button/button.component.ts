@@ -32,7 +32,7 @@ export interface ISetButtonWidgetOptions {
   styleUrls: ['./button.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row' },
+  host: { class: 'set-row set-row-flex' },
 })
 export class SetButtonWidgetComponent extends AbstractWidget<ISetButtonWidgetOptions> {
   private _lvalue: ILvalue | undefined;

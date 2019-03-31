@@ -24,7 +24,7 @@ export interface ISetToggleWidgetOptions {
   styleUrls: ['./toggle.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row' },
+  host: { class: 'set-row' },
 })
 export class SetToggleWidgetComponent extends AbstractFormFieldWidget<ISetToggleWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

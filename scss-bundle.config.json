@@ -1,0 +1,4 @@
+{
+  "entry": "./projects/reactive-json-form-ng/src/lib/material/settings/settings.scss",
+  "dest": "dist/reactive-json-form-ng/styles.scss"
+}

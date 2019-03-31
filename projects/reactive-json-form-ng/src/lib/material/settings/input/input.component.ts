@@ -27,7 +27,7 @@ export interface ISetInputWidgetOptions {
   styleUrls: ['./input.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row' },
+  host: { class: 'set-row set-row-flex' },
 })
 export class SetInputWidgetComponent extends AbstractFormFieldWidget<ISetInputWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

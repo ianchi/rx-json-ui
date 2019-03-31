@@ -26,10 +26,32 @@
       "type": "npm",
       "script": "start",
       "isBackground": true,
-      "group": { "kind": "build", "isDefault": true },
-      "problemMatcher": ["$tsc-watch"]
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$tsc-watch"
+      ]
     },
-    { "type": "npm", "script": "build", "problemMatcher": ["$tsc"] },
-    { "type": "npm", "script": "build-lib", "problemMatcher": ["$tsc"] }
+    {
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "type": "npm",
+      "script": "build-lib",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "type": "npm",
+      "script": "bundle-styles",
+      "problemMatcher": []
+    }
   ]
 }

@@ -28,7 +28,7 @@ export interface ISetSliderWidgetOptions {
   styleUrls: ['./slider.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row' },
+  host: { class: 'set-row set-row-flex' },
 })
 export class SetSliderWidgetComponent extends AbstractFormFieldWidget<ISetSliderWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

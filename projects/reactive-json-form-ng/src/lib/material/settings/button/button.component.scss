@@ -6,23 +6,7 @@
  */
 
 set-button {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  align-content: center;
-
-  .settings-row-label-wrapper {
-    flex: 1 1 auto;
-    text-align: start;
-  }
-
-  .settings-button {
-    flex: 0 0 auto;
+  & > .set-row-ctrl {
     min-width: 100px;
-    max-width: 150px;
-  }
-
-  .settings-row-description {
-    color: rgb(95, 99, 104);
   }
 }

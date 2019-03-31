@@ -30,7 +30,7 @@ export interface ISetPopupWidgetOptions {
   styleUrls: ['./popup.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row', '(click)': 'clickEvent()' },
+  host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
 })
 export class SetPopupWidgetComponent extends AbstractWidget<ISetPopupWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions, public dialog: MatDialog) {

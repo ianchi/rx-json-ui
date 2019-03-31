@@ -24,7 +24,7 @@ export interface IRowArrayWidgetOptions {
   styleUrls: ['./rowArray.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row' },
+  host: { class: 'set-row' },
 })
 export class SetRowArrayWidgetComponent extends AbstractArrayWidgetComponent<
   IRowArrayWidgetOptions

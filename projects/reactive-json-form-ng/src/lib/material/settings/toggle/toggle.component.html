@@ -1,17 +1,23 @@
-<div class="settings-row-wrapper">
-  <div class="settings-row-label-wrapper">
-    <div class="settings-row-title">
+<div class="set-row-flex">
+  <div class="set-row-label">
+    <div class="set-row-title">
       {{ options.title }}
     </div>
 
-    <div class="settings-row-description">
+    <div class="set-row-description">
       {{ options.description }}
     </div>
   </div>
 
-  <mat-slide-toggle [formControl]="formControl" class="settings-toggle"> </mat-slide-toggle>
+  <mat-slide-toggle [formControl]="formControl" class="set-row-ctrl"> </mat-slide-toggle>
 </div>
-<div *ngIf="content?.length && formControl?.value" class="settings-subrows-wrapper">
-  <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
-  </ng-container>
+
+<div
+  class="set-expansion-content"
+  [ngClass]="{ expanded: formControl?.value, collapsed: !formControl?.value }"
+>
+  <div *ngIf="content?.length && formControl?.value" class="set-subrows">
+    <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
+    </ng-container>
+  </div>
 </div>

@@ -4,27 +4,3 @@
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
-
-set-toggle {
-  display: block;
-
-  .settings-row-wrapper {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    align-content: center;
-    min-height: 48px;
-  }
-  .settings-row-label-wrapper {
-    flex: 1 1 auto;
-    text-align: start;
-  }
-
-  .settings-toggle {
-    flex: 0 0 auto;
-  }
-
-  .settings-row-description {
-    color: rgb(95, 99, 104);
-  }
-}

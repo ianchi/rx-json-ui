@@ -1,0 +1,83 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+.set-row {
+  display: block;
+}
+
+.set-row + .set-row {
+  border-top: 2px solid rgba(0, 0, 0, 0.06);
+}
+
+.set-row-flex {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  align-content: center;
+
+  min-height: 48px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.set-subrows .set-row-flex {
+  padding-left: 4px;
+}
+
+// Styles for label sections
+.set-row-label {
+  flex: 1 1 auto;
+  text-align: start;
+}
+
+.set-row-description {
+  color: rgb(95, 99, 104);
+}
+
+.set-row-title {
+}
+
+.set-row-ctrl {
+  flex: 0 0 auto;
+  max-width: 150px;
+}
+
+.set-subrows {
+  padding-left: 36px;
+}
+.set-subrows .set-subrows {
+  padding-left: 16px;
+}
+.set-row-ctrl.expanded > .rotating-icon {
+  transform: rotate(-180deg);
+  transition: transform 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+.set-row-ctrl.collapsed > .rotating-icon {
+  transform: rotate(0deg);
+  transition: transform 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+.set-expansion-content.expanded {
+  visibility: visible;
+  opacity: 1;
+  max-height: 4000px; // Arbitrary max-height. Can increase if needed. Must have measurement to transition height.
+  transition: visibility 500ms, opacity 500ms, max-height 500ms;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+.set-expansion-content.collapsed {
+  visibility: hidden;
+  opacity: 0;
+  max-height: 1px; // Must have measurement to transition height.
+  transition: visibility 500ms, opacity 500ms, max-height 500ms;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}

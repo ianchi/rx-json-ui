@@ -26,7 +26,7 @@ export interface ISetLinkWidgetOptions {
   styleUrls: ['./link.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'settings-row', '(click)': 'clickEvent()' },
+  host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
 })
 export class SetLinkWidgetComponent extends AbstractWidget<ISetLinkWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions, public router: Router) {

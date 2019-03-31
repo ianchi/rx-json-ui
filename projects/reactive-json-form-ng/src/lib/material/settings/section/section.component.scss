@@ -26,18 +26,4 @@ set-section {
     font-size: 100%;
     color: rgb(32, 33, 36);
   }
-
-  .settings-row {
-    min-height: 48px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .settings-subrows-wrapper {
-    padding-left: 20px;
-  }
-}
-
-.settings-row + .settings-row {
-  border-top: 2px solid rgba(0, 0, 0, 0.06);
 }
