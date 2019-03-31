@@ -13,10 +13,10 @@ import {
   INode,
   MEMBER_TYPE,
   MEMBER_TYPE_COMP,
+  NumberRule,
   Parser,
   StaticEval,
   StringRule,
-  NumberRule,
 } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of } from 'rxjs';

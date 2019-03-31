@@ -3,6 +3,8 @@
   "rules": {
     "directive-selector": [true, "attribute", "set", "camelCase"],
     "component-selector": [true, "element", "set", "kebab-case"],
-    "component-class-suffix": [true, "WidgetComponent"]
+    "component-class-suffix": [true, "WidgetComponent"],
+
+    "use-host-property-decorator": false
   }
 }

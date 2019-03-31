@@ -19,9 +19,9 @@ import { SetPopupWidgetComponent } from './popup/popup.component';
 import { SetRowArrayWidgetComponent } from './rowArray/rowArray.component';
 import { SetSectionWidgetComponent } from './section/section.component';
 import { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.component';
+import { SetSliderWidgetComponent } from './slider/slider.component';
 import { SetSubpageWidgetComponent } from './subpage/subpage.component';
 import { SetToggleWidgetComponent } from './toggle/toggle.component';
-import { SetSliderWidgetComponent } from './slider/slider.component';
 
 @NgModule({
   imports: [
