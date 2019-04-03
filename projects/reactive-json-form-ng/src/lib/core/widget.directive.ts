@@ -47,6 +47,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   private _ifSubscription: Subscription | undefined;
 
   private _waitSubscription: Subscription | undefined;
+  private _initSubscription: Subscription | undefined;
   constructor(
     private _container: ViewContainerRef,
     private _registry: WidgetRegistry,
@@ -62,6 +63,8 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('Destroying widgect directive');
+
     this._unsuscribe();
     this._destroyComponent();
   }
@@ -83,7 +86,8 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     this.context = Context.create(this.parentContext);
 
     // run initialization expressions
-    if (this.widgetDef.onInit) this._expr.eval(this.widgetDef.onInit, this.context);
+    if (this.widgetDef.onInit)
+      this._initSubscription = this._expr.eval(this.widgetDef.onInit, this.context).subscribe();
     if (this.widgetDef.waitFor)
       this._waitSubscription = this._expr
         .eval(this.widgetDef.waitFor, this.context, true)
@@ -106,7 +110,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   private _createComponent(): void {
     if (!this.widgetDef) return;
     this._destroyComponent();
-    
+
     const widgetClass = this._registry.get(this.widgetDef.widget);
     const factory = this._cfr.resolveComponentFactory(widgetClass);
     this._widgetRef = this._container.createComponent(factory);
@@ -125,6 +129,8 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
   /** Stops observig IF condition */
   private _unsuscribe(): void {
+    console.log('Unsuscribing widget directive');
+
     if (this._ifSubscription) {
       this._ifSubscription.unsubscribe();
       this._ifSubscription = undefined;
@@ -132,6 +138,10 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (this._waitSubscription) {
       this._waitSubscription.unsubscribe();
       this._waitSubscription = undefined;
+    }
+    if (this._initSubscription) {
+      this._initSubscription.unsubscribe();
+      this._initSubscription = undefined;
     }
   }
 }
