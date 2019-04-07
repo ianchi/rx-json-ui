@@ -10,6 +10,7 @@
     "e2e": "ng e2e",
     "dist-lib-init": "rm rf dist/reactive-json-form-ng && git worktree add dist/reactive-json-form-ng deploy",
     "build-lib": "rm -rf dist/reactive-json-form-ng/* && ng build reactive-json-form-ng --prod && npm run bundle-styles",
+    "watch-lib": "ng build reactive-json-form-ng --watch",
     "deploy-lib": "cd dist/reactive-json-form-ng && git add --all && git commit -m 'release' && git push",
     "bundle-styles": "scss-bundle -c scss-bundle.config.json",
     "precise-commits": "precise-commits"
