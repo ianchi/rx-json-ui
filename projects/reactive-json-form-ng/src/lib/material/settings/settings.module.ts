@@ -22,6 +22,7 @@ import { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.comp
 import { SetSliderWidgetComponent } from './slider/slider.component';
 import { SetSubpageWidgetComponent } from './subpage/subpage.component';
 import { SetToggleWidgetComponent } from './toggle/toggle.component';
+import { SetListWidgetComponent } from './list/list.component';
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { SetToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'set-popup', component: SetPopupWidgetComponent },
         { type: 'set-link', component: SetLinkWidgetComponent },
         { type: 'set-slider', component: SetSliderWidgetComponent },
+        { type: 'set-list', component: SetListWidgetComponent },
       ],
     }),
   ],
@@ -57,6 +59,7 @@ import { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetSubpageWidgetComponent,
     SetLinkWidgetComponent,
     SetSliderWidgetComponent,
+    SetListWidgetComponent,
   ],
   exports: [],
 })

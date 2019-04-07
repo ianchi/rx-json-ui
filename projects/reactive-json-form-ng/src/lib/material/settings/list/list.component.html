@@ -1,0 +1,29 @@
+<div class="set-row-flex">
+  <div class="set-row-label">
+    <div class="set-row-title">
+      {{ options.title }}
+    </div>
+
+    <div class="set-row-description">
+      {{ options.description }}
+    </div>
+  </div>
+</div>
+<div class="set-subrows">
+  <div class="set-row set-row-flex" *ngFor="let row of boundData; index as idx">
+    <div class="set-row-label">
+      <ng-container
+        [wdgWidget]="{ widget: 'input', bind: exportAs + '[$index]' }"
+        [parentContext]="rowContext[idx]"
+      ></ng-container>
+    </div>
+    <div class="set-row-ctrl" (click)="deleteRow(idx)">
+      <mat-icon svgIcon="close"></mat-icon>
+    </div>
+  </div>
+  <div class="set-row set-row-flex" *ngIf="options.newRow">
+    <div class="set-row-label add-button">
+      <button mat-button (click)="addRow()" color="primary">Add</button>
+    </div>
+  </div>
+</div>

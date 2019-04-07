@@ -22,6 +22,7 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
   boundData: any[] | undefined;
 
   rowContext: Context[] = [];
+  exportAs = '$model';
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
@@ -55,19 +56,18 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
       if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject([], true);
       else throw new Error(`Bound Key '${def.bind}' must be Array of Reactive Type`);
     }
-
-    this.context[def.exportAs || '$model'] = this.boundData = lvalue.o[lvalue.m];
+    this.exportAs = def.exportAs || '$model';
+    this.context[this.exportAs] = this.boundData = lvalue.o[lvalue.m];
 
     // sync the row contexts if the data changed
     this.addSubscription = (<any>this.boundData)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
-      this.rowContext = arr.map(
-        (data: any, idx: number) =>
-          // keep old Context if no change, so no DOM change is triggered
-          !this.rowContext[idx] ||
-          this.rowContext[idx].$data !== data ||
-          this.rowContext[idx].$index !== idx
-            ? Context.create(this.context, undefined, { $data: data, $index: idx })
-            : this.rowContext[idx]
+      this.rowContext = arr.map((data: any, idx: number) =>
+        // keep old Context if no change, so no DOM change is triggered
+        !this.rowContext[idx] ||
+        this.rowContext[idx].$data !== data ||
+        this.rowContext[idx].$index !== idx
+          ? Context.create(this.context, undefined, { $data: data, $index: idx })
+          : this.rowContext[idx]
       );
       this._cdr.markForCheck();
     });
@@ -82,6 +82,7 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
   }
 
   deleteRow(idx: number): void {
+    console.log('Delete row', idx);
     this.boundData!.splice(idx, 1);
   }
 }
