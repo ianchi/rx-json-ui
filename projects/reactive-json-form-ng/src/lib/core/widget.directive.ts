@@ -87,7 +87,9 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
     // run initialization expressions
     if (this.widgetDef.onInit)
-      this._initSubscription = this._expr.eval(this.widgetDef.onInit, this.context).subscribe();
+      this._initSubscription = this._expr
+        .eval(this.widgetDef.onInit, this.context, true)
+        .subscribe();
     if (this.widgetDef.waitFor)
       this._waitSubscription = this._expr
         .eval(this.widgetDef.waitFor, this.context, true)
