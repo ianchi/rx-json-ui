@@ -47,6 +47,8 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
   options = {} as T;
   content = [] as IWidgetDef[];
 
+  contentBind: Observable<IWidgetDef | IWidgetDef[]> | undefined;
+
   element: WidgetDirective | undefined;
 
   /**
@@ -77,13 +79,19 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
 
     this.bindings = parseDefObject<T>(def.options, this.context, true, this._expr);
 
-    this.content = Array.isArray(def.content)
-      ? def.content
-      : typeof def.content === 'object'
-      ? [def.content]
-      : [];
+    // allow for
+    if (typeof def.content === 'string') {
+      this.contentBind = this._expr.eval(def.content, this.context, true).pipe(
+        tap(cont => {
+          this.setContent(cont);
+        })
+      );
+    } else this.setContent(def.content);
 
     this.subscribeOptions();
+  }
+  private setContent(content: IWidgetDef | IWidgetDef[] | undefined): void {
+    this.content = Array.isArray(content) ? content : typeof content === 'object' ? [content] : [];
   }
 
   /**
@@ -131,6 +139,8 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
 
     for (const prop in this.bindings) // tslint:disable-line:forin
       observables.push(this.bindings[prop]);
+
+    if (this.contentBind) observables.push(this.contentBind);
 
     if (observables.length)
       this.addSubscription = combineLatest(observables).subscribe(() => {

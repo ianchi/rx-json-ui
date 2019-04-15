@@ -50,7 +50,7 @@ export interface IBasicWidgetDef {
   /**
    * Child widget or widgets of this widget.
    */
-  content?: IWidgetDef | IWidgetDef[];
+  content?: IWidgetDef | IWidgetDef[] | string;
 }
 
 export interface IFieldWidgetDef extends IBasicWidgetDef {
