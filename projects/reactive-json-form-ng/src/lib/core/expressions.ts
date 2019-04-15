@@ -6,7 +6,7 @@
  */
 
 import { ILvalue, INode } from 'espression';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { Context } from './context';
 
@@ -26,6 +26,7 @@ export abstract class Expressions {
       return this.evaluate(this.parse(expression), context, asObservable);
     } catch (e) {
       console.warn(`${e.message} evaluating expression: ${expression}`);
+      return asObservable ? of(undefined) : undefined;
     }
   }
   abstract evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;
