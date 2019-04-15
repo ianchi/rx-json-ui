@@ -58,11 +58,13 @@ export class ButtonWidgetComponent extends AbstractWidget<IButtonWidgetOptions> 
       this._clickSubs = undefined;
     }
 
-    if (this.options.click && this._lvalue) {
+    if (this.options.click) {
       this._clickSubs = this._expr
         .eval(this.options.click, this.context, true)
         .pipe(take(1))
-        .subscribe(res => (this._lvalue!.o[this._lvalue!.m] = res));
+        .subscribe(res => {
+          if(this._lvalue) this._lvalue!.o[this._lvalue!.m] = res;
+        });
     }
   }
 }
