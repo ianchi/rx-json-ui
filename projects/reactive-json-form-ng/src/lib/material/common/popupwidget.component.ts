@@ -29,10 +29,13 @@ import { IWidgetDef } from '../../core/widget.interface';
       >
       </ng-container>
     </mat-dialog-content>
-    <mat-dialog-actions>
-      <button mat-button mat-dialog-close>No</button>
-      <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-      <button mat-button [mat-dialog-close]="true">Yes</button>
+    <mat-dialog-actions *ngIf="actions">
+      <ng-container
+        *ngFor="let element of actions"
+        [wdgWidget]="element"
+        [parentContext]="parentContext"
+      >
+      </ng-container>
     </mat-dialog-actions>
   `,
 
@@ -40,7 +43,8 @@ import { IWidgetDef } from '../../core/widget.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PopupWidgetComponent implements OnInit {
-  content: [IWidgetDef] | undefined;
+  content: IWidgetDef[] | undefined;
+  actions: IWidgetDef[] | undefined;
   parentContext: Context | undefined;
   title: string | undefined;
   constructor(
@@ -49,7 +53,14 @@ export class PopupWidgetComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.content = this._data.content || { widget: 'empty' };
-    this.parentContext = this._data.context;
+    this.parentContext = Context.create(this._data.context, undefined, {
+      $dlg: {
+        close: (res: any) => {
+          this._dialogRef.close(res);
+          return true;
+        },
+      },
+    });
     this.title = this._data.title;
   }
 }
