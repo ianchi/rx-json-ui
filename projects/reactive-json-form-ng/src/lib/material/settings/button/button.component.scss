@@ -6,7 +6,11 @@
  */
 
 set-button {
-  & > .set-row-ctrl {
+  & > button.set-row-ctrl {
     min-width: 100px;
+  }
+
+  set-row-spin {
+    padding-right: 6px;
   }
 }

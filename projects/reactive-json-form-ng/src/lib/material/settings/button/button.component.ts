@@ -24,6 +24,7 @@ export interface ISetButtonWidgetOptions {
   buttonTitle: string;
 
   click: string;
+  spinner: boolean;
   disabled: boolean;
 }
 @Component({
