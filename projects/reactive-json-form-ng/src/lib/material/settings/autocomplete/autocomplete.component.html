@@ -1,0 +1,28 @@
+<div class="set-row-label">
+  <div class="set-row-title">
+    {{ options.title }}
+  </div>
+
+  <div class="set-row-description">
+    {{ options.description }}
+  </div>
+</div>
+
+<mat-form-field appearance="fill" class="set-row-ctrl">
+  <input
+    matInput
+    name="aaa"
+    [type]="'text'"
+    [formControl]="formControl"
+    [matAutocomplete]="auto"
+    [required]="options.required"
+  />
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option
+      *ngFor="let option of (filteredOptions | async); index as optIndex"
+      [value]="option"
+    >
+      {{ option }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

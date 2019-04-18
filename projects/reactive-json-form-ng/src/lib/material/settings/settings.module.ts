@@ -10,10 +10,12 @@ import { NgModule } from '@angular/core';
 import { WidgetsCoreModule } from '../../core/index';
 import { MaterialModule } from '../material.module';
 
+import { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
 import { SetButtonWidgetComponent } from './button/button.component';
 import { SetExpansionWidgetComponent } from './expansion/expansion.component';
 import { SetInputWidgetComponent } from './input/input.component';
 import { SetLinkWidgetComponent } from './link/link.component';
+import { SetListWidgetComponent } from './list/list.component';
 import { SetPageWidgetComponent } from './page/page.component';
 import { SetPopupWidgetComponent } from './popup/popup.component';
 import { SetRowArrayWidgetComponent } from './rowArray/rowArray.component';
@@ -22,8 +24,6 @@ import { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.comp
 import { SetSliderWidgetComponent } from './slider/slider.component';
 import { SetSubpageWidgetComponent } from './subpage/subpage.component';
 import { SetToggleWidgetComponent } from './toggle/toggle.component';
-import { SetListWidgetComponent } from './list/list.component';
-
 @NgModule({
   imports: [
     MaterialModule,
@@ -43,6 +43,7 @@ import { SetListWidgetComponent } from './list/list.component';
         { type: 'set-link', component: SetLinkWidgetComponent },
         { type: 'set-slider', component: SetSliderWidgetComponent },
         { type: 'set-list', component: SetListWidgetComponent },
+        { type: 'set-autocomplete', component: SetAutocompleteWidgetComponent },
       ],
     }),
   ],
@@ -60,6 +61,7 @@ import { SetListWidgetComponent } from './list/list.component';
     SetLinkWidgetComponent,
     SetSliderWidgetComponent,
     SetListWidgetComponent,
+    SetAutocompleteWidgetComponent,
   ],
   exports: [],
 })
