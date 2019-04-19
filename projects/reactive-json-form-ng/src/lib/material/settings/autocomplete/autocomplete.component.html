@@ -17,12 +17,12 @@
     [matAutocomplete]="auto"
     [required]="options.required"
   />
-  <mat-autocomplete #auto="matAutocomplete">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" [panelWidth]="100">
     <mat-option
       *ngFor="let option of (filteredOptions | async); index as optIndex"
-      [value]="option"
+      [value]="options.data ? option[options.dataValue] : option"
     >
-      {{ option }}
+      {{ options.data ? option[options.dataLabel] : option }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>

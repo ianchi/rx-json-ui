@@ -26,6 +26,9 @@ export interface ISetAutocompleteWidgetOptions {
   description: string;
   required: boolean;
   enum: string[];
+  data: any[];
+  dataValue: string;
+  dataLabel: string;
 }
 @Component({
   selector: 'set-autocomplete',
@@ -44,13 +47,12 @@ export class SetAutocompleteWidgetComponent extends AbstractFormFieldWidget<
   }
 
   dynOnBeforeBind(): void {
-    this.map('enum', val => {
-      return Array.isArray(val) ? val : [];
-    });
+    this.map('enum', val => (Array.isArray(val) ? val : []));
   }
 
   dynOnAfterBind(): void {
     this.map('enum', val => (this._filter(this.formControl!.value), val));
+    this.map('data', val => (this._filter(this.formControl!.value), val));
   }
   dynOnSetup(def: IFieldWidgetDef): IWidgetDef {
     const result = super.dynOnSetup(def);
@@ -66,8 +68,20 @@ export class SetAutocompleteWidgetComponent extends AbstractFormFieldWidget<
   private _filter(value: string): string[] {
     const filterValue = value && value.toLowerCase();
 
+    if (this.options.data)
+      return <string[]>(
+        this.options.data.filter(option =>
+          option[this.options.dataLabel].toLowerCase().includes(filterValue)
+        )
+      );
+
     return this.options.enum
       ? this.options.enum.filter(option => option.toLowerCase().includes(filterValue))
       : [];
+  }
+
+  displayFn(data: any): string {
+    console.log(data);
+    return this.options.data ? data[this.options.dataLabel] : data;
   }
 }
