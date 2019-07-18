@@ -13,6 +13,7 @@ import { MaterialModule } from '../material.module';
 import { AutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
 import { ButtonWidgetComponent } from './button/button.component';
 import { CheckboxWidgetComponent } from './checkbox/checkbox.component';
+import { FileWidgetComponent } from './file/file.component';
 import { FormWidgetComponent } from './form/form.component';
 import { FormAccordionWidgetComponent } from './formAccordion/formAccordion.component';
 import { FormArrayWidgetComponent } from './formArray/formArray.component';
@@ -20,6 +21,7 @@ import { FormExpanssionWidgetComponent } from './formExpanssion/formExpanssion.c
 import { InputWidgetComponent } from './input/input.component';
 import { SchemaWidgetComponent } from './schema/schema.component';
 import { SliderWidgetComponent } from './slider/slider.component';
+import { TextAreaWidgetComponent } from './textarea/textarea.component';
 import { ToggleWidgetComponent } from './toggle/toggle.component';
 
 @NgModule({
@@ -39,6 +41,8 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'form-expanssion', component: FormExpanssionWidgetComponent },
         { type: 'schema-form', component: SchemaWidgetComponent },
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
+        { type: 'file-button', component: FileWidgetComponent },
+        { type: 'textarea', component: TextAreaWidgetComponent },
       ],
     }),
   ],
@@ -54,6 +58,8 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
     FormExpanssionWidgetComponent,
     SchemaWidgetComponent,
     AutocompleteWidgetComponent,
+    FileWidgetComponent,
+    TextAreaWidgetComponent,
   ],
   exports: [],
 })

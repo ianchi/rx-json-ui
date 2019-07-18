@@ -17,6 +17,7 @@ import { ContainerWidgetComponent } from './container/container.component';
 import { DynamicWidgetComponent } from './dynamic/dynamic.component';
 import { GridContainerWidgetComponent } from './grid-container/gridcontainer.component';
 import { PopupWidgetComponent } from './popupwidget.component';
+import { SpanWidgetComponent } from './span/span.component';
 import { TableWidgetComponent } from './table/table.component';
 import { TabsWidgetComponent } from './tabs/tabs.component';
 
@@ -34,6 +35,7 @@ import { TabsWidgetComponent } from './tabs/tabs.component';
         { type: 'code', component: CodeWidgetComponent },
         { type: 'dynamic', component: DynamicWidgetComponent },
         { type: 'accordion', component: AccordionWidgetComponent },
+        { type: 'span', component: SpanWidgetComponent },
       ],
     }),
   ],
@@ -47,6 +49,7 @@ import { TabsWidgetComponent } from './tabs/tabs.component';
     DynamicWidgetComponent,
     AccordionWidgetComponent,
     PopupWidgetComponent,
+    SpanWidgetComponent,
   ],
   exports: [WidgetsCoreModule, PopupWidgetComponent],
   entryComponents: [PopupWidgetComponent],

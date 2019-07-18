@@ -1,0 +1,23 @@
+<mat-form-field style.width="100%">
+  <mat-label *ngIf="options.title">
+    {{ options.title }}
+  </mat-label>
+
+  <textarea
+    matInput
+    mat-autosize
+    name="aaa"
+    [formControl]="formControl"
+    [required]="options.required"
+  ></textarea>
+
+  <mat-error [id]="null" *ngIf="formControl?.invalid && formControl?.hasError('message')">
+    <span>
+      {{ formControl?.getError('message') }}
+    </span>
+  </mat-error>
+
+  <mat-hint *ngIf="options.description" [id]="null">
+    {{ options.description }}
+  </mat-hint>
+</mat-form-field>

@@ -21,6 +21,7 @@ import { SetPopupWidgetComponent } from './popup/popup.component';
 import { SetRowArrayWidgetComponent } from './rowArray/rowArray.component';
 import { SetSectionWidgetComponent } from './section/section.component';
 import { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.component';
+import { SetSelectWidgetComponent } from './select/select.component';
 import { SetSliderWidgetComponent } from './slider/slider.component';
 import { SetSubpageWidgetComponent } from './subpage/subpage.component';
 import { SetToggleWidgetComponent } from './toggle/toggle.component';
@@ -44,6 +45,7 @@ import { SetToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'set-slider', component: SetSliderWidgetComponent },
         { type: 'set-list', component: SetListWidgetComponent },
         { type: 'set-autocomplete', component: SetAutocompleteWidgetComponent },
+        { type: 'set-select', component: SetSelectWidgetComponent },
       ],
     }),
   ],
@@ -62,6 +64,7 @@ import { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetSliderWidgetComponent,
     SetListWidgetComponent,
     SetAutocompleteWidgetComponent,
+    SetSelectWidgetComponent,
   ],
   exports: [],
 })

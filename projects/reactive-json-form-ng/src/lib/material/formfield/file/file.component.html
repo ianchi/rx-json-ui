@@ -1,0 +1,11 @@
+<button mat-button color="primary" (click)="selectFiles()" [disabled]="options.disabled">
+  {{ options.title }}
+</button>
+
+<input
+  type="file"
+  #fileInput
+  style="display: none"
+  (change)="onFilesAdded()"
+  [multiple]="options.multiple"
+/>
