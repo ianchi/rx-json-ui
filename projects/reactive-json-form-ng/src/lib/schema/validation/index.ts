@@ -5,5 +5,5 @@
  * https://opensource.org/licenses/MIT
  */
 
-export { schemaValidator } from './multi';
+export { schemaValidator, ERROR_MSG } from './multi';
 export { registerFormat, CheckFormatFn, FormatRule } from './format';

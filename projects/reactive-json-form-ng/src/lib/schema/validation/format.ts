@@ -4,10 +4,13 @@
  */
 
 import { ValidatorFn } from '../interface';
+import { ERROR_MSG } from './base';
 
 export const ESTR_FMT = 23;
 export type CheckFormatFn = (val: any) => boolean;
 export type FormatRule = string | RegExp | CheckFormatFn;
+
+ERROR_MSG[ESTR_FMT] = "`Is not a valid '${$err.format}'`";
 
 /**
  * Helper Class to validate named formats

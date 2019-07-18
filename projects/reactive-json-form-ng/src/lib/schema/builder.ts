@@ -14,28 +14,43 @@ export const BUILDER_WIDGETS = {
   number: 'set-input',
   integer: 'set-input',
   string: 'set-input',
-  enum: 'set-input',
+  enum: 'set-select',
   boolean: 'set-toggle',
   array: 'set-rowarray',
-  list: 'set-rowarray',
+  list: 'set-list',
   object: 'set-expansion',
   set: '',
 };
 
-export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetDef {
-  let widget: IFieldGroupWidgetDef = { widget: BUILDER_WIDGETS.default, bind, options: {} };
+export function buildUI(
+  schema: ISchema,
+  bind: string,
+  ui?: ISchemaUI,
+  propInclude?: string[],
+  propExclude?: string[]
+): IWidgetDef {
+  let widget: IFieldGroupWidgetDef = {
+    widget: BUILDER_WIDGETS.default,
+    bind,
+    options: {},
+  };
 
   if (!schema) return widget;
   if (!ui) ui = schema.ui || {};
 
   switch (schema.type) {
-    case 'number':
     case 'integer':
+      widget.options!.step = 1;
+
+    // tslint:disable-next-line:no-switch-case-fall-through
+    case 'number':
       widget.options!.inputType = 'number';
 
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'string':
-      widget.widget = hasProp('enum', schema) ? BUILDER_WIDGETS.enum : BUILDER_WIDGETS.string;
+      widget.widget = hasProp('enum', schema)
+        ? BUILDER_WIDGETS.enum
+        : BUILDER_WIDGETS.string;
       break;
 
     case 'boolean':
@@ -48,7 +63,7 @@ export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetD
       break;
 
     case 'object':
-      widget = buildObject(schema, bind);
+      widget = buildObject(schema, bind, propInclude, propExclude);
       break;
 
     default:
@@ -70,7 +85,7 @@ export function buildUI(schema: ISchema, bind: string, ui?: ISchemaUI): IWidgetD
 function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
   const ui = schema.ui || {},
     widget: IFieldGroupWidgetDef = {
-      widget: BUILDER_WIDGETS.array,
+      widget: BUILDER_WIDGETS.list,
       bind,
       exportAs: ui.exportAs || '$model',
       elementAs: ui.elementAs,
@@ -91,9 +106,11 @@ function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
     switch (schema.items.type) {
       case 'object':
         widget.options.newRow = '{}';
+        widget.widget = BUILDER_WIDGETS.array;
         break;
       case 'array':
         widget.options.newRow = '[]';
+        widget.widget = BUILDER_WIDGETS.array;
         break;
       case 'string':
         widget.options.newRow = '""';
@@ -113,7 +130,12 @@ function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
 
   return widget;
 }
-function buildObject(schema: ISchemaObject, bind: string): IFieldGroupWidgetDef {
+function buildObject(
+  schema: ISchemaObject,
+  bind: string,
+  _propInclude?: string[],
+  propExclude?: string[]
+): IFieldGroupWidgetDef {
   const ui: ISchemaUI = schema.ui || {},
     widget: IFieldGroupWidgetDef = {
       widget: BUILDER_WIDGETS.object,
@@ -175,9 +197,9 @@ function buildObject(schema: ISchemaObject, bind: string): IFieldGroupWidgetDef 
         content: widget.content,
       };
     } else
-      widget.content = ordered.map(prop =>
-        buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`)
-      );
+      widget.content = ordered
+        .filter(prop => !(propExclude && propExclude.includes(prop)))
+        .map(prop => buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`));
   }
   return widget;
 }

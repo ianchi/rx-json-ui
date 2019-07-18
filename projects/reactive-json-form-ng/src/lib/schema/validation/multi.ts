@@ -14,10 +14,12 @@ import {
   ValidatorFn,
 } from '../interface';
 
-import { ERR_TYPE } from './base';
+import { ERR_TYPE, ERROR_MSG } from './base';
 import { booleanValidator } from './boolean';
 import { numberValidator } from './number';
 import { stringValidator } from './string';
+
+export { ERROR_MSG } from './base';
 
 export const EARR_MIN = 30,
   EARR_MAX = 31,
@@ -30,6 +32,18 @@ export const EOBJ_MIN = 40,
   EOBJ_NAME = 42,
   EOBJ_ADD = 43,
   EOBJ_PROP = 44;
+
+ERROR_MSG[EARR_MIN] = "`Must have at least '${$err.minItems}' items`";
+ERROR_MSG[EARR_MAX] = "`Must at most '${$err.maxItems}' items`";
+ERROR_MSG[EARR_UNQ] = '`Items must be unique`';
+ERROR_MSG[EARR_ITM] = '`Invalid item(s)`';
+ERROR_MSG[EARR_ADD] = '`Invalid item(s)`';
+
+ERROR_MSG[EOBJ_MIN] = "`Must have at least '${$err.minProperties}' properties`";
+ERROR_MSG[EOBJ_MAX] = "`Must at most '${$err.maxProperties}' properties`";
+ERROR_MSG[EOBJ_NAME] = '`Invalid property names`';
+ERROR_MSG[EOBJ_ADD] = '`Invalid extra properties`';
+ERROR_MSG[EOBJ_PROP] = '`Invalid properties`';
 
 export function schemaValidator(schema: ISchema): ValidatorFn {
   if (typeof schema.type === 'string')
@@ -74,15 +88,25 @@ export function arrayValidator(schema: ISchemaArray): ValidatorFn {
   // schema definitions for items of an array
 
   const minItems =
-      typeof schema.minItems === 'number' && schema.minItems >= 0 ? schema.minItems : null,
-    maxItems = typeof schema.maxItems === 'number' && schema.maxItems >= 0 ? schema.maxItems : null,
+      typeof schema.minItems === 'number' && schema.minItems >= 0
+        ? schema.minItems
+        : null,
+    maxItems =
+      typeof schema.maxItems === 'number' && schema.maxItems >= 0
+        ? schema.maxItems
+        : null,
     uniqueItems = !!schema.uniqueItems,
     itemsValidator =
       Array.isArray(schema.items) || !schema.items ? null : schemaValidator(schema.items),
-    tupleValidator = Array.isArray(schema.items) ? schema.items.map(e => schemaValidator(e)) : null,
-    additionalItems = typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null,
+    tupleValidator = Array.isArray(schema.items)
+      ? schema.items.map(e => schemaValidator(e))
+      : null,
+    additionalItems =
+      typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null,
     additionalValidator =
-      typeof schema.additionalItems === 'object' ? schemaValidator(schema.additionalItems) : null;
+      typeof schema.additionalItems === 'object'
+        ? schemaValidator(schema.additionalItems)
+        : null;
 
   return (value: any) => {
     if (!Array.isArray(value)) return { code: ERR_TYPE, type: 'array' };
@@ -127,7 +151,9 @@ export function objectValidator(schema: ISchemaObject): ValidatorFn {
         : null,
     propertyNames = schema.propertyNames ? schemaValidator(schema.propertyNames) : null,
     additional =
-      typeof schema.additionalProperties === 'boolean' ? schema.additionalProperties : null,
+      typeof schema.additionalProperties === 'boolean'
+        ? schema.additionalProperties
+        : null,
     additionalFn =
       typeof schema.additionalProperties === 'object'
         ? schemaValidator(schema.additionalProperties)
@@ -137,10 +163,9 @@ export function objectValidator(schema: ISchemaObject): ValidatorFn {
       <IMap<ValidatorFn>>{}
     ),
     patternProperties = schema.patternProperties
-      ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(([pattern, s]) => [
-          new RegExp(pattern),
-          schemaValidator(s),
-        ])
+      ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(
+          ([pattern, s]) => [new RegExp(pattern), schemaValidator(s)]
+        )
       : null;
   return (value: any) => {
     if (typeof value !== 'object' || Array.isArray(value))
