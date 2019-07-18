@@ -1,39 +1,32 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "editor.tabSize": 2,
-    "css.validate": false,
-    "scss.validate": false,
-    "typescript.tsc.autoDetect": "off",
-    "typescript.referencesCodeLens.enabled": true,
-    "typescript.implementationsCodeLens.enabled": true,
-    "files.associations": {
-        ".stylelintrc": "json"
-    },
-    "json.schemas": [{
-            "fileMatch": [
-                "/.stylelintrc"
-            ],
-            "url": "http://json.schemastore.org/stylelintrc"
-        }
+  "editor.tabSize": 2,
+  "css.validate": false,
+  "scss.validate": false,
+  "typescript.tsc.autoDetect": "off",
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.implementationsCodeLens.enabled": true,
+  "files.associations": {
+    ".stylelintrc": "json"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["/.stylelintrc"],
+      "url": "http://json.schemastore.org/stylelintrc"
+    }
+  ],
 
-    ],
-
-    "terminal.integrated.shellArgs.linux": [
-        "--rcfile",
-        ".vscode/bashrc"
-    ],
-    "tslint.exclude": "**/node_modules/**",
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true
-    },
-    "editor.formatOnSave": true,
-    "spellright.language": "en_US",
-    "spellright.documentTypes": [
-        "markdown",
-        "latex"
-    ]
+  "terminal.integrated.shellArgs.linux": ["--rcfile", ".vscode/bashrc"],
+  "tslint.exclude": "**/node_modules/**",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true
+  },
+  "editor.formatOnSave": true,
+  "spellright.language": "en_US",
+  "spellright.documentTypes": ["markdown", "latex"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
