@@ -6,8 +6,9 @@
  */
 
 import { ChangeDetectorRef, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { combineMixed } from 'espression-rx';
 import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, switchMap } from 'rxjs/operators';
 
 import { Context } from './context';
 import { Expressions } from './expressions';
@@ -21,7 +22,9 @@ export interface IDictionary<T = any> {
 
 export type Bindings<T> = { [P in keyof T]-?: Observable<NonNullable<T[P]>> };
 
-export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<NonNullable<T[P]>> };
+export type ParsedObject<T> = {
+  [P in keyof T]: T[P] | Observable<NonNullable<T[P]>>;
+};
 /**
  * Base class for all dynamic widget elements
  */
@@ -47,8 +50,7 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
   options = {} as T;
   content = [] as IWidgetDef[];
 
-  contentBind: Observable<IWidgetDef | IWidgetDef[]> | undefined;
-
+  contentBind: Observable<IWidgetDef[]> | undefined;
   element: WidgetDirective | undefined;
 
   /**
@@ -79,19 +81,41 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
 
     this.bindings = parseDefObject<T>(def.options, this.context, true, this._expr);
 
-    // allow for
-    if (typeof def.content === 'string') {
-      this.contentBind = this._expr.eval(def.content, this.context, true).pipe(
-        tap(cont => {
-          this.setContent(cont);
-        })
+    if (def.content)
+      this.contentBind = this.parseContent(def.content).pipe(
+        map(content => (this.content = content))
       );
-    } else this.setContent(def.content);
 
     this.subscribeOptions();
   }
-  private setContent(content: IWidgetDef | IWidgetDef[] | undefined): void {
-    this.content = Array.isArray(content) ? content : typeof content === 'object' ? [content] : [];
+
+  private parseContent(
+    content: string | IWidgetDef | Array<string | IWidgetDef>
+  ): Observable<IWidgetDef[]> {
+    // allow for
+    if (typeof content === 'string') content = [content];
+
+    if (Array.isArray(content)) {
+      const args = content.map(item =>
+        typeof item !== 'string'
+          ? item
+          : this._expr
+              .eval(item, this.context, true)
+              .pipe(switchMap(resItem => this.parseContent(resItem)))
+      );
+      return combineMixed(args, true).pipe(
+        map(items => [].concat(...items)),
+        map(items =>
+          items.map(item =>
+            !item || typeof item !== 'object' || !('widget' in item)
+              ? { widget: 'none' }
+              : item
+          )
+        )
+      );
+    } else if (typeof content === 'object') return of([content]);
+
+    return of([{ widget: 'none' }]);
   }
 
   /**
@@ -128,19 +152,22 @@ export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit 
     // tslint:disable-next-line:no-any
     const observables: Array<Observable<any>> = [];
 
+    // get dynamic content
+    if (this.contentBind) observables.push(this.contentBind);
+
     // call hook for cofiguration of options before updating the bound value
     this.dynOnBeforeBind();
 
     for (const prop in this.bindings) // tslint:disable-line:forin
-      this.bindings[prop] = this.bindings[prop].pipe(tap(res => (this.options[prop] = res)));
+      this.bindings[prop] = this.bindings[prop].pipe(
+        tap(res => (this.options[prop] = res))
+      );
 
     // call hook after updating the bound value
     this.dynOnAfterBind();
 
     for (const prop in this.bindings) // tslint:disable-line:forin
       observables.push(this.bindings[prop]);
-
-    if (this.contentBind) observables.push(this.contentBind);
 
     if (observables.length)
       this.addSubscription = combineLatest(observables).subscribe(() => {

@@ -50,11 +50,12 @@ export interface IBasicWidgetDef {
   /**
    * Child widget or widgets of this widget.
    */
-  content?: IWidgetDef | IWidgetDef[] | string;
+  content?: IWidgetDef | Array<IWidgetDef | string> | string;
 }
 
 export interface IFieldWidgetDef extends IBasicWidgetDef {
   bind: string;
+  onValueChange?: string;
 }
 
 export interface IFieldGroupWidgetDef extends IFieldWidgetDef, IBasicWidgetDef {
