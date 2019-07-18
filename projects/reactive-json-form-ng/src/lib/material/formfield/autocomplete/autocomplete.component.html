@@ -1,29 +1,28 @@
 <mat-form-field style.width="100%">
+  <mat-label *ngIf="options.title">
+    {{ options.title }}
+  </mat-label>
 
-    <mat-label *ngIf="options.title">
-        {{ options.title }}
-    </mat-label>
+  <input
+    matInput
+    name="aaa"
+    [type]="type || 'text'"
+    [formControl]="formControl"
+    [matAutocomplete]="auto"
+  />
 
-    <input matInput
-           name="aaa"
-           [type]="type || 'text'"
-           [formControl]="formControl"
-           [matAutocomplete]="auto">
+  <mat-error [id]="null"> </mat-error>
 
-    <mat-error [id]="null">
+  <mat-hint *ngIf="options.description" [id]="null">
+    {{ options.description }}
+  </mat-hint>
 
-    </mat-error>
-
-    <mat-hint *ngIf="options.description"
-              [id]="null">
-        {{ options.description }}
-    </mat-hint>
-
-    <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredOptions | async; index as optIndex"
-                    [value]="option">
-            {{ option }}
-        </mat-option>
-    </mat-autocomplete>
-
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option
+      *ngFor="let option of filteredOptions | async; index as optIndex"
+      [value]="option"
+    >
+      {{ option }}
+    </mat-option>
+  </mat-autocomplete>
 </mat-form-field>

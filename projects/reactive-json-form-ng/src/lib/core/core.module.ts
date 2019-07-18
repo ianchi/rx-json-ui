@@ -6,7 +6,11 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { ANALYZE_FOR_ENTRY_COMPONENTS, ModuleWithProviders, NgModule } from '@angular/core';
+import {
+  ANALYZE_FOR_ENTRY_COMPONENTS,
+  ModuleWithProviders,
+  NgModule,
+} from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { DefaultWidgetComponent } from './defaultwidget.component';
@@ -17,7 +21,12 @@ import { AF_CONFIG_TOKEN, IAutoFormConfig } from './widgetregistry.service';
 
 @NgModule({
   imports: [CommonModule, MatDialogModule],
-  declarations: [WidgetDirective, RoutedWidgetComponent, DefaultWidgetComponent, FormatPipe],
+  declarations: [
+    WidgetDirective,
+    RoutedWidgetComponent,
+    DefaultWidgetComponent,
+    FormatPipe,
+  ],
   entryComponents: [DefaultWidgetComponent],
   exports: [WidgetDirective, RoutedWidgetComponent, FormatPipe],
 })
@@ -27,7 +36,11 @@ export class WidgetsCoreModule {
       ngModule: WidgetsCoreModule,
       providers: [
         { provide: AF_CONFIG_TOKEN, useValue: config, multi: true },
-        { provide: ANALYZE_FOR_ENTRY_COMPONENTS, useValue: config, multi: true },
+        {
+          provide: ANALYZE_FOR_ENTRY_COMPONENTS,
+          useValue: config,
+          multi: true,
+        },
       ],
     };
   }

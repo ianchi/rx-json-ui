@@ -39,7 +39,11 @@ export class SetPopupWidgetComponent extends AbstractWidget<ISetPopupWidgetOptio
 
   clickEvent(): void {
     this.dialog.open(PopupWidgetComponent, {
-      data: { content: this.content, title: this.options.popupTitle, context: this.context },
+      data: {
+        content: this.content,
+        title: this.options.popupTitle,
+        context: this.context,
+      },
     });
   }
 }

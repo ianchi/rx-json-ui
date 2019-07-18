@@ -30,7 +30,9 @@ export interface ISetListWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetListWidgetComponent extends AbstractArrayWidgetComponent<ISetListWidgetOptions> {
+export class SetListWidgetComponent extends AbstractArrayWidgetComponent<
+  ISetListWidgetOptions
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

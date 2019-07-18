@@ -26,7 +26,9 @@ export interface ISetToggleWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetToggleWidgetComponent extends AbstractFormFieldWidget<ISetToggleWidgetOptions> {
+export class SetToggleWidgetComponent extends AbstractFormFieldWidget<
+  ISetToggleWidgetOptions
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

@@ -50,14 +50,15 @@ export interface ITableWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions> implements OnInit {
+export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions>
+  implements OnInit {
   tableDataSource: MatTableDataSource<IDictionary>;
 
   showCols: string[] = [];
 
-  @ViewChild(MatPaginator)
+  @ViewChild(MatPaginator, { static: true })
   paginator: MatPaginator | undefined;
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, { static: true })
   sort: MatSort | undefined;
 
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
@@ -128,7 +129,9 @@ export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions> im
 
     this.map('colKeys', keys => {
       this.showCols =
-        this.options.actions && this.options.actions.length ? keys.concat('__actions__') : keys;
+        this.options.actions && this.options.actions.length
+          ? keys.concat('__actions__')
+          : keys;
       return keys;
     });
     this.map('actions', actions => {

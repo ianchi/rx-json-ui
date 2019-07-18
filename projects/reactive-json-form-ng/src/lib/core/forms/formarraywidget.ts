@@ -17,7 +17,9 @@ import { IFieldGroupWidgetDef, IWidgetDef } from '../widget.interface';
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
-export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends AbstractWidget<T> {
+export class AbstractArrayWidgetComponent<
+  T extends { newRow: any }
+> extends AbstractWidget<T> {
   formArray: FormArray | undefined;
   boundData: any[] | undefined;
 
@@ -29,7 +31,8 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
 
   dynOnSetup(def: IFieldGroupWidgetDef): IWidgetDef {
     // get bound model
-    if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
+    if (!def.bind)
+      throw new Error('Form field widgets must have a "bind" property defined');
 
     this.formArray = new FormArray([]);
 
@@ -37,12 +40,15 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
     const parentForm: FormGroup | FormArray =
       this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
-      if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formArray);
+      if (parentForm instanceof FormGroup)
+        parentForm.addControl('control', this.formArray);
       else if (parentForm instanceof FormArray) parentForm.push(this.formArray);
     }
 
     // save this FormArray as parent form for the children
-    Context.defineHidden(this.context, { [FORM_CONTROL]: new FieldControl(this.formArray) });
+    Context.defineHidden(this.context, {
+      [FORM_CONTROL]: new FieldControl(this.formArray),
+    });
 
     // create a Store for the variables
     // binding is always on the parent context directly, so it can't get shadowed in the child
@@ -50,7 +56,9 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
     const lvalue = this._expr.lvalue(def.bind, this.context.$parentContext);
 
     if (!lvalue)
-      throw new Error('Form field "bind" property must be an identifier or member expression');
+      throw new Error(
+        'Form field "bind" property must be an identifier or member expression'
+      );
 
     if (!isReactive(lvalue.o[lvalue.m]) || !Array.isArray(lvalue.o[lvalue.m])) {
       if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject([], true);
@@ -60,17 +68,22 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
     this.context[this.exportAs] = this.boundData = lvalue.o[lvalue.m];
 
     // sync the row contexts if the data changed
-    this.addSubscription = (<any>this.boundData)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
-      this.rowContext = arr.map((data: any, idx: number) =>
-        // keep old Context if no change, so no DOM change is triggered
-        !this.rowContext[idx] ||
-        this.rowContext[idx].$data !== data ||
-        this.rowContext[idx].$index !== idx
-          ? Context.create(this.context, undefined, { $data: data, $index: idx })
-          : this.rowContext[idx]
-      );
-      this._cdr.markForCheck();
-    });
+    this.addSubscription = (<any>this.boundData)
+      [AS_OBSERVABLE]()
+      .subscribe((arr: any[]) => {
+        this.rowContext = arr.map((data: any, idx: number) =>
+          // keep old Context if no change, so no DOM change is triggered
+          !this.rowContext[idx] ||
+          this.rowContext[idx].$data !== data ||
+          this.rowContext[idx].$index !== idx
+            ? Context.create(this.context, undefined, {
+                $data: data,
+                $index: idx,
+              })
+            : this.rowContext[idx]
+        );
+        this._cdr.markForCheck();
+      });
     return def;
   }
 

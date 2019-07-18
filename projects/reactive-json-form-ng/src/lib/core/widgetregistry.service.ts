@@ -40,7 +40,8 @@ export class WidgetRegistry {
     if (!Array.isArray(widgets)) widgets = [widgets];
 
     widgets.forEach(widget => {
-      if (widget.type && widget.component) this._registry.set(widget.type, widget.component);
+      if (widget.type && widget.component)
+        this._registry.set(widget.type, widget.component);
     });
   }
 

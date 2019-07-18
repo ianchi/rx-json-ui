@@ -16,7 +16,12 @@ import { isReactive } from 'espression-rx';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AbstractWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core/index';
+import {
+  AbstractWidget,
+  Expressions,
+  IFieldWidgetDef,
+  IWidgetDef,
+} from '../../../core/index';
 
 export interface ISetButtonWidgetOptions {
   title: string;
@@ -49,7 +54,9 @@ export class SetButtonWidgetComponent extends AbstractWidget<ISetButtonWidgetOpt
       const lvalue = this._expr.lvalue(def.bind, this.context);
 
       if (!lvalue)
-        throw new Error('Form field "bind" property must be an identifier or member expression');
+        throw new Error(
+          'Form field "bind" property must be an identifier or member expression'
+        );
 
       if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
 

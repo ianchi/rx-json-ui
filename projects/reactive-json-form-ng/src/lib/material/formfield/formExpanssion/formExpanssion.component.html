@@ -1,10 +1,14 @@
 <mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title *ngIf="options.title">{{ options.title }}</mat-panel-title>
-        <mat-panel-description *ngIf="options.description">{{ options.description }}</mat-panel-description>
-    </mat-expansion-panel-header>
+  <mat-expansion-panel-header>
+    <mat-panel-title *ngIf="options.title">{{ options.title }}</mat-panel-title>
+    <mat-panel-description *ngIf="options.description">
+      {{ options.description }}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
 
-    <ng-container *ngFor="let element of content"
-                  [wdgWidget]="element"
-                  [parentContext]="context"></ng-container>
+  <ng-container
+    *ngFor="let element of content"
+    [wdgWidget]="element"
+    [parentContext]="context"
+  ></ng-container>
 </mat-expansion-panel>

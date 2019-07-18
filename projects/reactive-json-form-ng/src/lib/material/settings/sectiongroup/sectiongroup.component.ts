@@ -24,7 +24,9 @@ export interface ISetSectionGroupWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSectionGroupWidgetComponent extends AbstractWidget<ISetSectionGroupWidgetOptions> {
+export class SetSectionGroupWidgetComponent extends AbstractWidget<
+  ISetSectionGroupWidgetOptions
+> {
   expanded = false;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

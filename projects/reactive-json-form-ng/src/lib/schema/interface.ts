@@ -7,7 +7,12 @@
 
 import { IOptionDef } from '../core/index';
 
-export type ISchema = ISchemaNumber | ISchemaString | ISchemaBoolean | ISchemaArray | ISchemaObject;
+export type ISchema =
+  | ISchemaNumber
+  | ISchemaString
+  | ISchemaBoolean
+  | ISchemaArray
+  | ISchemaObject;
 export interface IMap<T> {
   [property: string]: T;
 }

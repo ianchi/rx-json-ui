@@ -24,7 +24,9 @@ export interface ICheckboxWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxWidgetComponent extends AbstractFormFieldWidget<ICheckboxWidgetOptions> {
+export class CheckboxWidgetComponent extends AbstractFormFieldWidget<
+  ICheckboxWidgetOptions
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

@@ -13,6 +13,7 @@ import { Context } from './context';
 export abstract class Expressions {
   abstract parseKey(expression: string): INode | undefined;
   abstract parse(expression: string): INode | undefined;
+  
   /**
    * Evaluates an expression in the given context.
    * It uses the general parser.
@@ -21,7 +22,11 @@ export abstract class Expressions {
    */
   eval(expression: string, context: Context, asObservable?: boolean): any;
   eval(expression: string, context: Context, asObservable: true): Observable<any>;
-  eval(expression: string, context: Context, asObservable?: boolean): Observable<any> | any {
+  eval(
+    expression: string,
+    context: Context,
+    asObservable?: boolean
+  ): Observable<any> | any {
     try {
       return this.evaluate(this.parse(expression), context, asObservable);
     } catch (e) {
@@ -29,12 +34,22 @@ export abstract class Expressions {
       return asObservable ? of(undefined) : undefined;
     }
   }
-  abstract evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;
-  abstract evaluate(ast: INode | undefined, context: Context, asObservable: true): Observable<any>;
+
+  abstract evaluate(
+    ast: INode | undefined,
+    context: Context,
+    asObservable?: boolean
+  ): any;
+  abstract evaluate(
+    ast: INode | undefined,
+    context: Context,
+    asObservable: true
+  ): Observable<any>;
   abstract evaluate(
     ast: INode | undefined,
     context: Context,
     asObservable?: boolean
   ): Observable<any> | any;
+
   abstract lvalue(expression: string, context: Context): ILvalue | undefined;
 }

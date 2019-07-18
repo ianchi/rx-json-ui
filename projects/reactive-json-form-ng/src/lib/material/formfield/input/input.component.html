@@ -1,25 +1,23 @@
 <mat-form-field style.width="100%">
+  <mat-label *ngIf="options.title">
+    {{ options.title }}
+  </mat-label>
 
-    <mat-label *ngIf="options.title">
-        {{ options.title }}
-    </mat-label>
+  <input
+    matInput
+    name="aaa"
+    [type]="options.inputType || 'text'"
+    [formControl]="formControl"
+    [required]="options.required"
+  />
 
-    <input matInput
-           name="aaa"
-           [type]="options.inputType || 'text'"
-           [formControl]="formControl"
-           [required]="options.required">
+  <mat-error [id]="null" *ngIf="formControl?.invalid && formControl?.hasError('message')">
+    <span>
+      {{ formControl?.getError('message') }}
+    </span>
+  </mat-error>
 
-    <mat-error [id]="null"
-               *ngIf="formControl?.invalid && formControl?.hasError('message')">
-        <span>
-            {{ formControl?.getError('message') }}
-        </span>
-    </mat-error>
-
-    <mat-hint *ngIf="options.description"
-              [id]="null">
-        {{ options.description }}
-    </mat-hint>
-
+  <mat-hint *ngIf="options.description" [id]="null">
+    {{ options.description }}
+  </mat-hint>
 </mat-form-field>

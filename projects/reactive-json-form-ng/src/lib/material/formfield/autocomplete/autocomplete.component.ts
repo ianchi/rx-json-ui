@@ -33,7 +33,8 @@ export interface IAutocompleteWidgetOptions extends ISchemaBase<any> {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AutocompleteWidgetComponent extends AbstractFormFieldWidget<IAutocompleteWidgetOptions>
+export class AutocompleteWidgetComponent
+  extends AbstractFormFieldWidget<IAutocompleteWidgetOptions>
   implements OnInit {
   filteredOptions: Observable<string[]> | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

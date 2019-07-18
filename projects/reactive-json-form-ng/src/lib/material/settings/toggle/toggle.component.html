@@ -17,7 +17,11 @@
   [ngClass]="{ expanded: formControl?.value, collapsed: !formControl?.value }"
 >
   <div *ngIf="content?.length && formControl?.value" class="set-subrows">
-    <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
+    <ng-container
+      *ngFor="let element of content"
+      [wdgWidget]="element"
+      [parentContext]="context"
+    >
     </ng-container>
   </div>
 </div>
