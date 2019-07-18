@@ -10,10 +10,11 @@ import { Observable, of } from 'rxjs';
 
 import { Context } from './context';
 
-export abstract class Expressions {
+export class Expressions {
   abstract parseKey(expression: string): INode | undefined;
+
   abstract parse(expression: string): INode | undefined;
-  
+
   /**
    * Evaluates an expression in the given context.
    * It uses the general parser.

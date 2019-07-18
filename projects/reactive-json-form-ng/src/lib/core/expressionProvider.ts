@@ -7,7 +7,7 @@
 
 import {
   BinaryOperatorRule,
-  ES5Parser,
+  ES6Parser,
   IdentifierRule,
   ILvalue,
   INode,
@@ -39,7 +39,7 @@ export class ESpression extends Expressions {
     super();
 
     // remove Progam / Statements rules, and keep only expressions
-    this._parser = new ES5Parser(true);
+    this._parser = new ES6Parser(true);
 
     this._keyParser = new Parser(
       {
@@ -144,7 +144,11 @@ export class ESpression extends Expressions {
    */
   mapFactory(): (obj: any[] | object, expression: string) => any[] | object {
     const self = this;
-    return function map(this: Context, obj: any[] | object, expression: string): any[] | object {
+    return function map(
+      this: Context,
+      obj: any[] | object,
+      expression: string
+    ): any[] | object {
       if (!expression || typeof expression !== 'string') return obj;
 
       const ast = self._parser.parse(expression);
