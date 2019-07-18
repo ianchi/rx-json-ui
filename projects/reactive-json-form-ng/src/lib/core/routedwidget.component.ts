@@ -5,15 +5,26 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { RxObject } from 'espression-rx';
 
 import { Context } from './context';
+import { ROOT_EXPR_CONTEXT } from './widget.directive';
 import { IWidgetDef } from './widget.interface';
 
 @Component({
   selector: 'wdg-widget',
-  template: '<ng-container [wdgWidget]="widgetDef" [parentContext]="parentContext"></ng-container>',
+  template:
+    '<ng-container [wdgWidget]="widgetDef" [parentContext]="context"></ng-container>',
 
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,10 +32,31 @@ import { IWidgetDef } from './widget.interface';
 export class RoutedWidgetComponent implements OnInit {
   widgetDef: IWidgetDef | undefined;
   parentContext: Context | undefined;
+  context: Context | undefined;
+  paramMap: ParamMap | undefined;
 
-  constructor(private _route: ActivatedRoute) {}
+  constructor(
+    private _route: ActivatedRoute,
+    private _cdr: ChangeDetectorRef,
+    @Optional()
+    @Inject(ROOT_EXPR_CONTEXT)
+    private _rootContext: Context | undefined
+  ) {}
   ngOnInit(): void {
-    this.widgetDef = this._route.snapshot.data.widgetDef || { widget: 'empty' };
-    this.parentContext = this._route.snapshot.data.parentContext;
+    this._route.paramMap.subscribe((params: ParamMap) => {
+      const rxParams: any = RxObject({});
+      this.widgetDef = this._route.snapshot.data.widgetDef || {
+        widget: 'empty',
+      };
+      this.parentContext = this._route.snapshot.data.parentContext || this._rootContext;
+
+      for (const key of params.keys) rxParams[key] = params.get(key);
+
+      this.context = Context.create(this.parentContext, {
+        $routeParam: rxParams,
+      });
+
+      this._cdr.markForCheck();
+    });
   }
 }
