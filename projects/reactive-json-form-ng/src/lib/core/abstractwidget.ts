@@ -8,7 +8,7 @@
 import { ChangeDetectorRef, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { combineMixed } from 'espression-rx';
 import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 import { Context } from './context';
 import { Expressions } from './expressions';
@@ -22,13 +22,11 @@ export interface IDictionary<T = any> {
 
 export type Bindings<T> = { [P in keyof T]-?: Observable<NonNullable<T[P]>> };
 
-export type ParsedObject<T> = {
-  [P in keyof T]: T[P] | Observable<NonNullable<T[P]>>;
-};
+export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<NonNullable<T[P]>> };
 /**
  * Base class for all dynamic widget elements
  */
-export abstract class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit {
+export class AbstractWidget<T> implements OnDestroy, OnChanges, OnInit {
   /** Configuration object for the widget */
   @Input()
   widgetDef: IWidgetDef | undefined;

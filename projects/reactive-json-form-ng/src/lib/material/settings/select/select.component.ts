@@ -11,10 +11,10 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { ILvalue } from 'espression';
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
-import { AbstractControl } from '@angular/forms';
 
 export interface ISetSelectWidgetOptions {
   title: string;

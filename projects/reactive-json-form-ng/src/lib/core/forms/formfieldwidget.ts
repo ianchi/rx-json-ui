@@ -12,7 +12,7 @@ import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 
-import { schemaValidator, ValidatorFn, ERROR_MSG } from '../../schema';
+import { ERROR_MSG, schemaValidator, ValidatorFn } from '../../schema';
 import { AbstractWidget } from '../abstractwidget';
 import { Context } from '../context';
 import { Expressions } from '../expressions';

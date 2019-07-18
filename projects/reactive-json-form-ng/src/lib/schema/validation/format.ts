@@ -4,6 +4,7 @@
  */
 
 import { ValidatorFn } from '../interface';
+
 import { ERROR_MSG } from './base';
 
 export const ESTR_FMT = 23;
