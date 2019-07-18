@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 
 import { Context } from './context';
 
-export class Expressions {
+export abstract class Expressions {
   abstract parseKey(expression: string): INode | undefined;
 
   abstract parse(expression: string): INode | undefined;
