@@ -18,8 +18,8 @@ export interface ISetSliderWidgetOptions {
   title: string;
   description: string;
 
-  min: number;
-  max: number;
+  minimum: number;
+  maximum: number;
   step: number;
 }
 @Component({

@@ -3,8 +3,18 @@
     {{ options.title }}
   </div>
 
-  <div class="set-row-description">
+  <div
+    *ngIf="!formControl?.invalid || !formControl?.hasError('code')"
+    class="set-row-description"
+  >
     {{ options.description }}
+  </div>
+
+  <div
+    *ngIf="formControl?.invalid && formControl?.hasError('code')"
+    class="set-row-error"
+  >
+    {{ getError() }}
   </div>
 </div>
 

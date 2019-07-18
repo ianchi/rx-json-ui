@@ -16,11 +16,16 @@ import { isReactive } from 'espression-rx';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AbstractWidget, Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core/index';
+import {
+  AbstractWidget,
+  Expressions,
+  IFieldWidgetDef,
+  IWidgetDef,
+} from '../../../core/index';
 
 export interface IButtonWidgetOptions {
   title: string;
-  click: string;
+  onClick: string;
   disabled: boolean;
 }
 @Component({
@@ -42,7 +47,9 @@ export class ButtonWidgetComponent extends AbstractWidget<IButtonWidgetOptions> 
       const lvalue = this._expr.lvalue(def.bind, this.context);
 
       if (!lvalue)
-        throw new Error('Form field "bind" property must be an identifier or member expression');
+        throw new Error(
+          'Form field "bind" property must be an identifier or member expression'
+        );
 
       if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
 
@@ -58,12 +65,12 @@ export class ButtonWidgetComponent extends AbstractWidget<IButtonWidgetOptions> 
       this._clickSubs = undefined;
     }
 
-    if (this.options.click) {
+    if (this.options.onClick) {
       this._clickSubs = this._expr
-        .eval(this.options.click, this.context, true)
+        .eval(this.options.onClick, this.context, true)
         .pipe(take(1))
         .subscribe(res => {
-          if(this._lvalue) this._lvalue!.o[this._lvalue!.m] = res;
+          if (this._lvalue) this._lvalue!.o[this._lvalue!.m] = res;
         });
     }
   }

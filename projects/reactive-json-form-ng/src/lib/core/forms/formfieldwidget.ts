@@ -7,11 +7,12 @@
 
 import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { INode } from 'espression';
+import { ILvalue, INode } from 'espression';
 import { GET_OBSERVABLE, isReactive } from 'espression-rx';
-import { map, take } from 'rxjs/operators';
+import { isObservable, of } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 
-import { schemaValidator, ValidatorFn } from '../../schema';
+import { schemaValidator, ValidatorFn, ERROR_MSG } from '../../schema';
 import { AbstractWidget } from '../abstractwidget';
 import { Context } from '../context';
 import { Expressions } from '../expressions';
@@ -25,21 +26,31 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
   validateContext: Context | undefined;
 
   schemaValidator: ValidatorFn | undefined;
+
+  lvalue: ILvalue | undefined;
+  onValueChange: INode | undefined;
+
+  default: any;
+
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
   dynOnSetup(def: IFieldWidgetDef): IWidgetDef {
     // get bound model
-    if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
+    if (!def.bind)
+      throw new Error('Form field widgets must have a "bind" property defined');
 
-    const lvalue = this._expr.lvalue(def.bind, this.context);
+    this.lvalue = this._expr.lvalue(def.bind, this.context);
 
-    if (!lvalue)
+    if (def.onValueChange) this.onValueChange = this._expr.parse(def.onValueChange);
+
+    if (!this.lvalue)
       throw new Error(
         `Form field "bind" property must be an identifier or member expression (${def.bind})`
       );
 
-    if (!isReactive(lvalue.o)) throw new Error(`Bound Key must be of Reactive Type (${def.bind})`);
+    if (!isReactive(this.lvalue.o))
+      throw new Error(`Bound Key must be of Reactive Type (${def.bind})`);
 
     // setup validation
 
@@ -50,46 +61,87 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
     if (this.validate) {
       this.validateContext = Context.create(this.context);
 
-      this.formControl = new FormControl(lvalue.o[lvalue.m], null, (ctrl: AbstractControl) => {
-        this.validateContext!['$value'] = ctrl.value;
-        return this._expr.evaluate(this.validate, this.validateContext!, true).pipe(
-          take(1),
-          map(res => {
-            return res ? null : { validate: 'validation error' };
-          })
-        );
-      });
-    } else this.formControl = new FormControl(lvalue.o[lvalue.m]);
+      this.formControl = new FormControl(
+        this.lvalue.o[this.lvalue.m],
+        null,
+        (ctrl: AbstractControl) => {
+          this.validateContext!['$value'] = ctrl.value;
+          return this._expr.evaluate(this.validate, this.validateContext!, true).pipe(
+            take(1),
+            map(res => {
+              return res ? null : { validate: 'validation error' };
+            })
+          );
+        }
+      );
+    } else this.formControl = new FormControl(this.lvalue.o[this.lvalue.m]);
 
     const parentForm: FormGroup | FormArray =
       this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
-      if (parentForm instanceof FormGroup) parentForm.addControl(lvalue.m, this.formControl);
+      if (parentForm instanceof FormGroup)
+        parentForm.addControl(this.lvalue.m, this.formControl);
       else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
     }
 
-    const defaultValue = def.options && def.options.default;
+    if (def.options) this.default = def.options.default;
 
     // listen to bound context value and update on changes
-    this.addSubscription = (<any>lvalue.o)[GET_OBSERVABLE](lvalue.m).subscribe((val: any) => {
-      if (val === this.formControl!.value) return;
-      this.formControl!.setValue((val === undefined && defaultValue) || val);
-    });
+    this.addSubscription = (<any>this.lvalue.o)
+      [GET_OBSERVABLE](this.lvalue.m)
+      .pipe(switchMap(val => (isObservable(val) ? val : of(val))))
+      .subscribe((val: any) => {
+        this.dynSetFormValue(val);
+      });
 
     // listen to control changes to update bound context value
     this.addSubscription = this.formControl.valueChanges.subscribe((val: any) => {
-      if (val === lvalue.o[lvalue.m] || (val === defaultValue && lvalue.o[lvalue.m] === undefined))
-        return;
-      lvalue.o[lvalue.m] = val;
+      this.dynSetBoundValue(val);
+      this.dynOnValueChange(val);
     });
 
     return def;
   }
 
+  getValue(ctrl: AbstractControl): any {
+    return ctrl.value;
+  }
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
     this.schemaValidator = schemaValidator(<any>this.options);
+    this.formControl!.setValidators((ctrl: AbstractControl) =>
+      this.schemaValidator!(this.getValue(ctrl))
+    );
+  }
 
-    this.formControl!.setValidators((ctrl: AbstractControl) => this.schemaValidator!(ctrl.value));
+  /** Updates the control value when the bound property changes */
+  dynSetFormValue(value: any): void {
+    if (typeof value === 'undefined') value = this.default;
+    if (value === this.formControl!.value) return;
+    this.formControl!.setValue(value);
+  }
+  /** Updates the bound value when the control changes */
+  dynSetBoundValue(value: any): void {
+    if (!this.lvalue || value === this.lvalue.o[this.lvalue.m]) return;
+    this.lvalue.o[this.lvalue.m] = value;
+  }
+
+  dynOnValueChange(value: any): void {
+    const context = Context.create(this.context, { $value: value });
+    if (this.onValueChange)
+      this._expr
+        .evaluate(this.onValueChange, context, true)
+        .pipe(take(1))
+        .subscribe();
+  }
+
+  getError(): string {
+    if (!this.formControl!.errors || !this.formControl!.errors.code) return '';
+
+    return this._expr.eval(
+      ERROR_MSG[this.formControl!.errors.code],
+      { $err: this.formControl!.errors },
+      false
+    );
   }
 }

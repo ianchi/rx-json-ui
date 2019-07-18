@@ -7,6 +7,16 @@
 
 .set-row {
   display: block;
+
+  wdg-table {
+    section.mat-elevation-z1 {
+      box-shadow: none;
+    }
+
+    .mat-cell {
+      font-size: 100%;
+    }
+  }
 }
 
 .set-row + .set-row {
@@ -36,8 +46,13 @@
 
 .set-row-description {
   color: rgb(95, 99, 104);
+  font-size: 95%;
 }
 
+.set-row-error {
+  color: red;
+  font-size: 95%;
+}
 .set-row-title {
 }
 
@@ -80,4 +95,8 @@
   transition: visibility 500ms, opacity 500ms, max-height 500ms;
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
+}
+
+set-page {
+  font-size: 13px;
 }

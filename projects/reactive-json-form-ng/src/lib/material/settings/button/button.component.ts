@@ -28,7 +28,7 @@ export interface ISetButtonWidgetOptions {
   description: string;
   buttonTitle: string;
 
-  click: string;
+  onClick: string;
   spinner: boolean;
   disabled: boolean;
 }
@@ -71,10 +71,10 @@ export class SetButtonWidgetComponent extends AbstractWidget<ISetButtonWidgetOpt
       this._clickSubs = undefined;
     }
 
-    if (this.options.click) {
+    if (this.options.onClick) {
       this.running = true;
       this._clickSubs = this._expr
-        .eval(this.options.click, this.context, true)
+        .eval(this.options.onClick, this.context, true)
         .pipe(take(1))
         .subscribe(res => {
           this.running = false;

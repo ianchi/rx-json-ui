@@ -29,7 +29,9 @@ export interface ISetInputWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetInputWidgetComponent extends AbstractFormFieldWidget<ISetInputWidgetOptions> {
+export class SetInputWidgetComponent extends AbstractFormFieldWidget<
+  ISetInputWidgetOptions
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
