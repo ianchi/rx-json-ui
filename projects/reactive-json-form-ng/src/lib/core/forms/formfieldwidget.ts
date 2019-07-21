@@ -6,11 +6,11 @@
  */
 
 import { ChangeDetectorRef } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ILvalue, INode } from 'espression';
 import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
 
 import { ERROR_MSG, schemaValidator, ValidatorFn } from '../../schema';
 import { AbstractWidget } from '../abstractwidget';
@@ -22,8 +22,8 @@ export const FORM_CONTROL = '$form';
 export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
   formControl: FormControl | undefined;
 
-  validate: INode | undefined;
-  validateContext: Context | undefined;
+  validateAST: INode | undefined;
+  validateFn: AsyncValidatorFn | undefined;
 
   schemaValidator: ValidatorFn | undefined;
 
@@ -55,26 +55,28 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
     // setup validation
 
     if (def.options && def.options['validate=']) {
-      this.validate = this._expr.parse(def.options['validate=']);
+      this.validateAST = this._expr.parse(def.options['validate=']);
       delete def.options['validate='];
     }
-    if (this.validate) {
-      this.validateContext = Context.create(this.context);
-
-      this.formControl = new FormControl(
-        this.lvalue.o[this.lvalue.m],
-        null,
-        (ctrl: AbstractControl) => {
-          this.validateContext!['$value'] = ctrl.value;
-          return this._expr.evaluate(this.validate, this.validateContext!, true).pipe(
+    if (this.validateAST) {
+      this.validateFn = (ctrl: AbstractControl) => {
+          const validateContext = Context.create(this.context);
+          validateContext['$value'] = ctrl.value;
+          return this._expr.evaluate(this.validateAST, validateContext!, true).pipe(
             take(1),
             map(res => {
               return res ? null : { validate: 'validation error' };
-            })
+            }),
+            catchError((_e) =>
+              of({ validate: 'error evaluating expression' })
+              )
           );
-        }
-      );
-    } else this.formControl = new FormControl(this.lvalue.o[this.lvalue.m]);
+        };
+    }
+    this.formControl = new FormControl(this.lvalue.o[this.lvalue.m],
+      (ctrl: AbstractControl) =>
+        this.schemaValidator ? this.schemaValidator(this.getValue(ctrl)) : null,
+      this.validateFn);
 
     const parentForm: FormGroup | FormArray =
       this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
@@ -109,9 +111,7 @@ export class AbstractFormFieldWidget<T> extends AbstractWidget<T> {
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
     this.schemaValidator = schemaValidator(<any>this.options);
-    this.formControl!.setValidators((ctrl: AbstractControl) =>
-      this.schemaValidator!(this.getValue(ctrl))
-    );
+    this.formControl!.updateValueAndValidity();
   }
 
   /** Updates the control value when the bound property changes */

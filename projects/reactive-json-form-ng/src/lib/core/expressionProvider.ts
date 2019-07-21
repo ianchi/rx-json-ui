@@ -19,7 +19,7 @@ import {
   StringRule,
 } from 'espression';
 import { ReactiveEval } from 'espression-rx';
-import { EMPTY, isObservable, Observable, of } from 'rxjs';
+import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
 
 import { Context } from './context';
 import { Expressions } from './expressions';
@@ -108,8 +108,14 @@ export class ESpression extends Expressions {
     if (!ast) return asObservable ? EMPTY : undefined;
 
     let result;
-    result = this._rxEval.evaluate(ast, context);
+    try {
+      result = this._rxEval.evaluate(ast, context);
+    } catch (e) {
+      if (asObservable)
+        return throwError(e);
 
+      throw e;
+    }
     return asObservable && !isObservable(result) ? of(result) : result;
   }
 
