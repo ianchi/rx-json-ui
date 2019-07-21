@@ -12,7 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { AbstractFormWidgetComponent } from '../../../core/forms/index';
+import { Expressions } from '../../../core/index';
 
 export interface ISetSectionWidgetOptions {
   title: string;
@@ -25,7 +26,7 @@ export interface ISetSectionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSectionWidgetComponent extends AbstractWidget<ISetSectionWidgetOptions> {
+export class SetSectionWidgetComponent extends AbstractFormWidgetComponent<ISetSectionWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
