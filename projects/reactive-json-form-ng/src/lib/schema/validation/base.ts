@@ -17,7 +17,7 @@ export const ERR_TYPE = 1,
 ERROR_MSG[ERR_TYPE] = "`Invalid data type '${$err.type}'`";
 ERROR_MSG[ERR_ENUM] = '`Not a valid option`';
 ERROR_MSG[ERR_CNST] = '`Not a valid option`';
-ERROR_MSG[ERR_REQ] = "`Value is required'`";
+ERROR_MSG[ERR_REQ] = "`Value is required`";
 
 export function baseValidator<T>(schema: ISchemaBase<T>): ValidatorFn {
   const enumVal = Array.isArray(schema.enum) ? schema.enum.concat() : null,
