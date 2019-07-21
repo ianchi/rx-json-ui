@@ -13,14 +13,8 @@ import {
 } from '@angular/core';
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { IInputWidgetOptions } from '../../formfield/input/input.component';
 
-export interface ISetInputWidgetOptions {
-  title: string;
-  description: string;
-
-  inputType: string;
-  required: boolean;
-}
 @Component({
   selector: 'set-input',
   templateUrl: './input.component.html',
@@ -30,7 +24,7 @@ export interface ISetInputWidgetOptions {
   host: { class: 'set-row set-row-flex' },
 })
 export class SetInputWidgetComponent extends AbstractFormFieldWidget<
-  ISetInputWidgetOptions
+  IInputWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

@@ -11,9 +11,9 @@
     [required]="options.required"
   />
 
-  <mat-error [id]="null" *ngIf="formControl?.invalid && formControl?.hasError('message')">
+  <mat-error [id]="null" *ngIf="formControl?.invalid">
     <span>
-      {{ formControl?.getError('message') }}
+      {{ getError() }}
     </span>
   </mat-error>
 

@@ -4,14 +4,14 @@
   </div>
 
   <div
-    *ngIf="!formControl?.invalid || !formControl?.hasError('code')"
+    *ngIf="!formControl?.invalid"
     class="set-row-description"
   >
     {{ options.description }}
   </div>
 
   <div
-    *ngIf="formControl?.invalid && formControl?.hasError('code')"
+    *ngIf="formControl?.invalid"
     class="set-row-error"
   >
     {{ getError() }}
