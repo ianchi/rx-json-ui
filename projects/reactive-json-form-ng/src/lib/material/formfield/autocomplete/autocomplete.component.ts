@@ -9,23 +9,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { merge, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import {
-  AbstractFormFieldWidget,
-  Expressions,
-  IFieldWidgetDef,
-  IWidgetDef,
-} from '../../../core/index';
-import { ISchemaBase } from '../../../schema';
+import { Expressions, IFieldWidgetDef, IWidgetDef } from '../../../core/index';
+import { SelectWidgetComponent } from '../select/select.component';
 
-export interface IAutocompleteWidgetOptions extends ISchemaBase<any> {
-  required: boolean;
-}
 @Component({
   selector: 'wdg-autocomplete',
   templateUrl: './autocomplete.component.html',
@@ -33,39 +24,45 @@ export interface IAutocompleteWidgetOptions extends ISchemaBase<any> {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AutocompleteWidgetComponent
-  extends AbstractFormFieldWidget<IAutocompleteWidgetOptions>
-  implements OnInit {
+export class AutocompleteWidgetComponent extends SelectWidgetComponent {
   filteredOptions: Observable<string[]> | undefined;
+  enumSubject = new Subject<any>();
+
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnBeforeBind(): void {
-    this.map('enum', val => {
-      return Array.isArray(val) ? val : [];
-    });
+  dynOnAfterBind(): void {
+    super.dynOnAfterBind();
+    this.map('enum', val => (this.enumSubject.next(undefined), val));
   }
 
-  dynOnAfterBind(): void {
-    this.map('enum', val => (this._filter(this.formControl!.value), val));
-  }
   dynOnSetup(def: IFieldWidgetDef): IWidgetDef {
     const result = super.dynOnSetup(def);
 
-    this.filteredOptions = this.formControl!.valueChanges.pipe(
-      startWith(''),
+    this.filteredOptions = merge(this.enumSubject, this.formControl!.valueChanges).pipe(
       map(value => this._filter(value))
     );
 
     return result;
   }
 
+  dynSetFormValue(val: any): void {
+    super.dynSetFormValue(val);
+    this._filter(this.formControl!.value);
+  }
+
   private _filter(value: string): string[] {
-    const filterValue = value && value.toLowerCase();
+    if (typeof value === 'undefined') return this.options.enum || [];
+    value = this.getLabel(value);
+    const filterValue = (typeof value === 'string' && value.toLowerCase()) || value;
 
     return this.options.enum
-      ? this.options.enum.filter(option => option.toLowerCase().includes(filterValue))
+      ? this.options.enum.filter(option =>
+          this.getLabel(option)
+            .toLowerCase()
+            .includes(filterValue)
+        )
       : [];
   }
 }

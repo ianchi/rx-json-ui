@@ -9,20 +9,23 @@
     [type]="type || 'text'"
     [formControl]="formControl"
     [matAutocomplete]="auto"
+    [required]="options.required"
   />
 
-  <mat-error [id]="null"> </mat-error>
+  <mat-error [id]="null" *ngIf="formControl?.invalid">
+    {{ getError() }}
+  </mat-error>
 
   <mat-hint *ngIf="options.description" [id]="null">
     {{ options.description }}
   </mat-hint>
 
-  <mat-autocomplete #auto="matAutocomplete">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn()">
     <mat-option
       *ngFor="let option of filteredOptions | async; index as optIndex"
       [value]="option"
     >
-      {{ option }}
+      {{ getLabel(option) }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
