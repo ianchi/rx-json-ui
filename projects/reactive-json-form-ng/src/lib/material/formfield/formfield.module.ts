@@ -20,6 +20,7 @@ import { FormArrayWidgetComponent } from './formArray/formArray.component';
 import { FormExpanssionWidgetComponent } from './formExpanssion/formExpanssion.component';
 import { InputWidgetComponent } from './input/input.component';
 import { SchemaWidgetComponent } from './schema/schema.component';
+import { SelectWidgetComponent } from './select/select.component';
 import { SliderWidgetComponent } from './slider/slider.component';
 import { TextAreaWidgetComponent } from './textarea/textarea.component';
 import { ToggleWidgetComponent } from './toggle/toggle.component';
@@ -43,6 +44,7 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
         { type: 'file-button', component: FileWidgetComponent },
         { type: 'textarea', component: TextAreaWidgetComponent },
+        { type: 'selet', component: SelectWidgetComponent },
       ],
     }),
   ],
@@ -60,6 +62,7 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
     AutocompleteWidgetComponent,
     FileWidgetComponent,
     TextAreaWidgetComponent,
+    SelectWidgetComponent,
   ],
   exports: [],
 })

@@ -1,0 +1,22 @@
+<mat-form-field style.width="100%">
+  <mat-label *ngIf="options.title">
+    {{ options.title }}
+  </mat-label>
+
+  <mat-error [id]="null" *ngIf="formControl?.invalid">
+    {{ getError() }}
+  </mat-error>
+
+  <mat-hint *ngIf="options.description" [id]="null">
+    {{ options.description }}
+  </mat-hint>
+
+  <mat-select name="aaa" [formControl]="formControl" [required]="options.required">
+    <mat-option *ngIf="!options.required">
+      {{ options.emptyLabel }}
+    </mat-option>
+    <mat-option *ngFor="let option of options.enum; index as optIndex" [value]="option">
+      {{ getLabel(option) }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
