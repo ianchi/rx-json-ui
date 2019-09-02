@@ -13,6 +13,10 @@
     {
       "fileMatch": ["/.stylelintrc"],
       "url": "http://json.schemastore.org/stylelintrc"
+    },
+    {
+      "fileMatch": ["src/assets/views/*"],
+      "url": "./dist/jsonschema/AbstractWidgetDef.schema.json"
     }
   ],
 
