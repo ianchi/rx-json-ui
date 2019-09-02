@@ -12,11 +12,17 @@ import {
   Directive,
   Inject,
   Input,
+  IterableChangeRecord,
+  IterableChanges,
+  IterableDiffer,
+  IterableDiffers,
   OnChanges,
   OnDestroy,
   Optional,
+  TrackByFunction,
   ViewContainerRef,
 } from '@angular/core';
+import { RxObject } from 'espression-rx';
 import { Observable, of, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
@@ -24,12 +30,7 @@ import { Context, Expressions, ROOT_EXPR_CONTEXT } from '../expressions/index';
 import { WidgetRegistry } from '../widgetregistry.service';
 
 import { AbstractWidget } from './abstractwidget';
-import {
-  AbstractEventsDef,
-  AbstractOptionsDef,
-  AbstractWidgetDef,
-  SlotedContentDef,
-} from './public.interface';
+import { AbstractWidgetDef } from './public.interface';
 
 /**
  * Directive to include a widget tree in a page.
@@ -48,10 +49,11 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   parentContext: Context | undefined;
 
   private subscriptions: Subscription | undefined;
-  private componentFactory: ComponentFactory<any> | undefined;
-  private widgetRef:
-    | Array<ComponentRef<AbstractWidget<AbstractOptionsDef, SlotedContentDef, AbstractEventsDef>>>
-    | undefined;
+  private componentFactory: ComponentFactory<AbstractWidget> | undefined;
+  private widgetRef: Array<ComponentRef<AbstractWidget>> = [];
+
+  private forDiffer: IterableDiffer<any> | undefined;
+  private forTrackBy: TrackByFunction<any> | undefined;
 
   constructor(
     private container: ViewContainerRef,
@@ -60,7 +62,8 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     @Optional()
     @Inject(ROOT_EXPR_CONTEXT)
     private rootContext: Context | undefined,
-    private expr: Expressions
+    private expr: Expressions,
+    private differs: IterableDiffers
   ) {}
 
   /**
@@ -135,7 +138,23 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
       this.widgetRef[0].instance.setup(this.widgetDef, Context.create(this.parentContext));
     } else {
+      this.setFor(data);
     }
+  }
+
+  createForWidget(item: any, index: number | null): ComponentRef<AbstractWidget> {
+    if (!this.componentFactory || !this.widgetDef || index === null)
+      throw new Error('Invalid widget definition');
+
+    // expose a readonly `$for` reactive property with the `item` and the `index`
+    const context = Context.create(this.parentContext, undefined, {
+      $for: RxObject({ item, index }),
+    });
+
+    const widgetRef = this.container.createComponent(this.componentFactory, index);
+    widgetRef.instance.setup(this.widgetDef, context);
+
+    return widgetRef;
   }
 
   ngOnDestroy(): void {
@@ -154,7 +173,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (!this.widgetRef) return;
 
     this.widgetRef.map(ref => ref.destroy());
-    this.widgetRef = undefined;
+    this.widgetRef = [];
   }
 
   /**
@@ -182,5 +201,65 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     this.componentFactory = this.cfr.resolveComponentFactory(widgetClass);
 
     return true;
+  }
+
+  // `for` routines, based on code borrowed from Angular `ngFor`
+
+  /**
+   * Applies the changes when needed.
+   */
+  private setFor(value: any[]): void {
+    if (!this.forDiffer && value) {
+      try {
+        this.forDiffer = this.differs.find(value).create(this.forTrackBy);
+      } catch {
+        throw new Error(`Cannot find a differ supporting object '${value}'`);
+      }
+    }
+    if (this.forDiffer) {
+      const changes = this.forDiffer.diff(value);
+      if (changes) this.applyForChanges(changes);
+    }
+  }
+
+  private applyForChanges(changes: IterableChanges<any>): void {
+    changes.forEachOperation(
+      (
+        record: IterableChangeRecord<any>,
+        adjustedPreviousIndex: number | null,
+        currentIndex: number | null
+      ) => {
+        if (record.previousIndex == null && currentIndex !== null) {
+          // added elements
+          const component = this.createForWidget(record.item, currentIndex);
+
+          this.widgetRef.splice(currentIndex, 0, component);
+        } else if (currentIndex == null && adjustedPreviousIndex !== null) {
+          // removed elements
+          this.container.remove(adjustedPreviousIndex);
+          this.widgetRef.splice(adjustedPreviousIndex, 1);
+        } else if (adjustedPreviousIndex !== null && currentIndex !== null) {
+          // moved elements
+          const view = this.container.get(adjustedPreviousIndex)!;
+          this.container.move(view, currentIndex);
+
+          const component = this.widgetRef[adjustedPreviousIndex];
+          this.widgetRef.splice(adjustedPreviousIndex, 1);
+          this.widgetRef.splice(currentIndex, 0, component);
+        }
+      }
+    );
+
+    // the identity of the item changed (even if the trackBy returned the same ID, the objects have different references )
+    changes.forEachIdentityChange((record: IterableChangeRecord<any>) => {
+      if (record.currentIndex)
+        this.widgetRef[record.currentIndex].instance.context.$for.item = record.item;
+    });
+
+    // update index
+
+    this.widgetRef.forEach((element, i) => {
+      if (element.instance.context.$for.index !== i) element.instance.context.$for.index = i;
+    });
   }
 }

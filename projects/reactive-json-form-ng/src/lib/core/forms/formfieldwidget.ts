@@ -13,7 +13,7 @@ import {
   FormControl,
   FormGroup,
 } from '@angular/forms';
-import { ILvalue, INode } from 'espression';
+import { ILvalue } from 'espression';
 import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
@@ -32,7 +32,6 @@ export class AbstractFormFieldWidget<
 > extends AbstractWidget<O, S, E> {
   formControl: FormControl | undefined;
 
-  validateAST: INode | undefined;
   validateFn: AsyncValidatorFn | undefined;
 
   schemaValidator: ValidatorFn | undefined;
@@ -60,21 +59,21 @@ export class AbstractFormFieldWidget<
 
     // setup validation
 
-    if (def.options && def.options['validate=']) {
-      this.validateAST = this.expr.parse(def.options['validate=']);
-      delete def.options['validate='];
-    }
-    if (this.validateAST) {
+    if (def.events && def.events['onValidate']) {
       this.validateFn = (ctrl: AbstractControl) => {
-        const validateContext = Context.create(this.context);
-        validateContext['$value'] = ctrl.value;
-        return this.expr.evaluate(this.validateAST, validateContext!, true).pipe(
-          take(1),
-          map(res => {
-            return res ? null : { validate: 'validation error' };
-          }),
-          catchError(_e => of({ validate: 'error evaluating expression' }))
-        );
+        return this.expr
+          .evaluate(
+            this.events.onValidate,
+            Context.create(this.context, { $value: ctrl.value }),
+            true
+          )
+          .pipe(
+            take(1),
+            map(res => {
+              return res ? null : { validate: 'validation error' };
+            }),
+            catchError(_e => of({ validate: 'error evaluating expression' }))
+          );
       };
     }
     this.formControl = new FormControl(
