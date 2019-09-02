@@ -26,14 +26,16 @@ import {
   RoutedWidgetComponent,
   SettingsWidgetsModule,
 } from 'reactive-json-form-ng';
+import { interval, Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { AppComponent } from './app.component';
 
 @Injectable({ providedIn: 'root' })
 export class Backend implements Resolve<any> {
   constructor(private _http: HttpClient) {}
-  resolve(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this._http.get(`assets${state.url}${state.url === '/' ? 'settings' : ''}.json`);
+  resolve(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<object> {
+    return this._http.get(`assets/views${state.url}${state.url === '/' ? 'default' : ''}.json`);
   }
 }
 
@@ -41,52 +43,48 @@ export const appRoutes: Routes = [
   { path: '', component: RoutedWidgetComponent, resolve: { widgetDef: Backend } },
   { path: '**', component: RoutedWidgetComponent, resolve: { widgetDef: Backend } },
 ];
+
+export const ROOT = Context.create(
+  undefined,
+  {
+    RxObject,
+    of,
+    interval(period: number, count: number): Observable<number> { return interval(period).pipe(take(count))},
+    data: RxObject(
+      {
+        dropbear: [{ port: 22, interfaces: ['lan', 'vpn'] }, { port: 8022, interfaces: ['wan'] }],
+        children: [
+          {
+            subfield1: 'a',
+            subfield2: 'b',
+          },
+          {
+            subfield1: 'c',
+            subfield2: 'f',
+          },
+        ],
+      },
+      true
+    ),
+  },
+  undefined,
+  undefined,
+  true
+);
+// tslint:disable-next-line: max-classes-per-file
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
 
-    RouterModule.forRoot(appRoutes, { enableTracing: true }),
+    RouterModule.forRoot(appRoutes, { enableTracing: false }),
     CommonWidgetsModule,
     HttpClientModule,
     FormFieldWidgetsModule,
     BrowserAnimationsModule,
     SettingsWidgetsModule,
   ],
-  providers: [
-    expressionProvider,
-    {
-      provide: ROOT_EXPR_CONTEXT,
-      useValue: Context.create(
-        undefined,
-        {
-          RxObject,
-          data: RxObject(
-            {
-              dropbear: [
-                { port: 22, interfaces: ['lan', 'vpn'] },
-                { port: 8022, interfaces: ['wan'] },
-              ],
-              children: [
-                {
-                  subfield1: 'a',
-                  subfield2: 'b',
-                },
-                {
-                  subfield1: 'c',
-                  subfield2: 'f',
-                },
-              ],
-            },
-            true
-          ),
-        },
-        undefined,
-        undefined,
-        true
-      ),
-    },
-  ],
+  providers: [expressionProvider, { provide: ROOT_EXPR_CONTEXT, useValue: ROOT }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
