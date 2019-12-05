@@ -1,9 +1,9 @@
 {
-  "name": "reactive-json-form-ng",
+  "name": "rx-json-ui",
   "description": "Generates reactive UI/forms based on definitions made on json and json schema files",
   "author": "Adrian Panella <ianchi74@outlook.com>",
   "license": "MIT",
-  "repository": "https://github.com/ianchi/reactive-json-form-ng.git",
+  "repository": "https://github.com/ianchi/rx-json-ui.git",
   "version": "0.0.1",
   "private": false,
   "peerDependencies": {

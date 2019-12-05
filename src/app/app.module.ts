@@ -25,7 +25,7 @@ import {
   ROOT_EXPR_CONTEXT,
   RoutedWidgetComponent,
   SettingsWidgetsModule,
-} from 'reactive-json-form-ng';
+} from 'rx-json-ui';
 import { interval, Observable, of } from 'rxjs';
 import { take } from 'rxjs/operators';
 

@@ -5,8 +5,8 @@
     "module": "es2015",
     "types": [],
     "paths": {
-      "reactive-json-form-ng": ["projects/reactive-json-form-ng/src/public_api"],
-      "reactive-json-form-ng/*": ["projects/reactive-json-form-ng/src/*"]
+      "rx-json-ui": ["projects/rx-json-ui/src/public_api"],
+      "rx-json-ui/*": ["projects/rx-json-ui/src/*"]
     }
   },
   "exclude": ["src/test.ts", "**/*.spec.ts"],

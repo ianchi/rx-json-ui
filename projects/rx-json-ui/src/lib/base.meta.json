@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://github.com/ianchi/reactive-json-form-ng/schema/base.meta.json",
+  "$id": "http://github.com/ianchi/rx-json-ui/schema/base.meta.json",
 
   "definitions": {
     "bindLabel": {

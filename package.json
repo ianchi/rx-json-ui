@@ -1,6 +1,11 @@
 {
-  "name": "reactive-json-form-ng",
+  "name": "rx-json-ui",
   "version": "0.0.1",
+  "description": "Framework to generate reactive UI/forms based on definitions made on json and json schema files",
+  "author": {
+    "name": "Adrian Panella",
+    "email": "ianchi74@outlook.com"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,12 +13,12 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dist-lib-init": "rm -rf dist/reactive-json-form-ng && git worktree add dist/reactive-json-form-ng deploy",
-    "build-lib": "rm -rf dist/reactive-json-form-ng/* && ng build reactive-json-form-ng --prod && npm run bundle-styles",
-    "watch-lib": "ng build reactive-json-form-ng --watch",
-    "deploy-lib": "cd dist/reactive-json-form-ng && git add --all && git commit -m 'release' && git push",
+    "dist-lib-init": "rm -rf dist/rx-json-ui && git worktree add dist/rx-json-ui deploy",
+    "build-lib": "rm -rf dist/rx-json-ui/* && ng build rx-json-ui --prod && npm run bundle-styles",
+    "watch-lib": "ng build rx-json-ui --watch",
+    "deploy-lib": "cd dist/rx-json-ui && git add --all && git commit -m 'release' && git push",
     "bundle-styles": "scss-bundle -c scss-bundle.config.json",
-    "build-doc": "rm -rf dist/doc && typedoc --ignoreCompilerErrors --exclude projects/reactive-json-form-ng/src/lib/core/base/widget.directive.ts --tsconfig projects/reactive-json-form-ng/tsconfig.json projects/reactive-json-form-ng"
+    "build-doc": "rm -rf dist/doc && typedoc --ignoreCompilerErrors --exclude projects/rx-json-ui/src/lib/core/base/widget.directive.ts --tsconfig projects/rx-json-ui/tsconfig.json projects/rx-json-ui"
   },
   "husky": {
     "hooks": {

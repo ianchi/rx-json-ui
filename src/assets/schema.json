@@ -1,5 +1,5 @@
 {
-  "$schema": "file://home/ianchi/dev/ianchi_wrt/reactive-json-form-ng/src/assets/metaschema.json",
+  "$schema": "file://home/ianchi/dev/ianchi_wrt/rx-json-ui/src/assets/metaschema.json",
   "type": "object",
   "title": "Basic System configurations",
   "description": "Settings that apply to the most basic operation of the system, such as the hostname, the time zone, and how and where to write logging information to",

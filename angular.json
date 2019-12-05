@@ -80,38 +80,38 @@
         }
       }
     },
-    "reactive-json-form-ng": {
-      "root": "projects/reactive-json-form-ng",
-      "sourceRoot": "projects/reactive-json-form-ng/src",
+    "rx-json-ui": {
+      "root": "projects/rx-json-ui",
+      "sourceRoot": "projects/rx-json-ui/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/reactive-json-form-ng/tsconfig.json",
-            "project": "projects/reactive-json-form-ng/ng-package.json"
+            "tsConfig": "projects/rx-json-ui/tsconfig.json",
+            "project": "projects/rx-json-ui/ng-package.json"
           },
           "configurations": {
             "production": {
-              "project": "projects/reactive-json-form-ng/ng-package.prod.json"
+              "project": "projects/rx-json-ui/ng-package.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/reactive-json-form-ng/src/test.ts",
-            "tsConfig": "projects/reactive-json-form-ng/tsconfig.spec.json",
-            "karmaConfig": "projects/reactive-json-form-ng/karma.conf.js"
+            "main": "projects/rx-json-ui/src/test.ts",
+            "tsConfig": "projects/rx-json-ui/tsconfig.spec.json",
+            "karmaConfig": "projects/rx-json-ui/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/reactive-json-form-ng/tsconfig.json",
-              "projects/reactive-json-form-ng/tsconfig.spec.json"
+              "projects/rx-json-ui/tsconfig.json",
+              "projects/rx-json-ui/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }

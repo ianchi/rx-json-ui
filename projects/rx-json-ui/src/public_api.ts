@@ -6,7 +6,7 @@
  */
 
 /*
- * Public API Surface of reactive-json-form-ng
+ * Public API Surface of rx-json-ui
  */
 
 export * from './lib/core/index';
