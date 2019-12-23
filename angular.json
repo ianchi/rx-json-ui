@@ -117,6 +117,28 @@
           }
         }
       }
+    },
+    "rx-json-ui-cli": {
+      "projectType": "library",
+      "root": "projects/rx-json-ui-cli",
+      "sourceRoot": "projects/rx-json-ui-cli/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/rx-json-ui-cli/tsconfig.json",
+            "project": "projects/rx-json-ui-cli/ng-package.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["projects/rx-json-ui-cli/tsconfig.json"],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
     }
   },
   "defaultProject": "json-form-demo",
