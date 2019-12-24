@@ -1,0 +1,8 @@
+{
+  "mode": "file",
+  "out": "dist/docs",
+  "theme": "markdown",
+  "excludeNotExported": true,
+  "excludePrivate": true,
+  "excludeProtected": true
+}
