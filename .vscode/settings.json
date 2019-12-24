@@ -16,7 +16,7 @@
     },
     {
       "fileMatch": ["src/assets/views/*"],
-      "url": "./dist/jsonschema/AbstractWidgetDef.schema.json"
+      "url": "./dist/jsonschema/AppWidgetDef.schema.json"
     }
   ],
 
@@ -30,7 +30,6 @@
     "**/.DS_Store": true
   },
   "editor.formatOnSave": true,
-  "spellright.language": "en_US",
-  "spellright.documentTypes": ["markdown", "latex"],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "spellright.notificationClass": "information"
 }

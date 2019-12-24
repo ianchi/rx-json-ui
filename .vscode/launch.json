@@ -1,27 +1,53 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:4200",
-            "webRoot": "${workspaceRoot}",
-            "sourceMaps": true,
-
-
-        },
-        {
-            "type": "chrome",
-            "request": "attach",
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "webRoot": "${workspaceRoot}",
-            "sourceMaps": true,
-            "sourceMapPathOverrides": {
-								"webpack:///.+/~/*": "${webRoot}/node_modules/*",
-								"webpack:///.+/src/*": "${webRoot}/src/*"
-            }
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch TS Program",
+      "args": ["${workspaceRoot}/jsonschema/main.ts"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "env": { "TS_NODE_PROJECT": "${workspaceRoot}/jsonschema/tsconfig.json" }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "jsonpath",
+      "program": "${workspaceRoot}/node_modules/ts-json-schema-generator/dist/ts-json-schema-generator.js",
+      "args": [
+        "-p",
+        "projects/rx-json-ui/src/lib/material/formfield/input/input.component.ts",
+        //"projects/rx-json-ui/src/public_api.ts",
+        "-f",
+        "projects/rx-json-ui/tsconfig.json",
+        "-t",
+        "InputWidgetDef"
+        // "AbstractWidgetDef"
+      ],
+      //"stopOnEntry": true,
+      "cwd": "${workspaceRoot}"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///.+/~/*": "${webRoot}/node_modules/*",
+        "webpack:///.+/src/*": "${webRoot}/src/*"
+      }
+    }
+  ]
 }

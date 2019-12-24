@@ -12,12 +12,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
+import { AbstractArrayWidgetComponent, Expressions, MainSlotContentDef } from '../../../core/index';
 
 export interface FormArrayWidgetOptions {
   newRow: string;
   allowDel: boolean;
 }
+
 @Component({
   selector: 'wdg-form-array',
   templateUrl: './formArray.component.html',
@@ -25,7 +26,10 @@ export interface FormArrayWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<FormArrayWidgetOptions> {
+export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
+  FormArrayWidgetOptions,
+  MainSlotContentDef
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

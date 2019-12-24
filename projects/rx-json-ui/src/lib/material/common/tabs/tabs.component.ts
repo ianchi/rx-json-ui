@@ -12,11 +12,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions } from '../../../core/index';
 
 export interface TabsWidgetOptions {
+  /** Text to show as tabs labels */
   tabLabels: string[];
 }
+
 @Component({
   selector: 'wdg-tabs',
   templateUrl: './tabs.component.html',
@@ -24,7 +26,7 @@ export interface TabsWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabsWidgetComponent extends AbstractWidget<TabsWidgetOptions> {
+export class TabsWidgetComponent extends BaseWidget<TabsWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

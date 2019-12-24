@@ -20,6 +20,7 @@ export interface SetExpansionWidgetOptions {
   description: string;
   expanded: boolean;
 }
+
 @Component({
   selector: 'set-expansion',
   templateUrl: './expansion.component.html',

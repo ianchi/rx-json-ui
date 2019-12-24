@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, MainSlotContentDef } from '../../../core/index';
 
 export interface SetToggleWidgetOptions {
   title: string;
@@ -26,7 +26,10 @@ export interface SetToggleWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetToggleWidgetComponent extends AbstractFormFieldWidget<SetToggleWidgetOptions> {
+export class SetToggleWidgetComponent extends AbstractFormFieldWidget<
+  SetToggleWidgetOptions,
+  MainSlotContentDef
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

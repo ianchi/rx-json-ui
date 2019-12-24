@@ -18,18 +18,24 @@ import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 
-import { AbstractOptionsDef, MainSlotContentDef, SlotedContentDef } from '..';
+import { AbstractOptionsDef } from '..';
 import { ERROR_MSG, schemaValidator, ValidatorFn } from '../../schema';
-import { AbstractWidget } from '../base/abstractwidget';
-import { FieldEventDef, WidgetDef } from '../base/public.interface';
+import { BaseWidget } from '../base/abstractwidget';
+import {
+  ConstrainEvents,
+  ConstrainSlots,
+  FieldEventDef,
+  WidgetDef,
+} from '../base/public.interface';
 import { Context, Expressions } from '../expressions/index';
 
 export const FORM_CONTROL = '$form';
+
 export class AbstractFormFieldWidget<
   O extends AbstractOptionsDef = {},
-  S extends SlotedContentDef = MainSlotContentDef,
-  E extends FieldEventDef = FieldEventDef
-> extends AbstractWidget<O, S, E> {
+  S extends ConstrainSlots<S> | undefined = undefined,
+  E extends ConstrainEvents<E> & FieldEventDef = FieldEventDef
+> extends BaseWidget<O, S, E, true> {
   formControl: FormControl | undefined;
 
   validateFn: AsyncValidatorFn | undefined;
@@ -43,7 +49,7 @@ export class AbstractFormFieldWidget<
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
-  dynOnSetup(def: WidgetDef<O, S, E>): WidgetDef<O, S, E> {
+  dynOnSetup(def: WidgetDef<O, S, E, true>): WidgetDef<O, S, E, true> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
@@ -120,7 +126,7 @@ export class AbstractFormFieldWidget<
 
   /**
    * Called to get the bound value from a control.
-   * Can be overriden to return a different value than the standard `formControl.value`
+   * Can be overridden to return a different value than the standard `formControl.value`
    */
   fldGetValue(formControl: AbstractControl): any {
     return formControl.value;

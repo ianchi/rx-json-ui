@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
 
 @Component({
   selector: 'set-page',
@@ -22,7 +22,7 @@ import { AbstractWidget, Expressions } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetPageWidgetComponent extends AbstractWidget {
+export class SetPageWidgetComponent extends BaseWidget<{}, MainSlotContentDef> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

@@ -14,13 +14,18 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Context, Expressions } from '../expressions/index';
 
 import {
-  AbstractContentDef,
   AbstractEventsDef,
   AbstractOptionsDef,
+  AbstractSlotContentDef,
   AbstractWidgetDef,
+  CommonEventsDef,
+  ConstrainEvents,
+  ConstrainSlots,
+  ContentDef,
+  JsonWidgetDef,
+  MainSlotContentDef,
   multilineExpr,
   SimpleContentDef,
-  SlotedContentDef,
   WidgetDef,
 } from './public.interface';
 
@@ -28,17 +33,26 @@ export type Bindings<T> = { [P in keyof T]-?: Observable<T[P]> };
 
 export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<T[P]> };
 
-export type MapType<O, T> = { [P in keyof O]: T };
+export type AbstractWidget = BaseWidget<
+  AbstractOptionsDef,
+  AbstractSlotContentDef | undefined,
+  AbstractEventsDef,
+  boolean | undefined
+>;
 /**
  * Base class for all dynamic widget elements
  */
-export class AbstractWidget<
-  O extends AbstractOptionsDef = AbstractOptionsDef,
-  S extends SlotedContentDef = SlotedContentDef,
-  E extends AbstractEventsDef = AbstractEventsDef
+export class BaseWidget<
+  O extends AbstractOptionsDef,
+  S extends ConstrainSlots<S> | undefined = undefined,
+  E extends ConstrainEvents<E> = CommonEventsDef,
+  B extends boolean | undefined = undefined
 > implements OnDestroy, OnChanges, OnInit {
   /** Configuration object for the widget */
-  widgetDef: WidgetDef<O, S, E> | undefined;
+  widgetDef: WidgetDef<O, S, E, B> | undefined;
+
+  /** Used to generate de json schema files */
+  jsonWidgetDef = {} as JsonWidgetDef<O, S, E, B>;
   context = new Context();
 
   /**
@@ -50,8 +64,8 @@ export class AbstractWidget<
 
   /** Resolved options */
   options = {} as O;
-  events = {} as MapType<E, INode | undefined>;
-  content = { main: [] as AbstractWidgetDef[] } as S;
+  events = {} as Record<keyof E, INode | undefined>;
+  content?: S;
 
   contentBind: Observable<S> | undefined;
 
@@ -61,7 +75,7 @@ export class AbstractWidget<
    */
   isInitialized = false;
 
-  /** stores subscriptios to automatically unsubscribe onDestroy */
+  /** stores subscriptions to automatically unsubscribe onDestroy */
   protected set addSubscription(subs: Subscription) {
     this.subscriptions.push(subs);
   }
@@ -69,8 +83,8 @@ export class AbstractWidget<
 
   constructor(protected _cdr: ChangeDetectorRef, protected expr: Expressions) {}
 
-  /** Initialices the widget from a json definition */
-  setup(widgetDef: WidgetDef<O, S, E>, context?: Context): void {
+  /** Initializes the widget from a json definition */
+  setup(widgetDef: WidgetDef<O, S, E, B>, context?: Context): void {
     widgetDef.options = widgetDef.options || ({} as O);
 
     this.context = context || new Context();
@@ -93,33 +107,33 @@ export class AbstractWidget<
     this.subscribeOptions();
   }
 
-  private parseContentDef(content: AbstractContentDef): Observable<S> {
-    // check invalid definition and convert to sloted
-    if (typeof content !== 'object') {
-      this.content = { main: [] as WidgetDef[] } as S;
+  private parseContentDef(content: ContentDef<S>): Observable<S> {
+    let sloted: AbstractSlotContentDef;
+    // check invalid definition and convert to slotted
+    if (typeof content === 'undefined' || typeof content !== 'object') {
+      this.content = { main: [] as AbstractWidgetDef[] } as S;
       throw new Error('Invalid content definition');
     }
 
-    if (Array.isArray(content)) content = { main: content };
+    if (Array.isArray(content)) sloted = { main: content } as MainSlotContentDef;
     else if (!('main' in content)) {
-      this.content = { main: [] as WidgetDef[] } as S;
+      this.content = { main: [] as AbstractWidgetDef[] } as S;
       throw new Error('Missing "main" slot in content definition');
-    }
+    } else sloted = content as AbstractSlotContentDef;
 
     // parse each slot definition
-    const sloted = content;
-    const slots: Array<keyof SlotedContentDef> = Object.keys(sloted);
+    const slots: Array<keyof AbstractSlotContentDef> = Object.keys(sloted);
 
     return combineLatest(
-      slots.map((slot: keyof SlotedContentDef) => this.parseSimpleContentDef(sloted[slot]))
+      slots.map((slot: keyof AbstractSlotContentDef) => this.parseSimpleContentDef(sloted[slot]))
     ).pipe(
       map(simple =>
         slots.reduce(
           (cont, slot, idx) => {
-            cont[slot] = simple[idx];
+            if (cont) cont[slot as keyof S] = simple[idx] as S[keyof S];
             return cont;
           },
-          { main: [] as WidgetDef[] } as S
+          { main: [] as AbstractWidgetDef[] } as S
         )
       )
     );
@@ -130,10 +144,15 @@ export class AbstractWidget<
     // tslint:disable-next-line: forin
     for (const event in eventsDef) {
       expr = eventsDef[event];
-      if (expr) this.events[event] = this.expr.parse(Array.isArray(expr) ? expr.join('\n') : expr);
+      if (expr)
+        this.events[event as keyof E] = this.expr.parse(
+          Array.isArray(expr) ? expr.join('\n') : expr
+        );
     }
   }
-  private parseSimpleContentDef(content: SimpleContentDef | WidgetDef): Observable<WidgetDef[]> {
+  private parseSimpleContentDef(
+    content: SimpleContentDef | AbstractWidgetDef
+  ): Observable<AbstractWidgetDef[]> {
     if (typeof content !== 'object') return of([]);
     if (!Array.isArray(content)) return of([content]);
 
@@ -148,7 +167,7 @@ export class AbstractWidget<
             .pipe(switchMap(resItem => this.parseSimpleContentDef(resItem)));
     });
     return combineMixed(args, true).pipe(
-      map(items => [].concat(...items) as WidgetDef[]),
+      map(items => [].concat(...items) as AbstractWidgetDef[]),
       map((items: any[]) =>
         items.map(item =>
           !item || typeof item !== 'object' || !item.widget ? { widget: 'none' } : item
@@ -190,7 +209,7 @@ export class AbstractWidget<
     // get dynamic content
     if (this.contentBind) observables.push(this.contentBind);
 
-    // call hook for cofiguration of options before updating the bound value
+    // call hook for configuration of options before updating the bound value
     this.dynOnBeforeBind();
 
     for (const prop in this.bindings) // tslint:disable-line:forin
@@ -245,14 +264,14 @@ export class AbstractWidget<
   // Widget's Lifecycle hooks declarations
   // ------------------------
 
-  /** Hook to customize widget definition before procesing it */
-  dynOnSetup(def: WidgetDef<O, S, E>): WidgetDef<O, S, E> {
+  /** Hook to customize widget definition before processing it */
+  dynOnSetup(def: WidgetDef<O, S, E, B>): WidgetDef<O, S, E, B> {
     return def;
   }
 
   /**
    * Hook to customize the observable bindings *before* updating the bound value.
-   * Tipically using the `this.map()` function to add processing to specific options.
+   * Typically using the `this.map()` function to add processing to specific options.
    * Modifications to value here affect the bound value.
    */
   dynOnBeforeBind(): void {}

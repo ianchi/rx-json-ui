@@ -12,12 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import {
-  AbstractWidget,
-  ButtonWidgetEvents,
-  Expressions,
-  MainSlotContentDef,
-} from '../../../core/index';
+import { BaseWidget, ButtonWidgetEvents, Expressions } from '../../../core/index';
 
 export interface SetButtonWidgetOptions {
   title: string;
@@ -27,6 +22,7 @@ export interface SetButtonWidgetOptions {
   spinner: boolean;
   disabled: boolean;
 }
+
 @Component({
   selector: 'set-button',
   templateUrl: './button.component.html',
@@ -35,9 +31,9 @@ export interface SetButtonWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetButtonWidgetComponent extends AbstractWidget<
+export class SetButtonWidgetComponent extends BaseWidget<
   SetButtonWidgetOptions,
-  MainSlotContentDef,
+  undefined,
   ButtonWidgetEvents
 > {
   running = false;

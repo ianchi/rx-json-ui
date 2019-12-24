@@ -1,6 +1,6 @@
 <div class="settings-page-column">
   <ng-container
-    *ngFor="let element of content.main"
+    *ngFor="let element of content!.main"
     [wdgWidget]="element"
     [parentContext]="context"
   >

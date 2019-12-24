@@ -12,12 +12,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
 
 export interface AccordionWidgetOptions {
   title: string;
   description: string;
 }
+
 @Component({
   selector: 'wdg-accordion',
   templateUrl: './accordion.component.html',
@@ -25,7 +26,10 @@ export interface AccordionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccordionWidgetComponent extends AbstractWidget<AccordionWidgetOptions> {
+export class AccordionWidgetComponent extends BaseWidget<
+  AccordionWidgetOptions,
+  MainSlotContentDef
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

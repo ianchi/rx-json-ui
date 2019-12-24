@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { SlotedContentDef, WidgetDef } from '../core/index';
+import { AbstractSlotContentDef, AbstractWidgetDef } from '../core/index';
 
 import { ISchema, SchemaArray, SchemaObject, SchemaUI } from './interface';
 
@@ -28,8 +28,8 @@ export function buildUI(
   ui?: SchemaUI,
   propInclude?: string[],
   propExclude?: string[]
-): WidgetDef {
-  let widget: WidgetDef = {
+): AbstractWidgetDef {
+  let widget: AbstractWidgetDef = {
     widget: BUILDER_WIDGETS.default,
     bind,
     options: {},
@@ -83,9 +83,9 @@ export function buildUI(
   return widget;
 }
 
-function buildArray(schema: SchemaArray, bind: string): WidgetDef {
+function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
   const ui = schema.ui || {},
-    widget: WidgetDef = {
+    widget: AbstractWidgetDef = {
       widget: BUILDER_WIDGETS.list,
       bind,
       exportAs: ui.exportAs || '$model',
@@ -136,9 +136,9 @@ function buildObject(
   bind: string,
   _propInclude?: string[],
   propExclude?: string[]
-): WidgetDef {
+): AbstractWidgetDef {
   const ui: SchemaUI = schema.ui || {},
-    widget: WidgetDef = {
+    widget: AbstractWidgetDef = {
       widget: BUILDER_WIDGETS.object,
       exportAs: ui.exportAs || '$model',
       bind,
@@ -152,7 +152,7 @@ function buildObject(
     } else ordered = keys;
 
     keys = ordered;
-    widget.content = { main: [] } as SlotedContentDef;
+    widget.content = { main: [] } as AbstractSlotContentDef;
 
     if (ui.fieldsets) {
       const sets = ui.fieldsets.sets,

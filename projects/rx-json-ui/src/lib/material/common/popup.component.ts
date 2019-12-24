@@ -42,13 +42,14 @@ import { PopupSlotsDef } from '../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PopupWidgetComponent implements OnInit {
+// tslint:disable-next-line: component-class-suffix
+export class PopupComponent implements OnInit {
   content = { main: [], actions: [] } as PopupSlotsDef;
   parentContext: Context | undefined;
   title: string | undefined;
   constructor(
     @Inject(MAT_DIALOG_DATA) public _data: any,
-    public _dialogRef: MatDialogRef<PopupWidgetComponent>
+    public _dialogRef: MatDialogRef<PopupComponent>
   ) {}
   ngOnInit(): void {
     this.content = this._data.content || { main: { widget: 'empty' } };

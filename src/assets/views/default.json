@@ -1,7 +1,15 @@
 {
-  "widget": "container",
+  "widget": "form",
 
-  "for": "i=interval(5000,3), [[1,2,3,4],[10,4,20,2],[1,2,3,4]][i]",
+  "if": "i=interval(5000,3), [[1,2,3,4],[10,4,20,2],[1,2,3,4]][i]",
 
-  "content": [{ "widget": "span", "options": { "text=": "`${$for.index}:${$for.item}`" } }]
+  "content": {
+    "main": [
+      {
+        "widget": "table",
+        "options": { "actions=": "`${$for.index}:${$for.item}`", "actionsHeader": "3" }
+      }
+    ]
+  },
+  "events": { "other": "" }
 }

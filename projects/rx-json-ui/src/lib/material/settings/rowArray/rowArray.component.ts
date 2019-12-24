@@ -12,12 +12,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
+import { AbstractArrayWidgetComponent, Expressions, MainSlotContentDef } from '../../../core/index';
 
 export interface RowArrayWidgetOptions {
   newRow: string;
   allowDel: boolean;
 }
+
 @Component({
   selector: 'set-row-array',
   templateUrl: './rowArray.component.html',
@@ -27,7 +28,8 @@ export interface RowArrayWidgetOptions {
   host: { class: 'set-row' },
 })
 export class SetRowArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  RowArrayWidgetOptions
+  RowArrayWidgetOptions,
+  MainSlotContentDef
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

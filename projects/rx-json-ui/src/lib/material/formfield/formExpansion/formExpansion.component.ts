@@ -15,20 +15,20 @@ import {
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
 import { Expressions } from '../../../core/index';
 
-export interface FormExpanssionWidgetOptions {
+export interface FormExpansionWidgetOptions {
   title: string;
   description: string;
 }
 
 @Component({
-  selector: 'wdg-form',
-  templateUrl: './formExpanssion.component.html',
-  styleUrls: ['./formExpanssion.component.scss'],
+  selector: 'wdg-form-expansion',
+  templateUrl: './formExpansion.component.html',
+  styleUrls: ['./formExpansion.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormExpanssionWidgetComponent extends AbstractFormWidgetComponent<
-  FormExpanssionWidgetOptions
+export class FormExpansionWidgetComponent extends AbstractFormWidgetComponent<
+  FormExpansionWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

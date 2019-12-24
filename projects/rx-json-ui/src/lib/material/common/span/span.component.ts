@@ -12,11 +12,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions } from '../../../core/index';
 
 export interface SpanWidgetOptions {
   text: string;
 }
+
 @Component({
   selector: 'wdg-span',
   templateUrl: './span.component.html',
@@ -25,7 +26,7 @@ export interface SpanWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpanWidgetComponent extends AbstractWidget<SpanWidgetOptions> {
+export class SpanWidgetComponent extends BaseWidget<SpanWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

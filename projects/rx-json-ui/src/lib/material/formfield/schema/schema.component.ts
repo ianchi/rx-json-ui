@@ -12,10 +12,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
 import { buildUI, ISchema } from '../../../schema';
 
-export interface SchemaWidgetDef {
+export interface SchemaWidgetOptions {
   schema: ISchema;
   bind: string;
 }
@@ -27,11 +27,12 @@ export interface SchemaWidgetDef {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SchemaWidgetComponent extends AbstractWidget<SchemaWidgetDef> {
+export class SchemaWidgetComponent extends BaseWidget<SchemaWidgetOptions, undefined> {
+  resolvedContent: MainSlotContentDef = { main: [] };
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
   dynOnChange(): void {
-    this.content.main = [buildUI(this.options.schema, this.options.bind)];
+    this.resolvedContent = { main: [buildUI(this.options.schema, this.options.bind)] };
   }
 }

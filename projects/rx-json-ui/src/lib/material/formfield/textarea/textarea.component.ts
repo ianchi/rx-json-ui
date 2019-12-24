@@ -17,8 +17,9 @@ import { SchemaBase } from '../../../schema/interface';
 
 export interface TextAreaWidgetOptions extends SchemaBase<any> {
   type: string;
-  required: boolean;
+  required?: boolean;
 }
+
 @Component({
   selector: 'wdg-textarea',
   templateUrl: './textarea.component.html',

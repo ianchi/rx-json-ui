@@ -25,6 +25,23 @@ import { SetSelectWidgetComponent } from './select/select.component';
 import { SetSliderWidgetComponent } from './slider/slider.component';
 import { SetSubpageWidgetComponent } from './subpage/subpage.component';
 import { SetToggleWidgetComponent } from './toggle/toggle.component';
+
+export { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
+export { SetButtonWidgetComponent } from './button/button.component';
+export { SetExpansionWidgetComponent } from './expansion/expansion.component';
+export { SetInputWidgetComponent } from './input/input.component';
+export { SetLinkWidgetComponent } from './link/link.component';
+export { SetListWidgetComponent } from './list/list.component';
+export { SetPageWidgetComponent } from './page/page.component';
+export { SetPopupWidgetComponent } from './popup/popup.component';
+export { SetRowArrayWidgetComponent } from './rowArray/rowArray.component';
+export { SetSectionWidgetComponent } from './section/section.component';
+export { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.component';
+export { SetSelectWidgetComponent } from './select/select.component';
+export { SetSliderWidgetComponent } from './slider/slider.component';
+export { SetSubpageWidgetComponent } from './subpage/subpage.component';
+export { SetToggleWidgetComponent } from './toggle/toggle.component';
+
 @NgModule({
   imports: [
     MaterialModule,

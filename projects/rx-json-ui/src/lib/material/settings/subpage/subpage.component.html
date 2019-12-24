@@ -8,7 +8,7 @@
     </div>
 
     <ng-container
-      *ngFor="let element of content.main"
+      *ngFor="let element of content!.main"
       [wdgWidget]="element"
       [parentContext]="context"
     >

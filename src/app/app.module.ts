@@ -49,10 +49,15 @@ export const ROOT = Context.create(
   {
     RxObject,
     of,
-    interval(period: number, count: number): Observable<number> { return interval(period).pipe(take(count))},
+    interval(period: number, count: number): Observable<number> {
+      return interval(period).pipe(take(count));
+    },
     data: RxObject(
       {
-        dropbear: [{ port: 22, interfaces: ['lan', 'vpn'] }, { port: 8022, interfaces: ['wan'] }],
+        dropbear: [
+          { port: 22, interfaces: ['lan', 'vpn'] },
+          { port: 8022, interfaces: ['wan'] },
+        ],
         children: [
           {
             subfield1: 'a',
@@ -71,6 +76,7 @@ export const ROOT = Context.create(
   undefined,
   true
 );
+
 // tslint:disable-next-line: max-classes-per-file
 @NgModule({
   declarations: [AppComponent],

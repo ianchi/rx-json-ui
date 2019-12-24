@@ -23,9 +23,7 @@ import { AutocompleteWidgetMixin, Expressions } from '../../../core/index';
   host: { class: 'set-row set-row-flex' },
 })
 export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin {
-
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
-
 }

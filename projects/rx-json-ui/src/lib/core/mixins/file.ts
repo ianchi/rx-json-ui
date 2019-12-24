@@ -9,9 +9,9 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ILvalue } from 'espression';
 import { isReactive } from 'espression-rx';
 
-import { AbstractWidget } from '../base/abstractwidget';
+import { BaseWidget } from '../base/abstractwidget';
 import {
-  AbstractEventsDef,
+  CommonEventsDef,
   MainSlotContentDef,
   multilineExpr,
   WidgetDef,
@@ -24,19 +24,20 @@ export interface FileWidgetOptions {
   disabled: boolean;
 }
 
-export interface FileWidgetEvents extends AbstractEventsDef {
+export type FileWidgetEvents = CommonEventsDef & {
   onAdded: multilineExpr;
-}
+};
 
-export class FileWidgetMixin extends AbstractWidget<
+export class FileWidgetMixin extends BaseWidget<
   FileWidgetOptions,
   MainSlotContentDef,
-  FileWidgetEvents
+  FileWidgetEvents,
+  true
 > {
   private lvalue: ILvalue | undefined;
 
   /**
-   * @important Needs to be overriden and decorated in derived Component class
+   * @important Needs to be overridden and decorated in derived Component class
    *
    * ```
    * @ViewChild('fileInput', { static: true }) files: File[] = [];
@@ -50,9 +51,9 @@ export class FileWidgetMixin extends AbstractWidget<
   }
 
   dynOnSetup(
-    def: WidgetDef<FileWidgetOptions, MainSlotContentDef, FileWidgetEvents>
-  ): WidgetDef<FileWidgetOptions, MainSlotContentDef, FileWidgetEvents> {
-    if (def.bind) {
+    def: WidgetDef<FileWidgetOptions, MainSlotContentDef, FileWidgetEvents, true>
+  ): WidgetDef<FileWidgetOptions, MainSlotContentDef, FileWidgetEvents, true> {
+    if (typeof def.bind === 'string') {
       const lvalue = this.expr.lvalue(def.bind, this.context);
 
       if (!lvalue)
@@ -78,7 +79,7 @@ export class FileWidgetMixin extends AbstractWidget<
       this.files.push(files[i]);
     }
 
-    // emmit selection
+    // emit selection
     if (this.lvalue) this.lvalue!.o[this.lvalue!.m] = this.files;
 
     this.emmit('onAdded');

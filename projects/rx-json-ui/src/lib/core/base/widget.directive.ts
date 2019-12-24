@@ -67,8 +67,8 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   ) {}
 
   /**
-   * Initialices the widget instantiation proces.
-   * Recreates everething on each change of inputs.
+   * Initializes the widget instantiation process.
+   * Recreates everything on each change of inputs.
    * It evaluates the `if` / `for` structural properties and creates the widgets accordingly
    */
   ngOnChanges(): void {
@@ -146,7 +146,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (!this.componentFactory || !this.widgetDef || index === null)
       throw new Error('Invalid widget definition');
 
-    // expose a readonly `$for` reactive property with the `item` and the `index`
+    // expose a read-only `$for` reactive property with the `item` and the `index`
     const context = Context.create(this.parentContext, undefined, {
       $for: RxObject({ item, index }),
     });
@@ -161,7 +161,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     this.unsuscribeStructural();
     this.destroyWidgets();
   }
-  /** Unsuscribes from the structural properties expressions */
+  /** Unsubscribes from the structural properties expressions */
   unsuscribeStructural(): void {
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
@@ -178,7 +178,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
   /**
    * Checks the basic validity of the widget definition and that it is properly registered
-   * Initialices the componentFactory
+   * Initializes the componentFactory
    */
   validateWidgetDef(): boolean {
     this.componentFactory = undefined;

@@ -16,9 +16,9 @@
   class="set-expansion-content"
   [ngClass]="{ expanded: formControl?.value, collapsed: !formControl?.value }"
 >
-  <div *ngIf="content.main.length && formControl?.value" class="set-subrows">
+  <div *ngIf="content?.main.length && formControl?.value" class="set-subrows">
     <ng-container
-      *ngFor="let element of content.main"
+      *ngFor="let element of content!.main"
       [wdgWidget]="element"
       [parentContext]="context"
     >

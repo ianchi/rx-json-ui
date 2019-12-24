@@ -19,24 +19,54 @@ import { MatTableDataSource } from '@angular/material/table';
 import { combineMixed } from 'espression-rx';
 import { isObservable } from 'rxjs';
 
-import { AbstractWidget, Context, Expressions, parseDefObject } from '../../../core/index';
+import { BaseWidget, Context, Expressions, parseDefObject } from '../../../core/index';
 
 export interface TableWidgetOptions {
+  /**  Label to show on the control (fixed text) */
   title: string;
+  /** Table's data. Each element's key maps to a column */
   dataSource: object[];
+  /** Order list of column keys (each maps to a property of the row element). */
   colKeys: string[];
+  /** Order list of column headers (if omitted the key is used as header). */
   colHeaders: string[];
   colsVisible: string[];
+  /** If set, the table has paging footer, with multiple options of page sizes */
   pageSizes: number[];
+  /**
+   * Allow filtering by the content of the listed columns (provided as array of keys).
+   * If not set, filter field is not present. If empty array, all columns are used
+   */
   filterBy: string[];
+  /**
+   * Disable sorting for the listed columns (provided as array of keys)
+   * If not set or false, all columns allow sorting. If `true`, sorting is disabled for all columns
+   */
   disableSort: string[];
+  /**
+   * Expression to apply to each column's data
+   * The following local variables are available in the expression's context:
+   */
 
   colTransform: string[];
+  /**
+   * Format to apply to each column's data for rendering\nIt must be a valid *Angular* format pipe string
+   */
   colFormat: string[];
 
-  actions: Array<{ icon: string; label: string; action: string }>;
+  actions: Array<{
+    /** SVG icon name to show */
+    icon: string;
+    /** Label for the action */
+    label: string;
+    /** Expression to evaluate when the actions is selected */
+    action: string;
+  }>;
+
+  /** Label to show on the actions column */
   actionsHeader: string;
 }
+
 @Component({
   selector: 'wdg-table',
   templateUrl: './table.component.html',
@@ -44,7 +74,7 @@ export interface TableWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableWidgetComponent extends AbstractWidget<TableWidgetOptions> implements OnInit {
+export class TableWidgetComponent extends BaseWidget<TableWidgetOptions> implements OnInit {
   tableDataSource: MatTableDataSource<object[]>;
 
   showCols: string[] = [];

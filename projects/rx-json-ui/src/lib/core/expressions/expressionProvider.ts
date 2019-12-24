@@ -11,6 +11,7 @@ import {
   IdentifierRule,
   ILvalue,
   INode,
+  IRuleSet,
   MEMBER_TYPE,
   MEMBER_TYPE_COMP,
   NumberRule,
@@ -24,9 +25,23 @@ import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
 import { Context } from './context';
 import { Expressions } from './expressions';
 
+export function lvalueRule(): IRuleSet {
+  return {
+    lvalue: [
+      new BinaryOperatorRule({
+        '.': MEMBER_TYPE,
+        '[': { ...MEMBER_TYPE_COMP, subRules: 'computed' },
+      }),
+      'identifier',
+    ],
+    identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
+    computed: [new StringRule(), new NumberRule(), 'identifier'],
+    property: [new IdentifierRule()],
+  };
+}
 /**
  * Service for Parsing and for evaluating expressions in Widget's configuration
- * The funcionality is provided by the ESpression package
+ * The functionality is provided by the ESpression package
  *
  */
 export class ESpression extends Expressions {
@@ -38,24 +53,10 @@ export class ESpression extends Expressions {
   constructor() {
     super();
 
-    // remove Progam / Statements rules, and keep only expressions
+    // remove Program / Statements rules, and keep only expressions
     this._parser = new ES6Parser(true);
 
-    this._keyParser = new Parser(
-      {
-        lvalue: [
-          new BinaryOperatorRule({
-            '.': MEMBER_TYPE,
-            '[': { ...MEMBER_TYPE_COMP, subRules: 'computed' },
-          }),
-          'identifier',
-        ],
-        identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
-        computed: [new StringRule(), new NumberRule(), 'identifier'],
-        property: [new IdentifierRule()],
-      },
-      'lvalue'
-    );
+    this._keyParser = new Parser(lvalueRule(), 'lvalue');
 
     this._rxEval = new ReactiveEval();
   }
@@ -80,7 +81,7 @@ export class ESpression extends Expressions {
   /**
    * Parses the string expression using the restricted 'key' parsing rules,
    * intended to parse bindings to model keys.
-   * As they must be lvalues the rules are more limited.
+   * As they must be lvalue the rules are more limited.
    */
   parseKey(expression: string): INode | undefined {
     let result: INode | undefined;
@@ -142,7 +143,7 @@ export class ESpression extends Expressions {
    * Expression version of the Array.map function.
    * I replaces each array/object member with the result of evaluating an expression.
    * The expression gets in its eval context the variables:
-   * `$object` the original object being maped
+   * `$object` the original object being mapped
    * `$value` the current value
    * `$index` for arrays, the current index being replaced
    * `$key` for objects, the current key
@@ -192,11 +193,11 @@ export class ESpression extends Expressions {
    * Expression version of the Array.reduce function.
    * I replaces each array/object member with the result of evaluating an expression.
    * The expression gets in its eval context the variables:
-   * `$object` the original object being maped
+   * `$object` the original object being mapped
    * `$value` the current element
    * `$index` for arrays, the current index being replaced
    * `$key` for objects, the current key
-   * `$prev` the previously returned value (the acumulation)
+   * `$prev` the previously returned value (the accumulation)
    */
   reduceFactory(): (obj: any[] | object, expression: string, initValue: any) => any {
     const self = this;

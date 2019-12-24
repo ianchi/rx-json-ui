@@ -9,14 +9,17 @@ import { ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 
-import { AbstractWidget } from '../base/abstractwidget';
-import { WidgetDef } from '../base/public.interface';
+import { BaseWidget } from '../base/abstractwidget';
+import { CommonEventsDef, ConstrainSlots, WidgetDef } from '../base/public.interface';
 import { Context, Expressions } from '../expressions/index';
 
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
-export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends AbstractWidget<T> {
+export class AbstractArrayWidgetComponent<
+  T extends { newRow: any },
+  S extends ConstrainSlots<S> | undefined = undefined
+> extends BaseWidget<T, S, CommonEventsDef, false> {
   formArray: FormArray | undefined;
   boundData: any[] | undefined;
 
@@ -26,7 +29,9 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
     super(cdr, expr);
   }
 
-  dynOnSetup(def: WidgetDef<T>): WidgetDef<T> {
+  dynOnSetup(
+    def: WidgetDef<T, S, CommonEventsDef, false>
+  ): WidgetDef<T, S, CommonEventsDef, false> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
@@ -47,7 +52,7 @@ export class AbstractArrayWidgetComponent<T extends { newRow: any }> extends Abs
 
     // create a Store for the variables
     // binding is always on the parent context directly, so it can't get shadowed in the child
-    // and if the variable is created, it can still be accesed after child's destruction
+    // and if the variable is created, it can still be accessed after child's destruction
     const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext);
 
     if (!lvalue)

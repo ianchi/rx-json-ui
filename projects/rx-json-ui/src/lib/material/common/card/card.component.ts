@@ -12,21 +12,18 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import {
-  AbstractWidget,
-  Expressions,
-  SimpleContentDef,
-  SlotedContentDef,
-} from '../../../core/index';
+import { BaseWidget, Expressions, MainSlotContentDef, SimpleContentDef } from '../../../core/index';
 
 export interface CardWidgetOptions {
   title: string;
   description: string;
 }
 
-export interface CardWidgetSlots extends SlotedContentDef {
+type CardWidgetSlots = MainSlotContentDef & {
+  /** Content for the *actions* section of the card */
   actions: SimpleContentDef;
-}
+};
+
 @Component({
   selector: 'wdg-card',
   templateUrl: './card.component.html',
@@ -34,7 +31,7 @@ export interface CardWidgetSlots extends SlotedContentDef {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardWidgetComponent extends AbstractWidget<CardWidgetOptions, CardWidgetSlots> {
+export class CardWidgetComponent extends BaseWidget<CardWidgetOptions, CardWidgetSlots> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

@@ -17,13 +17,28 @@ import { FileWidgetComponent } from './file/file.component';
 import { FormWidgetComponent } from './form/form.component';
 import { FormAccordionWidgetComponent } from './formAccordion/formAccordion.component';
 import { FormArrayWidgetComponent } from './formArray/formArray.component';
-import { FormExpanssionWidgetComponent } from './formExpanssion/formExpanssion.component';
+import { FormExpansionWidgetComponent } from './formExpansion/formExpansion.component';
 import { InputWidgetComponent } from './input/input.component';
 import { SchemaWidgetComponent } from './schema/schema.component';
 import { SelectWidgetComponent } from './select/select.component';
 import { SliderWidgetComponent } from './slider/slider.component';
 import { TextAreaWidgetComponent } from './textarea/textarea.component';
 import { ToggleWidgetComponent } from './toggle/toggle.component';
+
+export { AutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
+export { ButtonWidgetComponent } from './button/button.component';
+export { CheckboxWidgetComponent } from './checkbox/checkbox.component';
+export { FileWidgetComponent } from './file/file.component';
+export { FormWidgetComponent } from './form/form.component';
+export { FormAccordionWidgetComponent } from './formAccordion/formAccordion.component';
+export { FormArrayWidgetComponent } from './formArray/formArray.component';
+export { FormExpansionWidgetComponent } from './formExpansion/formExpansion.component';
+export { InputWidgetComponent } from './input/input.component';
+export { SchemaWidgetComponent } from './schema/schema.component';
+export { SelectWidgetComponent } from './select/select.component';
+export { SliderWidgetComponent } from './slider/slider.component';
+export { TextAreaWidgetComponent } from './textarea/textarea.component';
+export { ToggleWidgetComponent } from './toggle/toggle.component';
 
 @NgModule({
   imports: [
@@ -39,12 +54,12 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'form', component: FormWidgetComponent },
         { type: 'form-array', component: FormArrayWidgetComponent },
         { type: 'form-accordion', component: FormAccordionWidgetComponent },
-        { type: 'form-expanssion', component: FormExpanssionWidgetComponent },
+        { type: 'form-expansion', component: FormExpansionWidgetComponent },
         { type: 'schema-form', component: SchemaWidgetComponent },
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
         { type: 'file-button', component: FileWidgetComponent },
         { type: 'textarea', component: TextAreaWidgetComponent },
-        { type: 'selet', component: SelectWidgetComponent },
+        { type: 'select', component: SelectWidgetComponent },
       ],
     }),
   ],
@@ -57,7 +72,7 @@ import { ToggleWidgetComponent } from './toggle/toggle.component';
     FormWidgetComponent,
     FormArrayWidgetComponent,
     FormAccordionWidgetComponent,
-    FormExpanssionWidgetComponent,
+    FormExpansionWidgetComponent,
     SchemaWidgetComponent,
     AutocompleteWidgetComponent,
     FileWidgetComponent,

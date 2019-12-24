@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions, TitleOption } from '../../../core/index';
+import { BaseWidget, Expressions, MainSlotContentDef, TitleOption } from '../../../core/index';
 
 @Component({
   selector: 'set-sectiongroup',
@@ -21,7 +21,7 @@ import { AbstractWidget, Expressions, TitleOption } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSectionGroupWidgetComponent extends AbstractWidget<TitleOption> {
+export class SetSectionGroupWidgetComponent extends BaseWidget<TitleOption, MainSlotContentDef> {
   expanded = false;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

@@ -17,7 +17,7 @@ import {
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { RxObject } from 'espression-rx';
 
-import { WidgetDef } from './base/public.interface';
+import { AbstractWidgetDef } from './base/public.interface';
 import { Context, ROOT_EXPR_CONTEXT } from './expressions/index';
 
 @Component({
@@ -27,7 +27,7 @@ import { Context, ROOT_EXPR_CONTEXT } from './expressions/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoutedWidgetComponent implements OnInit {
-  widgetDef: WidgetDef | undefined;
+  widgetDef: AbstractWidgetDef | undefined;
   parentContext: Context | undefined;
   context: Context | undefined;
   paramMap: ParamMap | undefined;

@@ -20,6 +20,7 @@ export interface FormAccordionWidgetOptions {
   newRow: string;
   allowDel: boolean;
 }
+
 @Component({
   selector: 'wdg-form-accordion',
   templateUrl: './formAccordion.component.html',

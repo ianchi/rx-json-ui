@@ -15,10 +15,20 @@ import { CardWidgetComponent } from './card/card.component';
 import { CodeWidgetComponent } from './code/code.component';
 import { ContainerWidgetComponent } from './container/container.component';
 import { GridContainerWidgetComponent } from './grid-container/gridcontainer.component';
-import { PopupWidgetComponent } from './popupwidget.component';
+import { PopupComponent } from './popup.component';
 import { SpanWidgetComponent } from './span/span.component';
 import { TableWidgetComponent } from './table/table.component';
 import { TabsWidgetComponent } from './tabs/tabs.component';
+
+export { AccordionWidgetComponent } from './accordion/accordion.component';
+export { CardWidgetComponent } from './card/card.component';
+export { CodeWidgetComponent } from './code/code.component';
+export { ContainerWidgetComponent } from './container/container.component';
+export { GridContainerWidgetComponent } from './grid-container/gridcontainer.component';
+export { PopupComponent } from './popup.component';
+export { SpanWidgetComponent } from './span/span.component';
+export { TableWidgetComponent } from './table/table.component';
+export { TabsWidgetComponent } from './tabs/tabs.component';
 
 @NgModule({
   imports: [
@@ -45,10 +55,10 @@ import { TabsWidgetComponent } from './tabs/tabs.component';
     TabsWidgetComponent,
     CodeWidgetComponent,
     AccordionWidgetComponent,
-    PopupWidgetComponent,
+    PopupComponent,
     SpanWidgetComponent,
   ],
-  exports: [WidgetsCoreModule, PopupWidgetComponent],
-  entryComponents: [PopupWidgetComponent],
+  exports: [WidgetsCoreModule, PopupComponent],
+  entryComponents: [PopupComponent],
 })
 export class CommonWidgetsModule {}

@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget } from './base/abstractwidget';
+import { BaseWidget } from './base/abstractwidget';
 import { Expressions } from './expressions/index';
 
 @Component({
@@ -21,7 +21,7 @@ import { Expressions } from './expressions/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DefaultWidgetComponent extends AbstractWidget<{}> {
+export class DefaultWidgetComponent extends BaseWidget<{}> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

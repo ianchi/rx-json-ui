@@ -22,6 +22,7 @@ export interface SetListWidgetOptions {
   required: boolean;
   newRow: string;
 }
+
 @Component({
   selector: 'set-list',
   templateUrl: './list.component.html',

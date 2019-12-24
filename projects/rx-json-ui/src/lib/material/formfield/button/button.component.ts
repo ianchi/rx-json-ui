@@ -12,12 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import {
-  AbstractWidget,
-  ButtonWidgetEvents,
-  Expressions,
-  MainSlotContentDef,
-} from '../../../core/index';
+import { BaseWidget, ButtonWidgetEvents, Expressions } from '../../../core/index';
 
 export interface ButtonWidgetOptions {
   title: string;
@@ -31,9 +26,9 @@ export interface ButtonWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonWidgetComponent extends AbstractWidget<
+export class ButtonWidgetComponent extends BaseWidget<
   ButtonWidgetOptions,
-  MainSlotContentDef,
+  undefined,
   ButtonWidgetEvents
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

@@ -10,7 +10,7 @@ import { Inject, Injectable, InjectionToken, Type } from '@angular/core';
 import { AbstractWidget } from './base/abstractwidget';
 import { DefaultWidgetComponent } from './defaultwidget.component';
 
-export const AF_CONFIG_TOKEN = new InjectionToken<AutoFormConfig>('AF_CONFIG_TOKEN');
+export const AF_CONFIG_TOKEN = new InjectionToken<AutoFormConfig[]>('AF_CONFIG_TOKEN');
 
 export interface WidgetConf {
   type: string;
@@ -25,9 +25,9 @@ export interface AutoFormConfig {
   providedIn: 'root',
 })
 export class WidgetRegistry {
-  private _registry = new Map<string, Type<AbstractWidget<any>>>();
+  private _registry = new Map<string, Type<AbstractWidget>>();
 
-  private _default: Type<AbstractWidget<any>>;
+  private _default: Type<AbstractWidget>;
 
   constructor(@Inject(AF_CONFIG_TOKEN) configs: AutoFormConfig[] = []) {
     configs.forEach(conf => conf.widgets && this.register(conf.widgets));
@@ -44,7 +44,7 @@ export class WidgetRegistry {
     });
   }
 
-  get(type: string): Type<AbstractWidget<any>> {
+  get(type: string): Type<AbstractWidget> {
     return this._registry.get(type) || this._default;
   }
 }

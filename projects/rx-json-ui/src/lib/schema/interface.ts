@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { WidgetDef } from '../core/index';
+import { AbstractWidgetDef } from '../core/index';
 
 export type ISchema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
 export interface IMap<T> {
@@ -169,7 +169,7 @@ export interface SchemaError {
 
 export type ValidatorFn = (value: any) => SchemaError | null;
 
-export interface SchemaUI extends Partial<WidgetDef> {
+export interface SchemaUI extends Partial<AbstractWidgetDef> {
   order?: string[];
 
   fieldset?: number;

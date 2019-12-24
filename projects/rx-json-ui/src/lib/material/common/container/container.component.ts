@@ -12,11 +12,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
 
 export interface ContainerWidgetOptions {
   direction: string;
 }
+
 @Component({
   selector: 'wdg-container',
   templateUrl: './container.component.html',
@@ -30,7 +31,10 @@ export interface ContainerWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContainerWidgetComponent extends AbstractWidget<ContainerWidgetOptions> {
+export class ContainerWidgetComponent extends BaseWidget<
+  ContainerWidgetOptions,
+  MainSlotContentDef
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

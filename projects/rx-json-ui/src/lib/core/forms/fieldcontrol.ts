@@ -14,7 +14,7 @@ export class FieldControl {
   private _subscription: Subscription | undefined;
 
   constructor(public _control: AbstractControl) {
-    // use BehaviorSubject to emmit initial state
+    // use BehaviorSubject to emit initial state
     const validSubject = new BehaviorSubject(_control.valid);
     const disabledSubject = new BehaviorSubject(_control.valid);
 

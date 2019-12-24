@@ -12,11 +12,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { BaseWidget, Expressions } from '../../../core/index';
 
 export interface CodeWidgetOptions {
   text: string;
 }
+
 @Component({
   selector: 'wdg-code',
   templateUrl: './code.component.html',
@@ -25,7 +26,7 @@ export interface CodeWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodeWidgetComponent extends AbstractWidget<CodeWidgetOptions> {
+export class CodeWidgetComponent extends BaseWidget<CodeWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

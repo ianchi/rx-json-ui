@@ -14,7 +14,7 @@ import {
 import { Router } from '@angular/router';
 
 import {
-  AbstractWidget,
+  BaseWidget,
   ButtonWidgetEvents,
   Expressions,
   MainSlotContentDef,
@@ -25,6 +25,7 @@ export interface SetLinkWidgetOptions {
   description: string;
   link: string;
 }
+
 @Component({
   selector: 'set-link',
   templateUrl: './link.component.html',
@@ -33,7 +34,7 @@ export interface SetLinkWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
 })
-export class SetLinkWidgetComponent extends AbstractWidget<
+export class SetLinkWidgetComponent extends BaseWidget<
   SetLinkWidgetOptions,
   MainSlotContentDef,
   ButtonWidgetEvents
@@ -45,7 +46,7 @@ export class SetLinkWidgetComponent extends AbstractWidget<
   clickEvent(): void {
     this.emmit('onClick');
     this.router.navigate([this.options.link], {
-      state: { widgetDef: this.content.main && this.content.main[0] },
+      state: { widgetDef: this.content!.main && this.content!.main[0] },
     });
   }
 }

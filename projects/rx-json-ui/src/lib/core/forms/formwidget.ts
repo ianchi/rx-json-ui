@@ -9,12 +9,13 @@ import { ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { isReactive, RxObject } from 'espression-rx';
 
-import { AbstractWidget } from '../base/abstractwidget';
+import { BaseWidget } from '../base/abstractwidget';
 import {
-  AbstractEventsDef,
   AbstractOptionsDef,
+  CommonEventsDef,
+  ConstrainEvents,
+  ConstrainSlots,
   MainSlotContentDef,
-  SlotedContentDef,
   WidgetDef,
 } from '../base/public.interface';
 import { Context, Expressions } from '../expressions/index';
@@ -24,16 +25,17 @@ import { FORM_CONTROL } from './formfieldwidget';
 
 export class AbstractFormWidgetComponent<
   O extends AbstractOptionsDef = {},
-  S extends SlotedContentDef = MainSlotContentDef,
-  E extends AbstractEventsDef = AbstractEventsDef
-> extends AbstractWidget<O, S, E> {
+  S extends ConstrainSlots<S> = MainSlotContentDef,
+  E extends ConstrainEvents<E> = CommonEventsDef,
+  B extends boolean | undefined = undefined
+> extends BaseWidget<O, S, E, B> {
   formGroup: FormGroup | undefined;
   boundData: object | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnSetup(def: WidgetDef<O, S, E>): WidgetDef<O, S, E> {
+  dynOnSetup(def: WidgetDef<O, S, E, B>): WidgetDef<O, S, E, B> {
     this.formGroup = new FormGroup({});
 
     // register with parent form, if any
@@ -50,7 +52,7 @@ export class AbstractFormWidgetComponent<
     });
 
     // get bound model if it has one or create aux unbound model
-    if (def.bind) {
+    if (typeof def.bind === 'string') {
       // binding is always on the parent context directly, so it can't get shadowed in the child
       const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext);
 

@@ -6,38 +6,33 @@
  */
 
 import { SchemaBase } from '../../schema';
-import {
-  AbstractEventsDef,
-  multilineExpr,
-  SimpleContentDef,
-  SlotedContentDef,
-} from '../base/public.interface';
+import { CommonEventsDef, multilineExpr, SimpleContentDef } from '../base/public.interface';
 
-export interface ButtonWidgetEvents extends AbstractEventsDef {
-  /** Event emmited when the button is clicked */
+export type ButtonWidgetEvents = CommonEventsDef & {
+  /** Event emitted when the button is clicked */
   onClick: multilineExpr;
-}
+};
 
 export interface TitleOption {
-  title: string;
+  title?: string;
 }
 
 export interface InputWidgetOptions extends SchemaBase<any> {
   type: string;
-  inputType: string;
-  required: boolean;
+  inputType?: string;
+  required?: boolean;
 }
 
 export interface SliderWidgetOptions {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 
   minimum: number;
   maximum: number;
   step: number;
 }
 
-export interface PopupSlotsDef extends SlotedContentDef {
+export interface PopupSlotsDef {
   main: SimpleContentDef;
   actions: SimpleContentDef;
 }

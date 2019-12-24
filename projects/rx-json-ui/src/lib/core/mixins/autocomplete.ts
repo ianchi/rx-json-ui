@@ -10,9 +10,10 @@ import { merge, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
+  AbstractSlotContentDef,
+  ConstrainEvents,
+  ConstrainSlots,
   FieldEventDef,
-  MainSlotContentDef,
-  SlotedContentDef,
   WidgetDef,
 } from '../base/public.interface';
 import { Expressions } from '../expressions/index';
@@ -21,8 +22,8 @@ import { SelectWidgetMixin, SelectWidgetOptions } from './select';
 
 export class AutocompleteWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
-  S extends SlotedContentDef = MainSlotContentDef,
-  E extends FieldEventDef = FieldEventDef
+  S extends ConstrainSlots<S> = AbstractSlotContentDef,
+  E extends ConstrainEvents<E> = FieldEventDef
 > extends SelectWidgetMixin<O, S, E> {
   /** Array with filtered options to display in dropdown */
   filteredOptions$: Observable<any[]> | undefined;
@@ -36,11 +37,11 @@ export class AutocompleteWidgetMixin<
     super.dynOnAfterBind();
 
     // We need to update filtered options both when text or enum changes
-    // so emmit on `enum` to later merge with value changes
+    // so emit on `enum` to later merge with value changes
     this.map('enum', val => (this.enumSubject.next(undefined), val));
   }
 
-  dynOnSetup(def: WidgetDef<O, S, E>): WidgetDef<O, S, E> {
+  dynOnSetup(def: WidgetDef<O, S, E, true>): WidgetDef<O, S, E, true> {
     const result = super.dynOnSetup(def);
     if (!this.formControl) return def;
 

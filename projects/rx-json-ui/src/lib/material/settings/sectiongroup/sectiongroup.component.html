@@ -3,16 +3,13 @@
     {{ options.title }}
   </div>
 
-  <div
-    class="settings-sectiongroup"
-    [ngClass]="{ expanded: expanded, collapsed: !expanded }"
-  >
+  <div class="settings-sectiongroup" [ngClass]="{ expanded: expanded, collapsed: !expanded }">
     <mat-icon svgIcon="chevron-down" class="rotating-icon"></mat-icon>
   </div>
 </div>
-<div *ngIf="content?.length && expanded" class="settings-sectiongroup-wrapper">
+<div *ngIf="content?.main.length && expanded" class="settings-sectiongroup-wrapper">
   <ng-container
-    *ngFor="let element of content.main"
+    *ngFor="let element of content!.main"
     [wdgWidget]="element"
     [parentContext]="context"
   >
