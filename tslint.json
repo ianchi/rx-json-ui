@@ -31,7 +31,7 @@
     ],
     "forin": true,
     "import-blacklist": [true, "rxjs/Rx"],
-    "interface-name": { "options": ["always-prefix"] },
+    "interface-name": { "options": ["never-prefix"] },
     "interface-over-type-literal": true,
     "jsdoc-format": [true, "check-multiline-start"],
     "label-position": true,
