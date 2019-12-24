@@ -1,0 +1,7 @@
+{
+  "widget": "container",
+
+  "for": "i=interval(5000,3), [[1,2,3,4],[10,4,20,2],[1,2,3,4]][i]",
+
+  "content": [{ "widget": "span", "options": { "text=": "`${$for.index}:${$for.item}`" } }]
+}

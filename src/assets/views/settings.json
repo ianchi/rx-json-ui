@@ -27,8 +27,7 @@
         },
         {
           "widget": "set-button",
-          "bind": "data.set_time",
-          "onInit": "a = new Date(Date.now())",
+          "events": { "onSetup": "a = new Date(Date.now())", "onClick": "" },
           "options": {
             "title": "Local Time",
             "description=": "a.toDateString() + ' ' + a.toLocaleTimeString()",
@@ -52,7 +51,7 @@
             {
               "widget": "set-input",
               "bind": "data.servers",
-              "displayIf": "data.ntp",
+              "if": "data.ntp",
               "options": {
                 "title": "Servers",
                 "description": "NTP candidates",
@@ -62,7 +61,7 @@
             {
               "widget": "set-toggle",
               "bind": "data.ntp_server",
-              "displayIf": "data.ntp",
+              "if": "data.ntp",
               "options": { "title": "NTP Server", "description": "Provide local NTP server" }
             }
           ]
@@ -80,18 +79,31 @@
             "description": "Changes the administrator password for accessing the device",
             "popupTitle": "Change Password"
           },
-          "content": [
-            {
-              "widget": "input",
-              "bind": "data.pss1",
-              "options": { "title": "New password" }
-            },
-            {
-              "widget": "input",
-              "bind": "data.pss2",
-              "options": { "title": "Retype password" }
-            }
-          ]
+          "content": {
+            "main": [
+              {
+                "widget": "input",
+                "bind": "data.pss1",
+                "options": { "title": "New password" }
+              },
+              {
+                "widget": "input",
+                "bind": "data.pss2",
+                "options": { "title": "Retype password" }
+              }
+            ],
+            "actions": [
+              {
+                "widget": "button",
+                "options": {
+                  "title": "Cancel"
+                },
+                "events": {
+                  "onClick": ["$dlg", ".close()"]
+                }
+              }
+            ]
+          }
         },
         {
           "widget": "set-expansion",
