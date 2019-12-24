@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ISchema, IWidgetDef } from 'reactive-json-form-ng';
+import { ISchema, WidgetDef } from 'reactive-json-form-ng';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,7 @@ import { ISchema, IWidgetDef } from 'reactive-json-form-ng';
 export class AppComponent {
   title = 'app';
 
-  widgetDef: IWidgetDef;
+  widgetDef: WidgetDef;
   schema: ISchema;
 
   constructor(private http: HttpClient, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
