@@ -12,11 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, TitleOption } from '../../../core/index';
 
-export interface ICheckboxWidgetOptions {
-  title: string;
-}
 @Component({
   selector: 'wdg-checkbox',
   templateUrl: './checkbox.component.html',
@@ -24,9 +21,7 @@ export interface ICheckboxWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxWidgetComponent extends AbstractFormFieldWidget<
-  ICheckboxWidgetOptions
-> {
+export class CheckboxWidgetComponent extends AbstractFormFieldWidget<TitleOption> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

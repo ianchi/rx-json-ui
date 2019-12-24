@@ -12,11 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { AbstractWidget, Expressions, TitleOption } from '../../../core/index';
 
-export interface ISetSectionGroupWidgetOptions {
-  title: string;
-}
 @Component({
   selector: 'set-sectiongroup',
   templateUrl: './sectiongroup.component.html',
@@ -24,9 +21,7 @@ export interface ISetSectionGroupWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSectionGroupWidgetComponent extends AbstractWidget<
-  ISetSectionGroupWidgetOptions
-> {
+export class SetSectionGroupWidgetComponent extends AbstractWidget<TitleOption> {
   expanded = false;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

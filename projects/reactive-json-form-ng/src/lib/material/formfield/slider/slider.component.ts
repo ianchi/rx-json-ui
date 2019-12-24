@@ -12,11 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, TitleOption } from '../../../core/index';
 
-export interface ISliderWidgetOptions {
-  title: string;
-}
 @Component({
   selector: 'wdg-slider',
   templateUrl: './slider.component.html',
@@ -24,7 +21,7 @@ export interface ISliderWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SliderWidgetComponent extends AbstractFormFieldWidget<ISliderWidgetOptions> {
+export class SliderWidgetComponent extends AbstractFormFieldWidget<TitleOption> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

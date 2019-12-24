@@ -3,17 +3,11 @@
     {{ options.title }}
   </div>
 
-  <div
-    *ngIf="!formControl?.invalid || !formControl?.hasError('code')"
-    class="set-row-description"
-  >
+  <div *ngIf="!formControl?.invalid || !formControl?.hasError('code')" class="set-row-description">
     {{ options.description }}
   </div>
 
-  <div
-    *ngIf="formControl?.invalid && formControl?.hasError('code')"
-    class="set-row-error"
-  >
+  <div *ngIf="formControl?.invalid && formControl?.hasError('code')" class="set-row-error">
     {{ getError() }}
   </div>
 </div>
@@ -27,15 +21,8 @@
     [matAutocomplete]="auto"
     [required]="options.required"
   />
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    [displayWith]="displayFn()"
-    [panelWidth]="200"
-  >
-    <mat-option
-      *ngFor="let option of filteredOptions | async; index as optIndex"
-      [value]="option"
-    >
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn()" [panelWidth]="200">
+    <mat-option *ngFor="let option of filteredOptions$ | async; index as optIndex" [value]="option">
       {{ getLabel(option) }}
     </mat-option>
   </mat-autocomplete>

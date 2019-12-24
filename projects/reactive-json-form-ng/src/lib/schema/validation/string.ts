@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ISchemaString, ValidatorFn } from '../interface';
+import { SchemaString, ValidatorFn } from '../interface';
 
 import { baseValidator, ERR_TYPE, ERROR_MSG } from './base';
 import { formatValidator } from './format';
@@ -18,7 +18,7 @@ ERROR_MSG[ESTR_MIN] = "`Must be longer than '${$err.minLength}' characters`";
 ERROR_MSG[ESTR_MAX] = "`Must be shorter than '${$err.maxLength}' characters`";
 ERROR_MSG[ESTR_PAT] = "`Must comply with pattern '${$err.pattern}'`";
 
-export function stringValidator(schema: ISchemaString): ValidatorFn {
+export function stringValidator(schema: SchemaString): ValidatorFn {
   const minLength =
       typeof schema.minLength === 'number' && schema.minLength >= 0
         ? schema.minLength

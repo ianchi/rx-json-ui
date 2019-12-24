@@ -7,18 +7,18 @@
 
 import { Inject, Injectable, InjectionToken, Type } from '@angular/core';
 
-import { AbstractWidget } from './abstractwidget';
+import { AbstractWidget } from './base/abstractwidget';
 import { DefaultWidgetComponent } from './defaultwidget.component';
 
-export const AF_CONFIG_TOKEN = new InjectionToken<IAutoFormConfig>('AF_CONFIG_TOKEN');
+export const AF_CONFIG_TOKEN = new InjectionToken<AutoFormConfig>('AF_CONFIG_TOKEN');
 
-export interface IWidgetConf {
+export interface WidgetConf {
   type: string;
-  component: Type<AbstractWidget<any>>;
+  component: Type<AbstractWidget>;
 }
 
-export interface IAutoFormConfig {
-  widgets?: IWidgetConf[] | IWidgetConf;
+export interface AutoFormConfig {
+  widgets?: WidgetConf[] | WidgetConf;
 }
 
 @Injectable({
@@ -29,19 +29,18 @@ export class WidgetRegistry {
 
   private _default: Type<AbstractWidget<any>>;
 
-  constructor(@Inject(AF_CONFIG_TOKEN) configs: IAutoFormConfig[] = []) {
+  constructor(@Inject(AF_CONFIG_TOKEN) configs: AutoFormConfig[] = []) {
     configs.forEach(conf => conf.widgets && this.register(conf.widgets));
 
     this._default = this._registry.get('default') || DefaultWidgetComponent;
   }
 
-  register(widgets: IWidgetConf[] | IWidgetConf): void {
+  register(widgets: WidgetConf[] | WidgetConf): void {
     if (!widgets) return;
     if (!Array.isArray(widgets)) widgets = [widgets];
 
     widgets.forEach(widget => {
-      if (widget.type && widget.component)
-        this._registry.set(widget.type, widget.component);
+      if (widget.type && widget.component) this._registry.set(widget.type, widget.component);
     });
   }
 

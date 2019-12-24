@@ -5,14 +5,14 @@
   </mat-card-subtitle>
   <mat-card-content>
     <ng-container
-      *ngFor="let element of content"
+      *ngFor="let element of content.main"
       [wdgWidget]="element"
       [parentContext]="context"
     ></ng-container>
   </mat-card-content>
-  <mat-card-actions align="end" *ngIf="options.actions">
+  <mat-card-actions align="end" *ngIf="content.actions">
     <ng-container
-      *ngFor="let element of options.actions"
+      *ngFor="let element of content.actions"
       [wdgWidget]="element"
       [parentContext]="context"
     ></ng-container>

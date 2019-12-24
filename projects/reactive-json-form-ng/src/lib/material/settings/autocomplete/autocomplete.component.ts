@@ -12,8 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { Expressions } from '../../../core/index';
-import { AutocompleteWidgetComponent } from '../../formfield/autocomplete/autocomplete.component';
+import { AutocompleteWidgetMixin, Expressions } from '../../../core/index';
 
 @Component({
   selector: 'set-autocomplete',
@@ -23,7 +22,7 @@ import { AutocompleteWidgetComponent } from '../../formfield/autocomplete/autoco
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetAutocompleteWidgetComponent extends AutocompleteWidgetComponent {
+export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin {
 
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

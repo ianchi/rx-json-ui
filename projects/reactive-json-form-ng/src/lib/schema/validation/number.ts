@@ -3,7 +3,7 @@
  * Licensed under the MIT license.
  */
 
-import { ISchemaNumber, ValidatorFn } from '../interface';
+import { SchemaNumber, ValidatorFn } from '../interface';
 
 import { baseValidator, ERR_TYPE, ERROR_MSG } from './base';
 
@@ -19,7 +19,7 @@ ERROR_MSG[ENUM_EMIN] = "`Must be greater than '${$err.exclusiveMinimum}'`";
 ERROR_MSG[ENUM_EMAX] = "`Must be lower than '${$err.exclusiveMaximum}'`";
 ERROR_MSG[ENUM_MULT] = "`Must be multiple of '${$err.multipleOf}'`";
 
-export function numberValidator(schema: ISchemaNumber): ValidatorFn {
+export function numberValidator(schema: SchemaNumber): ValidatorFn {
   const isInteger = schema.type === 'integer',
     multipleOf = typeof schema.multipleOf === 'number' ? schema.multipleOf : null,
     minimum = typeof schema.minimum === 'number' ? schema.minimum : null,

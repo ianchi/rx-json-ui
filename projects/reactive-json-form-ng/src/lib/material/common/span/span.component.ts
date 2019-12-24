@@ -14,7 +14,7 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
-export interface ISpanWidgetOptions {
+export interface SpanWidgetOptions {
   text: string;
 }
 @Component({
@@ -25,7 +25,7 @@ export interface ISpanWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpanWidgetComponent extends AbstractWidget<ISpanWidgetOptions> {
+export class SpanWidgetComponent extends AbstractWidget<SpanWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

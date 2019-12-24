@@ -13,9 +13,9 @@ import {
 } from '@angular/core';
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
-import { ISchemaBase } from '../../../schema/interface';
+import { SchemaBase } from '../../../schema/interface';
 
-export interface ITextAreaWidgetOptions extends ISchemaBase<any> {
+export interface TextAreaWidgetOptions extends SchemaBase<any> {
   type: string;
   required: boolean;
 }
@@ -26,9 +26,7 @@ export interface ITextAreaWidgetOptions extends ISchemaBase<any> {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextAreaWidgetComponent extends AbstractFormFieldWidget<
-  ITextAreaWidgetOptions
-> {
+export class TextAreaWidgetComponent extends AbstractFormFieldWidget<TextAreaWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

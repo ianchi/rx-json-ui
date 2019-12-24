@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { IOptionDef } from '../core/index';
+import { WidgetDef } from '../core/index';
 
-export type ISchema =
-  | ISchemaNumber
-  | ISchemaString
-  | ISchemaBoolean
-  | ISchemaArray
-  | ISchemaObject;
+export type ISchema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
 export interface IMap<T> {
   [property: string]: T;
 }
@@ -20,7 +15,7 @@ export interface IMap<T> {
 /**
  * Generic schema definition, with keywords valid for all types
  */
-export interface ISchemaBase<T> {
+export interface SchemaBase<T> {
   type?: string | string[];
 
   title?: string;
@@ -32,13 +27,13 @@ export interface ISchemaBase<T> {
 
   'depends='?: string;
   required?: boolean;
-  ui?: ISchemaUI;
+  ui?: SchemaUI;
 }
 
 /**
  * Schema Keywords specific for validating number and integer types
  */
-export interface ISchemaNumber extends ISchemaBase<number> {
+export interface SchemaNumber extends SchemaBase<number> {
   type: 'number' | 'integer';
 
   /**
@@ -59,7 +54,7 @@ export interface ISchemaNumber extends ISchemaBase<number> {
 /**
  * Schema Keywords specific for validating strings
  */
-export interface ISchemaString extends ISchemaBase<string> {
+export interface SchemaString extends SchemaBase<string> {
   type: 'string';
   /**
    * The data to be valid should have at least this minimum number of characters (inclusive).
@@ -84,14 +79,14 @@ export interface ISchemaString extends ISchemaBase<string> {
 /**
  * Schema Keywords specific for validating a boolean
  */
-export interface ISchemaBoolean extends ISchemaBase<boolean> {
+export interface SchemaBoolean extends SchemaBase<boolean> {
   type: 'boolean';
 }
 
 /**
  * Schema Keywords specific for validating arrays
  */
-export interface ISchemaArray extends ISchemaBase<any[]> {
+export interface SchemaArray extends SchemaBase<any[]> {
   type: 'array';
 
   /** This value is the maximum (inclusive) allowed number of items in the array for the data to be valid. */
@@ -129,7 +124,7 @@ export interface ISchemaArray extends ISchemaBase<any[]> {
   additionalItems?: ISchema | boolean;
 }
 
-export interface ISchemaObject extends ISchemaBase<IMap<object>> {
+export interface SchemaObject extends SchemaBase<IMap<object>> {
   type: 'object';
   /** This value is the maximum (inclusive) allowed number of properties in the object for the data to be valid. */
   maxProperties?: number;
@@ -167,40 +162,25 @@ export interface ISchemaObject extends ISchemaBase<IMap<object>> {
   propertyNames?: ISchema;
 }
 
-export interface ISchemaError {
+export interface SchemaError {
   code: number;
   [keyword: string]: any;
 }
 
-export type ValidatorFn = (value: any) => ISchemaError | null;
+export type ValidatorFn = (value: any) => SchemaError | null;
 
-export interface ISchemaUI {
-  /**
-   * Force the use of this widget to edit the field.
-   * It must be consisteng with the data type, or the behaviour is undefined
-   */
-  widget?: string;
-
-  /** Add/Override widget's options */
-  options?: IOptionDef;
-
+export interface SchemaUI extends Partial<WidgetDef> {
   order?: string[];
-
-  exportAs?: string;
-  elementAs?: string;
-  indexAs?: string;
-  onInit?: string;
-  waitFor?: string;
 
   fieldset?: number;
   fieldsets?: {
     widget?: string;
     default?: number;
-    sets: IFieldSet[];
+    sets: FieldSet[];
   };
 }
 
-export interface IFieldSet {
+export interface FieldSet {
   title?: string;
   fields: string[];
 }

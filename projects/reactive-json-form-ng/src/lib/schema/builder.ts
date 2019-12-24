@@ -5,9 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { IFieldGroupWidgetDef, IWidgetDef } from '../core/index';
+import { SlotedContentDef, WidgetDef } from '../core/index';
 
-import { ISchema, ISchemaArray, ISchemaObject, ISchemaUI } from './interface';
+import { ISchema, SchemaArray, SchemaObject, SchemaUI } from './interface';
 
 export const BUILDER_WIDGETS = {
   default: 'default',
@@ -25,14 +25,15 @@ export const BUILDER_WIDGETS = {
 export function buildUI(
   schema: ISchema,
   bind: string,
-  ui?: ISchemaUI,
+  ui?: SchemaUI,
   propInclude?: string[],
   propExclude?: string[]
-): IWidgetDef {
-  let widget: IFieldGroupWidgetDef = {
+): WidgetDef {
+  let widget: WidgetDef = {
     widget: BUILDER_WIDGETS.default,
     bind,
     options: {},
+    events: {},
   };
 
   if (!schema) return widget;
@@ -48,9 +49,7 @@ export function buildUI(
 
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'string':
-      widget.widget = hasProp('enum', schema)
-        ? BUILDER_WIDGETS.enum
-        : BUILDER_WIDGETS.string;
+      widget.widget = hasProp('enum', schema) ? BUILDER_WIDGETS.enum : BUILDER_WIDGETS.string;
       break;
 
     case 'boolean':
@@ -71,20 +70,22 @@ export function buildUI(
   }
 
   if (ui.widget) widget.widget = ui.widget;
-  if (ui.onInit) widget.onInit = ui.onInit;
-  if (ui.waitFor) widget.waitFor = ui.waitFor;
-  if (schema['depends=']) widget.displayIf = schema['depends='];
+
+  if (ui.events) {
+    for (const e in ui.events) widget.events![e] = ui.events[e];
+  }
+  if (schema['depends=']) widget.if = schema['depends='];
 
   widget.options = { ...schema, ...widget.options, ...ui.options };
-  delete widget.options.ui;
-  delete widget.options.properties;
-  delete widget.options['depends='];
+  delete widget.options!.ui;
+  delete widget.options!.properties;
+  delete widget.options!['depends='];
   return widget;
 }
 
-function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
+function buildArray(schema: SchemaArray, bind: string): WidgetDef {
   const ui = schema.ui || {},
-    widget: IFieldGroupWidgetDef = {
+    widget: WidgetDef = {
       widget: BUILDER_WIDGETS.list,
       bind,
       exportAs: ui.exportAs || '$model',
@@ -131,13 +132,13 @@ function buildArray(schema: ISchemaArray, bind: string): IFieldGroupWidgetDef {
   return widget;
 }
 function buildObject(
-  schema: ISchemaObject,
+  schema: SchemaObject,
   bind: string,
   _propInclude?: string[],
   propExclude?: string[]
-): IFieldGroupWidgetDef {
-  const ui: ISchemaUI = schema.ui || {},
-    widget: IFieldGroupWidgetDef = {
+): WidgetDef {
+  const ui: SchemaUI = schema.ui || {},
+    widget: WidgetDef = {
       widget: BUILDER_WIDGETS.object,
       exportAs: ui.exportAs || '$model',
       bind,
@@ -151,6 +152,7 @@ function buildObject(
     } else ordered = keys;
 
     keys = ordered;
+    widget.content = { main: [] } as SlotedContentDef;
 
     if (ui.fieldsets) {
       const sets = ui.fieldsets.sets,
@@ -175,14 +177,13 @@ function buildObject(
         }
       });
 
-      widget.content = [];
       for (const fset of sets) {
         // ignore fields not present in properties
         const fields = fset.fields.filter(prop => prop in schema.properties!);
 
         // hide empty fieldsets
         if (fields.length)
-          widget.content.push({
+          widget.content.main.push({
             widget: BUILDER_WIDGETS.set,
             bind: widget.exportAs,
             exportAs: widget.exportAs,
@@ -191,13 +192,15 @@ function buildObject(
             ),
           });
       }
-      widget.content = {
-        widget: 'tabs',
-        options: { tabLabels: sets.map(fset => fset.title) },
-        content: widget.content,
-      };
+      widget.content.main = [
+        {
+          widget: 'tabs',
+          options: { tabLabels: sets.map(fset => fset.title) },
+          content: widget.content,
+        },
+      ];
     } else
-      widget.content = ordered
+      widget.content!.main = ordered
         .filter(prop => !(propExclude && propExclude.includes(prop)))
         .map(prop => buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`));
   }

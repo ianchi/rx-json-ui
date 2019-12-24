@@ -14,8 +14,8 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Context } from '../../core/context';
-import { IWidgetDef } from '../../core/widget.interface';
+import { Context } from '../../core/expressions/index';
+import { PopupSlotsDef } from '../../core/index';
 
 @Component({
   selector: 'wdg-popup',
@@ -23,15 +23,15 @@ import { IWidgetDef } from '../../core/widget.interface';
     <h2 mat-dialog-title *ngIf="title">{{ title }}</h2>
     <mat-dialog-content>
       <ng-container
-        *ngFor="let element of content"
+        *ngFor="let element of content.main"
         [wdgWidget]="element"
         [parentContext]="parentContext"
       >
       </ng-container>
     </mat-dialog-content>
-    <mat-dialog-actions *ngIf="actions">
+    <mat-dialog-actions *ngIf="content.actions">
       <ng-container
-        *ngFor="let element of actions"
+        *ngFor="let element of content.actions"
         [wdgWidget]="element"
         [parentContext]="parentContext"
       >
@@ -43,8 +43,7 @@ import { IWidgetDef } from '../../core/widget.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PopupWidgetComponent implements OnInit {
-  content: IWidgetDef[] | undefined;
-  actions: IWidgetDef[] | undefined;
+  content = { main: [], actions: [] } as PopupSlotsDef;
   parentContext: Context | undefined;
   title: string | undefined;
   constructor(
@@ -52,7 +51,7 @@ export class PopupWidgetComponent implements OnInit {
     public _dialogRef: MatDialogRef<PopupWidgetComponent>
   ) {}
   ngOnInit(): void {
-    this.content = this._data.content || { widget: 'empty' };
+    this.content = this._data.content || { main: { widget: 'empty' } };
     this.parentContext = Context.create(this._data.context, undefined, {
       $dlg: {
         close: (res: any) => {

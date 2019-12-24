@@ -14,7 +14,7 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
-export interface ICodeWidgetOptions {
+export interface CodeWidgetOptions {
   text: string;
 }
 @Component({
@@ -25,7 +25,7 @@ export interface ICodeWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodeWidgetComponent extends AbstractWidget<ICodeWidgetOptions> {
+export class CodeWidgetComponent extends AbstractWidget<CodeWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

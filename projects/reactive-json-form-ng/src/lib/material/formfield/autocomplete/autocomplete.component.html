@@ -6,7 +6,7 @@
   <input
     matInput
     name="aaa"
-    [type]="type || 'text'"
+    [type]="'text'"
     [formControl]="formControl"
     [matAutocomplete]="auto"
     [required]="options.required"
@@ -21,10 +21,7 @@
   </mat-hint>
 
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn()">
-    <mat-option
-      *ngFor="let option of filteredOptions | async; index as optIndex"
-      [value]="option"
-    >
+    <mat-option *ngFor="let option of filteredOptions$ | async; index as optIndex" [value]="option">
       {{ getLabel(option) }}
     </mat-option>
   </mat-autocomplete>

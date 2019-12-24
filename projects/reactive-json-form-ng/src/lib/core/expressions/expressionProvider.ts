@@ -111,8 +111,7 @@ export class ESpression extends Expressions {
     try {
       result = this._rxEval.evaluate(ast, context);
     } catch (e) {
-      if (asObservable)
-        return throwError(e);
+      if (asObservable) return throwError(e);
 
       throw e;
     }
@@ -150,11 +149,7 @@ export class ESpression extends Expressions {
    */
   mapFactory(): (obj: any[] | object, expression: string) => any[] | object {
     const self = this;
-    return function map(
-      this: Context,
-      obj: any[] | object,
-      expression: string
-    ): any[] | object {
+    return function map(this: Context, obj: any[] | object, expression: string): any[] | object {
       if (!expression || typeof expression !== 'string') return obj;
 
       const ast = self._parser.parse(expression);

@@ -15,7 +15,7 @@ import {
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
 import { Expressions } from '../../../core/index';
 
-export interface ISetExpansionWidgetOptions {
+export interface SetExpansionWidgetOptions {
   title: string;
   description: string;
   expanded: boolean;
@@ -29,7 +29,7 @@ export interface ISetExpansionWidgetOptions {
   host: { class: 'set-row' },
 })
 export class SetExpansionWidgetComponent extends AbstractFormWidgetComponent<
-  ISetExpansionWidgetOptions
+  SetExpansionWidgetOptions
 > {
   expanded = false;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

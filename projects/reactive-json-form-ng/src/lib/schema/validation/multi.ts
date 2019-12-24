@@ -6,11 +6,11 @@
 import {
   IMap,
   ISchema,
-  ISchemaArray,
-  ISchemaBoolean,
-  ISchemaNumber,
-  ISchemaObject,
-  ISchemaString,
+  SchemaArray,
+  SchemaBoolean,
+  SchemaNumber,
+  SchemaObject,
+  SchemaString,
   ValidatorFn,
 } from '../interface';
 
@@ -67,11 +67,11 @@ export function schemaValidator(schema: ISchema): ValidatorFn {
 
   // case or multiple types or any type
   const validators: IMap<ValidatorFn> = {
-      number: numberValidator(<ISchemaNumber>schema),
-      string: stringValidator(<ISchemaString>schema),
-      boolean: booleanValidator(<ISchemaBoolean>schema),
-      array: arrayValidator(<ISchemaArray>schema),
-      object: objectValidator(<ISchemaObject>schema),
+      number: numberValidator(<SchemaNumber>schema),
+      string: stringValidator(<SchemaString>schema),
+      boolean: booleanValidator(<SchemaBoolean>schema),
+      array: arrayValidator(<SchemaArray>schema),
+      object: objectValidator(<SchemaObject>schema),
     },
     types = Array.isArray((<any>schema).type) ? (<any>schema).type : null;
 
@@ -84,29 +84,19 @@ export function schemaValidator(schema: ISchema): ValidatorFn {
   };
 }
 
-export function arrayValidator(schema: ISchemaArray): ValidatorFn {
+export function arrayValidator(schema: SchemaArray): ValidatorFn {
   // schema definitions for items of an array
 
   const minItems =
-      typeof schema.minItems === 'number' && schema.minItems >= 0
-        ? schema.minItems
-        : null,
-    maxItems =
-      typeof schema.maxItems === 'number' && schema.maxItems >= 0
-        ? schema.maxItems
-        : null,
+      typeof schema.minItems === 'number' && schema.minItems >= 0 ? schema.minItems : null,
+    maxItems = typeof schema.maxItems === 'number' && schema.maxItems >= 0 ? schema.maxItems : null,
     uniqueItems = !!schema.uniqueItems,
     itemsValidator =
       Array.isArray(schema.items) || !schema.items ? null : schemaValidator(schema.items),
-    tupleValidator = Array.isArray(schema.items)
-      ? schema.items.map(e => schemaValidator(e))
-      : null,
-    additionalItems =
-      typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null,
+    tupleValidator = Array.isArray(schema.items) ? schema.items.map(e => schemaValidator(e)) : null,
+    additionalItems = typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null,
     additionalValidator =
-      typeof schema.additionalItems === 'object'
-        ? schemaValidator(schema.additionalItems)
-        : null;
+      typeof schema.additionalItems === 'object' ? schemaValidator(schema.additionalItems) : null;
 
   return (value: any) => {
     if (!Array.isArray(value)) return { code: ERR_TYPE, type: 'array' };
@@ -138,7 +128,7 @@ export function arrayValidator(schema: ISchemaArray): ValidatorFn {
   };
 }
 
-export function objectValidator(schema: ISchemaObject): ValidatorFn {
+export function objectValidator(schema: SchemaObject): ValidatorFn {
   // schema definitions for items of an array
 
   const minProperties =
@@ -151,9 +141,7 @@ export function objectValidator(schema: ISchemaObject): ValidatorFn {
         : null,
     propertyNames = schema.propertyNames ? schemaValidator(schema.propertyNames) : null,
     additional =
-      typeof schema.additionalProperties === 'boolean'
-        ? schema.additionalProperties
-        : null,
+      typeof schema.additionalProperties === 'boolean' ? schema.additionalProperties : null,
     additionalFn =
       typeof schema.additionalProperties === 'object'
         ? schemaValidator(schema.additionalProperties)
@@ -163,9 +151,10 @@ export function objectValidator(schema: ISchemaObject): ValidatorFn {
       <IMap<ValidatorFn>>{}
     ),
     patternProperties = schema.patternProperties
-      ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(
-          ([pattern, s]) => [new RegExp(pattern), schemaValidator(s)]
-        )
+      ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(([pattern, s]) => [
+          new RegExp(pattern),
+          schemaValidator(s),
+        ])
       : null;
   return (value: any) => {
     if (typeof value !== 'object' || Array.isArray(value))

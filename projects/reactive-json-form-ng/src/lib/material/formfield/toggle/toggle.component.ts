@@ -12,11 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, TitleOption } from '../../../core/index';
 
-export interface IToggleWidgetOptions {
-  title: string;
-}
 @Component({
   selector: 'wdg-toggle',
   templateUrl: './toggle.component.html',
@@ -24,7 +21,7 @@ export interface IToggleWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleWidgetComponent extends AbstractFormFieldWidget<IToggleWidgetOptions> {
+export class ToggleWidgetComponent extends AbstractFormFieldWidget<TitleOption> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

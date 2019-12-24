@@ -19,15 +19,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { combineMixed } from 'espression-rx';
 import { isObservable } from 'rxjs';
 
-import {
-  AbstractWidget,
-  Context,
-  Expressions,
-  IDictionary,
-  parseDefObject,
-} from '../../../core/index';
+import { AbstractWidget, Context, Expressions, parseDefObject } from '../../../core/index';
 
-export interface ITableWidgetOptions {
+export interface TableWidgetOptions {
   title: string;
   dataSource: object[];
   colKeys: string[];
@@ -50,9 +44,8 @@ export interface ITableWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions>
-  implements OnInit {
-  tableDataSource: MatTableDataSource<IDictionary>;
+export class TableWidgetComponent extends AbstractWidget<TableWidgetOptions> implements OnInit {
+  tableDataSource: MatTableDataSource<object[]>;
 
   showCols: string[] = [];
 
@@ -71,10 +64,10 @@ export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions>
 
     // if the only source is a static array, lets check if it has 'property=' columns to evaluate
     // and add the auto binding
-    if (opt && !opt['dataSource='] && Array.isArray(opt.dataSource)) {
+    if (opt && !(opt as any)['dataSource='] && Array.isArray(opt.dataSource)) {
       const dataSource = combineMixed(
         opt.dataSource.map(
-          row => combineMixed(parseDefObject(row, this.context, false, this._expr)),
+          row => combineMixed(parseDefObject(row, this.context, false, this.expr)),
           false
         ),
         false
@@ -93,19 +86,14 @@ export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions>
       'dataSource',
       (table: any[]) =>
         (this.tableDataSource.data = table.map(row => {
-          row = parseDefObject(
-            row,
-            Context.create(this.context, { $data: row }),
-            false,
-            this._expr
-          );
+          row = parseDefObject(row, Context.create(this.context, { $data: row }), false, this.expr);
 
           if (Array.isArray(this.options.colTransform)) {
             for (let i = 0; i < this.options.colTransform.length; i++) {
               if (this.options.colTransform[i]) {
                 const context: any = Context.create(this.context);
                 context.$data = row[this.options.colKeys[i]];
-                row[this.options.colKeys[i]] = this._expr.eval(
+                row[this.options.colKeys[i]] = this.expr.eval(
                   this.options.colTransform[i],
                   context,
                   false
@@ -129,9 +117,7 @@ export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions>
 
     this.map('colKeys', keys => {
       this.showCols =
-        this.options.actions && this.options.actions.length
-          ? keys.concat('__actions__')
-          : keys;
+        this.options.actions && this.options.actions.length ? keys.concat('__actions__') : keys;
       return keys;
     });
     this.map('actions', actions => {
@@ -161,7 +147,7 @@ export class TableWidgetComponent extends AbstractWidget<ITableWidgetOptions>
   actionClick(rowData: any, actionIndex: number): void {
     const context = Context.create(this.context, { $data: rowData });
 
-    this.addSubscription = this._expr
+    this.addSubscription = this.expr
       .eval(this.options.actions[actionIndex].action, context, true)
       .subscribe(() => {
         // TODO logic to reload table

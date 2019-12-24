@@ -14,7 +14,7 @@ import {
 
 import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
 
-export interface IFormArrayWidgetOptions {
+export interface FormArrayWidgetOptions {
   newRow: string;
   allowDel: boolean;
 }
@@ -25,9 +25,7 @@ export interface IFormArrayWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  IFormArrayWidgetOptions
-> {
+export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<FormArrayWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

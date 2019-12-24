@@ -11,24 +11,19 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { ILvalue } from 'espression';
-import { isReactive } from 'espression-rx';
-import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 import {
   AbstractWidget,
+  ButtonWidgetEvents,
   Expressions,
-  IFieldWidgetDef,
-  IWidgetDef,
+  MainSlotContentDef,
 } from '../../../core/index';
 
-export interface ISetButtonWidgetOptions {
+export interface SetButtonWidgetOptions {
   title: string;
   description: string;
   buttonTitle: string;
 
-  onClick: string;
   spinner: boolean;
   disabled: boolean;
 }
@@ -40,46 +35,18 @@ export interface ISetButtonWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetButtonWidgetComponent extends AbstractWidget<ISetButtonWidgetOptions> {
-  private _lvalue: ILvalue | undefined;
-  private _clickSubs: Subscription | undefined;
-
+export class SetButtonWidgetComponent extends AbstractWidget<
+  SetButtonWidgetOptions,
+  MainSlotContentDef,
+  ButtonWidgetEvents
+> {
   running = false;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnSetup(def: IFieldWidgetDef): IWidgetDef {
-    if (def.bind) {
-      const lvalue = this._expr.lvalue(def.bind, this.context);
-
-      if (!lvalue)
-        throw new Error(
-          'Form field "bind" property must be an identifier or member expression'
-        );
-
-      if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
-
-      this._lvalue = lvalue;
-    }
-
-    return def;
-  }
   clickEvent(): void {
-    if (this._clickSubs) {
-      this._clickSubs.unsubscribe();
-      this._clickSubs = undefined;
-    }
-
-    if (this.options.onClick) {
-      this.running = true;
-      this._clickSubs = this._expr
-        .eval(this.options.onClick, this.context, true)
-        .pipe(take(1))
-        .subscribe(res => {
-          this.running = false;
-          if (this._lvalue) this._lvalue.o[this._lvalue.m] = res;
-        });
-    }
+    this.running = true;
+    this.emmit('onClick', {}, () => (this.running = false));
   }
 }

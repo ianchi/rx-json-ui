@@ -14,7 +14,7 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
-export interface IContainerWidgetOptions {
+export interface ContainerWidgetOptions {
   direction: string;
 }
 @Component({
@@ -30,7 +30,7 @@ export interface IContainerWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContainerWidgetComponent extends AbstractWidget<IContainerWidgetOptions> {
+export class ContainerWidgetComponent extends AbstractWidget<ContainerWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

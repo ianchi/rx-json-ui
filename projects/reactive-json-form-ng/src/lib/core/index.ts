@@ -5,16 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-export * from './context';
-
-export * from './abstractwidget';
-export * from './widget.directive';
-export * from './widget.interface';
+export * from './expressions/index';
+export * from './base/abstractwidget';
+export * from './base/widget.directive';
+export * from './base/public.interface';
 export * from './widgetregistry.service';
 export * from './core.module';
 export * from './format';
 export * from './routedwidget.component';
-export * from './expressions';
-export * from './expressionProvider';
-export * from './forms/formfieldwidget';
-export * from './forms/formarraywidget';
+export * from './forms/index';
+export * from './mixins/index';

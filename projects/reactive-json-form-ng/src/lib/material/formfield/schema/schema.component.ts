@@ -15,7 +15,7 @@ import {
 import { AbstractWidget, Expressions } from '../../../core/index';
 import { buildUI, ISchema } from '../../../schema';
 
-export interface ISchemaWidgetDef {
+export interface SchemaWidgetDef {
   schema: ISchema;
   bind: string;
 }
@@ -27,11 +27,11 @@ export interface ISchemaWidgetDef {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SchemaWidgetComponent extends AbstractWidget<ISchemaWidgetDef> {
+export class SchemaWidgetComponent extends AbstractWidget<SchemaWidgetDef> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
   dynOnChange(): void {
-    this.content = [buildUI(this.options.schema, this.options.bind)];
+    this.content.main = [buildUI(this.options.schema, this.options.bind)];
   }
 }

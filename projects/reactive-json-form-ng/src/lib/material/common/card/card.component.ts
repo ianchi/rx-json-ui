@@ -12,12 +12,20 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions, IWidgetDef } from '../../../core/index';
+import {
+  AbstractWidget,
+  Expressions,
+  SimpleContentDef,
+  SlotedContentDef,
+} from '../../../core/index';
 
-export interface ICardWidgetOptions {
+export interface CardWidgetOptions {
   title: string;
   description: string;
-  actions: IWidgetDef[];
+}
+
+export interface CardWidgetSlots extends SlotedContentDef {
+  actions: SimpleContentDef;
 }
 @Component({
   selector: 'wdg-card',
@@ -26,7 +34,7 @@ export interface ICardWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardWidgetComponent extends AbstractWidget<ICardWidgetOptions> {
+export class CardWidgetComponent extends AbstractWidget<CardWidgetOptions, CardWidgetSlots> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

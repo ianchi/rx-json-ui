@@ -13,11 +13,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { AbstractWidget, Expressions, TitleOption } from '../../../core/index';
 
-export interface ISetSubpageWidgetOptions {
-  title: string;
-}
 @Component({
   selector: 'set-subpage',
   templateUrl: './subpage.component.html',
@@ -26,7 +23,7 @@ export interface ISetSubpageWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSubpageWidgetComponent extends AbstractWidget<ISetSubpageWidgetOptions> {
+export class SetSubpageWidgetComponent extends AbstractWidget<TitleOption> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions, private location: Location) {
     super(cdr, expr);
   }

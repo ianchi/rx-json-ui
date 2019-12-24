@@ -12,14 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
-import { ISchemaBase } from '../../../schema/interface';
+import { AbstractFormFieldWidget, Expressions, InputWidgetOptions } from '../../../core/index';
 
-export interface IInputWidgetOptions extends ISchemaBase<any> {
-  type: string;
-  inputType: string;
-  required: boolean;
-}
 @Component({
   selector: 'wdg-input',
   templateUrl: './input.component.html',
@@ -27,7 +21,7 @@ export interface IInputWidgetOptions extends ISchemaBase<any> {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputWidgetComponent extends AbstractFormFieldWidget<IInputWidgetOptions> {
+export class InputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

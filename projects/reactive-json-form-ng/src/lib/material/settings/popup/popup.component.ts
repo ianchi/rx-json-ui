@@ -13,10 +13,10 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import { AbstractWidget, Expressions, PopupSlotsDef } from '../../../core/index';
 import { PopupWidgetComponent } from '../../common/popupwidget.component';
 
-export interface ISetPopupWidgetOptions {
+export interface PopupWidgetOptions {
   title: string;
   description: string;
   popupTitle: string;
@@ -32,7 +32,7 @@ export interface ISetPopupWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
 })
-export class SetPopupWidgetComponent extends AbstractWidget<ISetPopupWidgetOptions> {
+export class SetPopupWidgetComponent extends AbstractWidget<PopupWidgetOptions, PopupSlotsDef> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions, public dialog: MatDialog) {
     super(cdr, expr);
   }

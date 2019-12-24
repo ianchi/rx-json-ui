@@ -12,7 +12,7 @@
 </div>
 <div *ngIf="content?.length && expanded" class="settings-sectiongroup-wrapper">
   <ng-container
-    *ngFor="let element of content"
+    *ngFor="let element of content.main"
     [wdgWidget]="element"
     [parentContext]="context"
   >

@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-export interface IContextDef {
+export interface ContextDef {
   [identifier: string]: any;
 }
 
@@ -16,7 +16,7 @@ export interface IContextDef {
  */
 export class Context {
   /** Helper definition of built-in objects */
-  static builtinsDef: IContextDef = {
+  static builtinsDef: ContextDef = {
     // Builtin functions:
     parseFloat,
     parseInt,
@@ -42,9 +42,9 @@ export class Context {
    */
   static create(
     parent?: Context,
-    publicProps?: IContextDef,
-    readonlyProps?: IContextDef,
-    hiddenProps?: IContextDef,
+    publicProps?: ContextDef,
+    readonlyProps?: ContextDef,
+    hiddenProps?: ContextDef,
     builtins?: boolean
   ): Context {
     const context: Context = parent ? Object.create(parent) : new Context();
@@ -61,7 +61,7 @@ export class Context {
   }
 
   /** Adds readonly properties to a Context */
-  static defineReadonly(context: Context, props: IContextDef): Context {
+  static defineReadonly(context: Context, props: ContextDef): Context {
     // tslint:disable-next-line:forin
     for (const prop in props) {
       Object.defineProperty(context, prop, {
@@ -75,7 +75,7 @@ export class Context {
   }
 
   /** Adds hidden (non enumerable) properties to a Context */
-  static defineHidden(context: Context, hiddenProps: IContextDef): Context {
+  static defineHidden(context: Context, hiddenProps: ContextDef): Context {
     // tslint:disable-next-line:forin
     for (const prop in hiddenProps) {
       Object.defineProperty(context, prop, {
@@ -89,7 +89,7 @@ export class Context {
   }
 
   /** adds public properties only if they don't exist in parent */
-  static defineWeak(context: Context, props: IContextDef): Context {
+  static defineWeak(context: Context, props: ContextDef): Context {
     // tslint:disable-next-line:forin
     for (const prop in props) {
       if (prop in context) continue;

@@ -17,20 +17,17 @@ import {
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { RxObject } from 'espression-rx';
 
-import { Context } from './context';
-import { ROOT_EXPR_CONTEXT } from './widget.directive';
-import { IWidgetDef } from './widget.interface';
+import { WidgetDef } from './base/public.interface';
+import { Context, ROOT_EXPR_CONTEXT } from './expressions/index';
 
 @Component({
   selector: 'wdg-widget',
-  template:
-    '<ng-container [wdgWidget]="widgetDef" [parentContext]="context"></ng-container>',
-
+  template: '<ng-container [wdgWidget]="widgetDef" [parentContext]="context"></ng-container>',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoutedWidgetComponent implements OnInit {
-  widgetDef: IWidgetDef | undefined;
+  widgetDef: WidgetDef | undefined;
   parentContext: Context | undefined;
   context: Context | undefined;
   paramMap: ParamMap | undefined;

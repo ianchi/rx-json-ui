@@ -12,10 +12,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormWidgetComponent } from '../../../core/forms/formwidget';
+import { AbstractFormWidgetComponent } from '../../../core/forms/index';
 import { Expressions } from '../../../core/index';
 
-export interface IFormExpanssionWidgetOptions {
+export interface FormExpanssionWidgetOptions {
   title: string;
   description: string;
 }
@@ -28,7 +28,7 @@ export interface IFormExpanssionWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormExpanssionWidgetComponent extends AbstractFormWidgetComponent<
-  IFormExpanssionWidgetOptions
+  FormExpanssionWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

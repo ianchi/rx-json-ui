@@ -14,7 +14,7 @@ import {
 
 import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
 
-export interface IFormAccordionWidgetOptions {
+export interface FormAccordionWidgetOptions {
   title: string;
   description: string;
   newRow: string;
@@ -28,7 +28,7 @@ export interface IFormAccordionWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormAccordionWidgetComponent extends AbstractArrayWidgetComponent<
-  IFormAccordionWidgetOptions
+  FormAccordionWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

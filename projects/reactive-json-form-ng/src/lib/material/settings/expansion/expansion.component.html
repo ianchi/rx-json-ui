@@ -14,13 +14,10 @@
   </div>
 </div>
 
-<div
-  class="set-expansion-content"
-  [ngClass]="{ expanded: expanded, collapsed: !expanded }"
->
-  <div *ngIf="content?.length && expanded" class="set-subrows">
+<div class="set-expansion-content" [ngClass]="{ expanded: expanded, collapsed: !expanded }">
+  <div *ngIf="content.main.length && expanded" class="set-subrows">
     <ng-container
-      *ngFor="let element of content"
+      *ngFor="let element of content.main"
       [wdgWidget]="element"
       [parentContext]="context"
     >

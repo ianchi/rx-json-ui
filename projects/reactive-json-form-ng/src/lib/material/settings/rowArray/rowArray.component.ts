@@ -14,7 +14,7 @@ import {
 
 import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
 
-export interface IRowArrayWidgetOptions {
+export interface RowArrayWidgetOptions {
   newRow: string;
   allowDel: boolean;
 }
@@ -27,7 +27,7 @@ export interface IRowArrayWidgetOptions {
   host: { class: 'set-row' },
 })
 export class SetRowArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  IRowArrayWidgetOptions
+  RowArrayWidgetOptions
 > {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);

@@ -9,30 +9,38 @@ import { ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { isReactive, RxObject } from 'espression-rx';
 
-import { AbstractWidget } from '../abstractwidget';
-import { Context } from '../context';
-import { Expressions } from '../expressions';
-import { IFieldGroupWidgetDef, IWidgetDef } from '../widget.interface';
+import { AbstractWidget } from '../base/abstractwidget';
+import {
+  AbstractEventsDef,
+  AbstractOptionsDef,
+  MainSlotContentDef,
+  SlotedContentDef,
+  WidgetDef,
+} from '../base/public.interface';
+import { Context, Expressions } from '../expressions/index';
 
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
-export class AbstractFormWidgetComponent<T> extends AbstractWidget<T> {
+export class AbstractFormWidgetComponent<
+  O extends AbstractOptionsDef = {},
+  S extends SlotedContentDef = MainSlotContentDef,
+  E extends AbstractEventsDef = AbstractEventsDef
+> extends AbstractWidget<O, S, E> {
   formGroup: FormGroup | undefined;
   boundData: object | undefined;
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
 
-  dynOnSetup(def: IFieldGroupWidgetDef): IWidgetDef {
+  dynOnSetup(def: WidgetDef<O, S, E>): WidgetDef<O, S, E> {
     this.formGroup = new FormGroup({});
 
     // register with parent form, if any
     const parentForm: FormGroup | FormArray =
       this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
-      if (parentForm instanceof FormGroup)
-        parentForm.addControl('control', this.formGroup);
+      if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formGroup);
       else if (parentForm instanceof FormArray) parentForm.push(this.formGroup);
     }
 
@@ -44,12 +52,10 @@ export class AbstractFormWidgetComponent<T> extends AbstractWidget<T> {
     // get bound model if it has one or create aux unbound model
     if (def.bind) {
       // binding is always on the parent context directly, so it can't get shadowed in the child
-      const lvalue = this._expr.lvalue(def.bind, this.context.$parentContext);
+      const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext);
 
       if (!lvalue)
-        throw new Error(
-          'Form field "bind" property must be an identifier or member expression'
-        );
+        throw new Error('Form field "bind" property must be an identifier or member expression');
 
       if (!isReactive(lvalue.o[lvalue.m])) {
         if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject({}, true);

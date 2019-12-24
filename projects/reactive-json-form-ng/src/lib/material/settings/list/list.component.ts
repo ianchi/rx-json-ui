@@ -14,7 +14,7 @@ import {
 
 import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
 
-export interface ISetListWidgetOptions {
+export interface SetListWidgetOptions {
   title: string;
   description: string;
 
@@ -30,9 +30,7 @@ export interface ISetListWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetListWidgetComponent extends AbstractArrayWidgetComponent<
-  ISetListWidgetOptions
-> {
+export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SetListWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

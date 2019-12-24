@@ -12,12 +12,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractWidget } from './abstractwidget';
-import { Expressions } from './expressions';
+import { AbstractWidget } from './base/abstractwidget';
+import { Expressions } from './expressions/index';
 
 @Component({
   selector: 'wdg-default',
-  template: '<div>Unknown widget "{{ type }}"</div>',
+  template: '<div>Unknown widget "{{ widgetDef?.widget }}"</div>',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

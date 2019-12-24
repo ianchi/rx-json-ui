@@ -12,8 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { Expressions } from '../../../core/expressions';
-import { SelectWidgetComponent } from '../../formfield/select/select.component';
+import { Expressions } from '../../../core/expressions/index';
+import { SelectWidgetMixin } from '../../../core/index';
 
 @Component({
   selector: 'set-select',
@@ -23,7 +23,7 @@ import { SelectWidgetComponent } from '../../formfield/select/select.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSelectWidgetComponent extends SelectWidgetComponent {
+export class SetSelectWidgetComponent extends SelectWidgetMixin {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

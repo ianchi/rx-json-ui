@@ -13,11 +13,8 @@ import {
 } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
-import { Expressions } from '../../../core/index';
+import { Expressions, TitleOption } from '../../../core/index';
 
-export interface ISetSectionWidgetOptions {
-  title: string;
-}
 @Component({
   selector: 'set-section',
   templateUrl: './section.component.html',
@@ -26,7 +23,7 @@ export interface ISetSectionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSectionWidgetComponent extends AbstractFormWidgetComponent<ISetSectionWidgetOptions> {
+export class SetSectionWidgetComponent extends AbstractFormWidgetComponent<TitleOption> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

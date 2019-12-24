@@ -6,32 +6,23 @@
  */
 
 import { CommonModule } from '@angular/common';
-import {
-  ANALYZE_FOR_ENTRY_COMPONENTS,
-  ModuleWithProviders,
-  NgModule,
-} from '@angular/core';
+import { ANALYZE_FOR_ENTRY_COMPONENTS, ModuleWithProviders, NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 
+import { WidgetDirective } from './base/widget.directive';
 import { DefaultWidgetComponent } from './defaultwidget.component';
 import { FormatPipe } from './format';
 import { RoutedWidgetComponent } from './routedwidget.component';
-import { WidgetDirective } from './widget.directive';
-import { AF_CONFIG_TOKEN, IAutoFormConfig } from './widgetregistry.service';
+import { AF_CONFIG_TOKEN, AutoFormConfig } from './widgetregistry.service';
 
 @NgModule({
   imports: [CommonModule, MatDialogModule],
-  declarations: [
-    WidgetDirective,
-    RoutedWidgetComponent,
-    DefaultWidgetComponent,
-    FormatPipe,
-  ],
+  declarations: [WidgetDirective, RoutedWidgetComponent, DefaultWidgetComponent, FormatPipe],
   entryComponents: [DefaultWidgetComponent],
   exports: [WidgetDirective, RoutedWidgetComponent, FormatPipe],
 })
 export class WidgetsCoreModule {
-  static forRoot(config: IAutoFormConfig = {}): ModuleWithProviders {
+  static forRoot(config: AutoFormConfig = {}): ModuleWithProviders {
     return {
       ngModule: WidgetsCoreModule,
       providers: [

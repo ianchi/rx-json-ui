@@ -5,11 +5,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ISchemaBoolean, ValidatorFn } from '../interface';
+import { SchemaBoolean, ValidatorFn } from '../interface';
 
 import { baseValidator, ERR_TYPE } from './base';
 
-export function booleanValidator(schema: ISchemaBoolean): ValidatorFn {
+export function booleanValidator(schema: SchemaBoolean): ValidatorFn {
   const base = baseValidator(schema);
 
   return (value: any) => {

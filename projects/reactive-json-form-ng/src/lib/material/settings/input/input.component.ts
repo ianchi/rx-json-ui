@@ -12,8 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
-import { IInputWidgetOptions } from '../../formfield/input/input.component';
+import { AbstractFormFieldWidget, Expressions, InputWidgetOptions } from '../../../core/index';
 
 @Component({
   selector: 'set-input',
@@ -23,9 +22,7 @@ import { IInputWidgetOptions } from '../../formfield/input/input.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetInputWidgetComponent extends AbstractFormFieldWidget<
-  IInputWidgetOptions
-> {
+export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

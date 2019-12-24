@@ -14,7 +14,7 @@ import {
 
 import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
 
-export interface ISetToggleWidgetOptions {
+export interface SetToggleWidgetOptions {
   title: string;
   description: string;
 }
@@ -26,9 +26,7 @@ export interface ISetToggleWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetToggleWidgetComponent extends AbstractFormFieldWidget<
-  ISetToggleWidgetOptions
-> {
+export class SetToggleWidgetComponent extends AbstractFormFieldWidget<SetToggleWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

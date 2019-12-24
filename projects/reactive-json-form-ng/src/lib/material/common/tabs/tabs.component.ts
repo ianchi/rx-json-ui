@@ -14,7 +14,7 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
-export interface ITabsWidgetOptions {
+export interface TabsWidgetOptions {
   tabLabels: string[];
 }
 @Component({
@@ -24,7 +24,7 @@ export interface ITabsWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabsWidgetComponent extends AbstractWidget<ITabsWidgetOptions> {
+export class TabsWidgetComponent extends AbstractWidget<TabsWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

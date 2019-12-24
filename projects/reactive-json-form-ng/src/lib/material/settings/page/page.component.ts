@@ -14,9 +14,6 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
-export interface ISetPageWidgetOptions {
-  direction: string;
-}
 @Component({
   selector: 'set-page',
   templateUrl: './page.component.html',
@@ -25,7 +22,7 @@ export interface ISetPageWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetPageWidgetComponent extends AbstractWidget<ISetPageWidgetOptions> {
+export class SetPageWidgetComponent extends AbstractWidget {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ISchemaBase, ValidatorFn } from '../interface';
+import { SchemaBase, ValidatorFn } from '../interface';
 
 export const ERROR_MSG: string[] = [];
 
@@ -19,7 +19,7 @@ ERROR_MSG[ERR_ENUM] = '`Not a valid option`';
 ERROR_MSG[ERR_CNST] = '`Not a valid option`';
 ERROR_MSG[ERR_REQ] = "`Value is required`";
 
-export function baseValidator<T>(schema: ISchemaBase<T>): ValidatorFn {
+export function baseValidator<T>(schema: SchemaBase<T>): ValidatorFn {
   const enumVal = Array.isArray(schema.enum) ? schema.enum.concat() : null,
     constVal = typeof schema.const !== 'undefined' ? schema.const : null,
     complex = !!enumVal && enumVal.some(e => typeof e === 'object'),

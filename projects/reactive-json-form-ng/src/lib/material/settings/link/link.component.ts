@@ -13,9 +13,14 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AbstractWidget, Expressions } from '../../../core/index';
+import {
+  AbstractWidget,
+  ButtonWidgetEvents,
+  Expressions,
+  MainSlotContentDef,
+} from '../../../core/index';
 
-export interface ISetLinkWidgetOptions {
+export interface SetLinkWidgetOptions {
   title: string;
   description: string;
   link: string;
@@ -28,14 +33,19 @@ export interface ISetLinkWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
 })
-export class SetLinkWidgetComponent extends AbstractWidget<ISetLinkWidgetOptions> {
+export class SetLinkWidgetComponent extends AbstractWidget<
+  SetLinkWidgetOptions,
+  MainSlotContentDef,
+  ButtonWidgetEvents
+> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions, public router: Router) {
     super(cdr, expr);
   }
 
   clickEvent(): void {
+    this.emmit('onClick');
     this.router.navigate([this.options.link], {
-      state: { widgetDef: this.content && this.content[0] },
+      state: { widgetDef: this.content.main && this.content.main[0] },
     });
   }
 }

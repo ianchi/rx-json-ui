@@ -14,7 +14,7 @@ import {
 
 import { AbstractWidget, Expressions } from '../../../core/index';
 
-export interface IAccordionWidgetOptions {
+export interface AccordionWidgetOptions {
   title: string;
   description: string;
 }
@@ -25,7 +25,7 @@ export interface IAccordionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccordionWidgetComponent extends AbstractWidget<IAccordionWidgetOptions> {
+export class AccordionWidgetComponent extends AbstractWidget<AccordionWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }

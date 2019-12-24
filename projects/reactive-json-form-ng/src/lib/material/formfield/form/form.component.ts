@@ -12,7 +12,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormWidgetComponent } from '../../../core/forms/formwidget';
+import { AbstractFormWidgetComponent } from '../../../core/forms/index';
 import { Expressions } from '../../../core/index';
 
 @Component({

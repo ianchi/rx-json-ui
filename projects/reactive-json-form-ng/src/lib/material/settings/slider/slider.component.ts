@@ -12,16 +12,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
+import { AbstractFormFieldWidget, Expressions, SliderWidgetOptions } from '../../../core/index';
 
-export interface ISetSliderWidgetOptions {
-  title: string;
-  description: string;
-
-  minimum: number;
-  maximum: number;
-  step: number;
-}
 @Component({
   selector: 'set-slider',
   templateUrl: './slider.component.html',
@@ -30,9 +22,7 @@ export interface ISetSliderWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSliderWidgetComponent extends AbstractFormFieldWidget<
-  ISetSliderWidgetOptions
-> {
+export class SetSliderWidgetComponent extends AbstractFormFieldWidget<SliderWidgetOptions> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {
     super(cdr, expr);
   }
