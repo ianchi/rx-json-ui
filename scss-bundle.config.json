@@ -1,4 +1,6 @@
 {
-  "entry": "./projects/rx-json-ui/src/lib/material/settings/settings.scss",
-  "dest": "dist/rx-json-ui/styles.scss"
+  "bundlerOptions": {
+    "entryFile": "./projects/rx-json-ui/src/lib/material/settings/settings.scss",
+    "outFile": "dist/rx-json-ui/styles.scss"
+  }
 }

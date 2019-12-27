@@ -18,7 +18,7 @@
     "watch-lib": "ng build rx-json-ui --watch",
     "deploy-lib": "cd dist/rx-json-ui && git add --all && git commit -m 'release' && git push",
     "publish-lib": "npm run build-lib && npm publish dist/rx-json-ui",
-    "bundle-styles": "scss-bundle -c scss-bundle.config.json",
+    "bundle-styles": "scss-bundle -p .",
     "build-doc": "rm -rf dist/doc && typedoc --ignoreCompilerErrors --exclude projects/rx-json-ui/src/lib/core/base/widget.directive.ts --tsconfig projects/rx-json-ui/tsconfig.json projects/rx-json-ui"
   },
   "husky": {
