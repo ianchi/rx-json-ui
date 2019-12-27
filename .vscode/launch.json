@@ -5,11 +5,12 @@
       "type": "node",
       "request": "launch",
       "name": "Launch TS Program",
-      "args": ["${workspaceRoot}/jsonschema/main.ts"],
+      "args": ["${workspaceRoot}/projects/rx-json-ui-cli/src/lib/main.ts"],
       "runtimeArgs": ["-r", "ts-node/register"],
       "sourceMaps": true,
       "cwd": "${workspaceFolder}",
-      "env": { "TS_NODE_PROJECT": "${workspaceRoot}/jsonschema/tsconfig.json" }
+      "env": { "TS_NODE_PROJECT": "${workspaceRoot}/projects/rx-json-ui-cli/tsconfig.json" },
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "node",
