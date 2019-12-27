@@ -5,76 +5,60 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { JsonPath } from 'espression-jsonpath';
-import * as fs from 'fs';
-import * as path from 'path';
-import resolve from 'resolve-from';
+import * as ngc from '@angular/compiler';
 import * as ng from '@angular/compiler-cli';
 
-const JP = new JsonPath();
+export interface WidgetRef {
+  type: string;
+  component: ng.StaticSymbol;
+}
 
-const IMPORTS = {};
-
-export function ngCompile(project: string = '.'): ng.Program {
+export function ngCompile(
+  project: string = '.'
+): { program: ng.Program; config: ng.ParsedConfiguration } | undefined {
   const config = ng.readConfiguration(project);
-  const { diagnostics: compileDiags, program } = ng.performCompilation({
-    rootNames: config.rootNames,
-    options: config.options,
-    emitFlags: config.emitFlags,
-  });
-  return program;
+
+  if (config.errors.length) {
+    console.error('Error reading project configuration');
+    console.error(ng.formatDiagnostics(config.errors));
+    return undefined;
+  }
+  console.log('Compiling application...');
+  const { diagnostics, program } = ng.performCompilation(config);
+
+  if (diagnostics.length) {
+    console.error('Errors compiling application');
+    console.error(ng.formatDiagnostics(diagnostics));
+    return undefined;
+  }
+
+  console.log('Compiled OK');
+
+  return { program, config };
 }
-export function loadMetadata(fullPath) {
-  if (IMPORTS[fullPath]) return IMPORTS[fullPath];
+export function getWidgets(program: ng.Program, file: string, module: string): WidgetRef[] {
+  // UNSAFE: Access private properties
+  const compiler: ngc.AotCompiler = (program as any).compiler;
+  const modules: ngc.NgAnalyzedModules = (program as any).analyzedModules;
 
-  const fileContent = fs.readFileSync(fullPath);
+  const configToken = compiler.reflector.findDeclaration('rx-json-ui', 'AF_CONFIG_TOKEN');
+  const entryToken = compiler.reflector.findDeclaration(file, module);
 
-  let meta = JSON.parse(fileContent.toString());
-  if (Array.isArray(meta)) meta = meta[0];
+  const meta = modules.ngModules.filter(m => m.type.reference === entryToken);
 
-  meta.$base = path.dirname(fullPath);
-  meta.$visited = [];
-  IMPORTS[fullPath] = meta;
+  if (!meta.length) {
+    console.error(`Module ${module} not found`);
+    return [];
+  } else if (meta.length > 1) {
+    console.error(`Found ${meta.length} modules with name ${module}`);
+    return [];
+  }
 
-  return meta;
-}
-
-export function visitModule(meta, module, store) {
-  if (meta.$visited.indexOf(module) >= 0) return;
-  meta.$visited.push(module);
-
-  const imports = JP.query(
-    Array.isArray(meta) ? meta : [meta],
-    `$[*].metadata["${module}"].decorators[?(@.expression.name=="NgModule")].arguments[*].imports[*]`
-  ).values;
-
-  // recourse for referenced imports
-  JP.query(
-    imports,
-    `$[?(@.__symbolic=="reference" && @.module && !@.module.startsWith("@angular/"))]`
-  ).values.forEach(element => {
-    const parsedPath = path.parse(
-      element.module === 'rx-json-ui'
-        ? path.resolve('dist/rx-json-ui', 'rx-json-ui')
-        : resolve(meta.$base, element.module)
-    );
-    const file = path.resolve(meta.$base, parsedPath.dir, parsedPath.name + '.metadata.json');
-    visitModule(loadMetadata(file), element.name, store);
-  });
-
-  // recourse in local imports
-  JP.query(imports, `$[?(@.__symbolic=="reference" && !@.module)]`).values.forEach(element =>
-    visitModule(meta, element.name, store)
+  const providers = meta[0].transitiveModule.providers.filter(
+    p => ngc.tokenReference(p.provider.token) === configToken
   );
+  const widgets = providers.reduce((acum, mod) => acum.concat(mod.provider.useValue.widgets), []);
+  console.log(`Found ${widgets.length} widgets from ${providers.length} transitive modules`);
 
-  // widgets imports
-  JP.query(
-    imports,
-    `$[?(@.__symbolic=="call" && @.expression.member=="forRoot" && @.expression.expression.name=="WidgetsCoreModule")]` +
-      `.arguments[0].widgets[*]`
-  ).values.forEach(element => {
-    if (!store[element.type]) store[element.type] = element.component.name;
-  });
-
-  // TODO: follow other call imports & provider imports
+  return widgets;
 }

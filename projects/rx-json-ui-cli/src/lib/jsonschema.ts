@@ -1,22 +1,28 @@
-import * as path from 'path';
+/*!
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+import { JsonPath } from 'espression-jsonpath';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as ts from 'typescript';
 import * as TJS from 'typescript-json-schema';
-import { JsonPath } from 'espression-jsonpath';
-import { visitModule, loadMetadata } from './metadata';
-import { Ajv } from 'ajv';
+
+import { WidgetRef } from './metadata';
 
 const WIDGETREF = 'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean>';
+const BASE_ID = 'http://ianchi.github.io/rx-json-ui';
 
 const JP = new JsonPath();
 
-export function generateSchemas(ajv: Ajv) {
+export function generateSchemas(program: ts.Program, widgets: WidgetRef[]): void {
   const basePath = 'projects/rx-json-ui';
   const outPath = 'dist/jsonschema';
   const outSchemaFile = 'AppWidgetDef.schema.json';
-  const baseID = 'http://ianchi.github.io/rx-json-ui';
 
-  const file = path.resolve(basePath, 'src/public_api.ts');
   const settings: TJS.PartialArgs = {
     aliasRef: false,
     ref: true,
@@ -26,24 +32,13 @@ export function generateSchemas(ajv: Ajv) {
     required: true,
     validationKeywords: ['parser'],
   };
-  const program = TJS.getProgramFromFiles([file], undefined, basePath);
-
-  const generator = TJS.buildGenerator(program, settings);
-
-  let symbols = generator.getUserSymbols();
-  const widgets = {} as { [tag: string]: string };
-  visitModule(
-    loadMetadata(path.resolve('out-tsc/app/src/app/app.module.metadata.json')),
-    'AppModule',
-    widgets
-  );
 
   fs.rmdirSync(path.resolve(outPath), { recursive: true });
   fs.mkdirSync(path.resolve(outPath), { recursive: true });
 
   const widgetSchema = {
     $schema: 'http://json-schema.org/draft-07/schema#',
-    $id: `${baseID}/${outSchemaFile}`,
+    $id: `${BASE_ID}/${outSchemaFile}`,
     type: 'object',
     properties: {
       widget: {
@@ -58,8 +53,10 @@ export function generateSchemas(ajv: Ajv) {
   let parent: any = widgetSchema;
   const tags: string[] = [];
 
-  Object.entries(widgets).forEach(([tag, symbolName]) => {
-    if (!symbols.includes(symbolName)) return;
+  widgets.forEach(({ type: tag, component: { name: symbolName } }, i) => {
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
+    process.stdout.write(`Generating schemas ${i + 1}/${widgets.length}`);
     const component = TJS.generateSchema(program, symbolName, settings);
 
     // check component and get symbol
@@ -100,9 +97,9 @@ export function generateSchemas(ajv: Ajv) {
 
     // complete general properties
 
-    const schemaFile = tag + '.schema.json';
+    const schemaFile = `${tag}.schema.json`;
     symbolDef.$schema = 'http://json-schema.org/draft-07/schema#';
-    symbolDef.$id = `${baseID}/${schemaFile}`;
+    symbolDef.$id = `${BASE_ID}/${schemaFile}`;
     symbolDef.definitions = definitions;
 
     // generate expression options
@@ -116,7 +113,6 @@ export function generateSchemas(ajv: Ajv) {
     parent.else = {};
     parent = parent.else;
 
-    if (ajv) ajv.addSchema(symbolDef);
     fs.writeFileSync(path.resolve(outPath, schemaFile), JSON.stringify(symbolDef, undefined, 2));
     tags.push(tag);
   });
@@ -127,8 +123,10 @@ export function generateSchemas(ajv: Ajv) {
     path.resolve(outPath, outSchemaFile),
     JSON.stringify(widgetSchema, undefined, 2)
   );
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
 
-  return ajv.compile(widgetSchema);
+  process.stdout.write('Schema files generated\n');
 }
 /** Adds expression version on options */
 function ExprOptions(schema: TJS.Definition): void {
@@ -155,15 +153,16 @@ function ExprOptions(schema: TJS.Definition): void {
   Object.keys(optionsSchema.properties)
     .filter(key => !key.endsWith('='))
     .forEach(key => {
+      const expKey = `${key}=`;
       if (typeof optionsSchema !== 'object') return;
-      extendedProp[key + '='] = { $ref: '#/definitions/multilineExpr' };
+      extendedProp[expKey] = { $ref: '#/definitions/multilineExpr' };
       const origSchema = optionsSchema.properties[key];
       if (typeof origSchema === 'object' && origSchema.description)
-        (extendedProp[key + '='] as TJS.Definition).description = origSchema.description;
+        (extendedProp[expKey] as TJS.Definition).description = origSchema.description;
 
       optionsSchema.allOf.push({
         if: { required: [key] },
-        then: { not: { required: [key + '='] } },
+        then: { not: { required: [expKey] } },
       });
 
       delete optionsSchema.required;
@@ -173,8 +172,8 @@ function ExprOptions(schema: TJS.Definition): void {
   if (!optionsSchema.allOf.length) delete schema.properties.options;
 }
 
-function findRefs(schema) {
+function findRefs(schema: TJS.Definition): string[] {
   return JP.query(schema, `$..$ref`)
-    .values.filter(ref => typeof ref == 'string' && ref.startsWith('#/definitions/'))
+    .values.filter(ref => typeof ref === 'string' && ref.startsWith('#/definitions/'))
     .map((ref: string) => ref.substring(14));
 }
