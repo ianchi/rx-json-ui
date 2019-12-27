@@ -23,7 +23,6 @@ import {
   ConstrainSlots,
   ContentDef,
   JsonWidgetDef,
-  MainSlotContentDef,
   multilineExpr,
   SimpleContentDef,
   WidgetDef,
@@ -115,7 +114,7 @@ export class BaseWidget<
       throw new Error('Invalid content definition');
     }
 
-    if (Array.isArray(content)) sloted = { main: content } as MainSlotContentDef;
+    if (Array.isArray(content)) sloted = { main: content } as AbstractSlotContentDef;
     else if (!('main' in content)) {
       this.content = { main: [] as AbstractWidgetDef[] } as S;
       throw new Error('Missing "main" slot in content definition');
@@ -130,7 +129,7 @@ export class BaseWidget<
       map(simple =>
         slots.reduce(
           (cont, slot, idx) => {
-            if (cont) cont[slot as keyof S] = simple[idx] as S[keyof S];
+            if (cont) cont[slot as keyof S] = simple[idx] as any;
             return cont;
           },
           { main: [] as AbstractWidgetDef[] } as S

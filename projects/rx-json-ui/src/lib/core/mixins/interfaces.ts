@@ -32,7 +32,8 @@ export interface SliderWidgetOptions {
   step: number;
 }
 
-export interface PopupSlotsDef {
+// tslint:disable-next-line: interface-over-type-literal
+export type PopupSlotsDef = {
   main: SimpleContentDef;
   actions: SimpleContentDef;
-}
+};

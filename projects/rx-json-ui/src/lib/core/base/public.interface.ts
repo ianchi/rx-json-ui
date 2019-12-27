@@ -131,10 +131,11 @@ export type AbstractContentDef = AbstractSlotContentDef | SimpleContentDef;
  */
 export type SimpleContentDef = Array<AbstractWidgetDef | multilineExpr>;
 
-export interface MainSlotContentDef {
+// tslint:disable-next-line: interface-over-type-literal
+export type MainSlotContentDef = {
   /** The content for the main slot. It must always be present */
   main: SimpleContentDef;
-}
+};
 
 export type ContentDef<S> = S extends undefined ? undefined : S | SimpleContentDef;
 
@@ -208,7 +209,8 @@ export interface AbstractEventsDef extends CommonEventsDef {
   [onCustomEvent: string]: multilineExpr | undefined;
 }
 
-export interface CommonEventsDef {
+// tslint:disable-next-line: interface-over-type-literal
+export type CommonEventsDef = {
   /**
    * First event emitted after the widget component is created and before any other actions takes place.
    * Only structural properties (`if` and `for`) are evaluated first, so the widget instance is already created.
@@ -250,7 +252,7 @@ export interface CommonEventsDef {
    * @parser multi-ES6
    */
   onDestroy?: multilineExpr;
-}
+};
 
 export type FieldEventDef = CommonEventsDef & {
   /**
