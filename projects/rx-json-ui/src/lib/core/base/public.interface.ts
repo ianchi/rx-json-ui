@@ -38,7 +38,7 @@ export type JsonWidgetDef<
   /**
    * Object/property to bind the form field to.
    *
-   * @parser lvalue-ES6
+   * @parser lvalue
    */
   bind?: B extends undefined ? undefined : lvalueExpr;
   exportAs?: string;
@@ -51,7 +51,7 @@ export type JsonWidgetDef<
    * The expression is bound, so if it later emits a falsey value, the widget will be destroyed.
    * It is evaluated in its own sub context.
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   if?: multilineExpr;
 
@@ -71,7 +71,7 @@ export type JsonWidgetDef<
    * The expression is bound, so if it later changes, widgets will be created/destroyed/moved accordingly.
    * It is evaluated in its own sub context and only after the `if` is evaluated to truthy.
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   for?: multilineExpr;
 
@@ -163,12 +163,12 @@ export interface CommonOptionsDef {
 export type expr = string;
 
 /**
- * @parser lvalue-ES6
+ * @parser lvalue
  */
 export type lvalueExpr = string;
 
 /**
- * @parser multi-ES6
+ * @parser ES6
  */
 export type multiExpr = string[];
 
@@ -204,7 +204,7 @@ export interface AbstractEventsDef extends CommonEventsDef {
   /**
    * Additional custom events defined by the widget
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   [onCustomEvent: string]: multilineExpr | undefined;
 }
@@ -218,14 +218,14 @@ export type CommonEventsDef = {
    * Any change to the parent context is guaranteed to be visible to any expression bound input property.
    * So it is typically a place to initialize any variable needed elsewhere in the widget.
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   onSetup?: multilineExpr;
 
   /**
    * Emitted once after all bound input options have been resolved.
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   onInit?: multilineExpr;
 
@@ -234,7 +234,7 @@ export type CommonEventsDef = {
    * and on every change of any bound input option
    * This event receives in the evaluation context `$options` with the current options
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   onChange?: multilineExpr;
 
@@ -242,25 +242,25 @@ export type CommonEventsDef = {
    * Emitted once after the Content definition has been resolved and on any change of the
    * content definition, if it was bound to an expression
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   onContentChange?: multilineExpr;
 
   /**
    * Emitted before the widget is destroyed
    *
-   * @parser multi-ES6
+   * @parser ES6
    */
   onDestroy?: multilineExpr;
 };
 
 export type FieldEventDef = CommonEventsDef & {
   /**
-   * @parser multi-ES6
+   * @parser ES6
    */
   onValueChange?: multilineExpr;
   /**
-   * @parser multi-ES6
+   * @parser ES6
    */
   onValidate?: multilineExpr;
 };
