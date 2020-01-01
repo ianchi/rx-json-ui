@@ -10,3 +10,4 @@
  */
 
 export { hoverData, validateExpr } from './lib/languageservice';
+export { main } from './lib/main';

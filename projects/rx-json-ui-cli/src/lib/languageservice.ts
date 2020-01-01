@@ -5,7 +5,18 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ES6Parser, Parser, StringRule, toRawPosition } from 'espression';
+import {
+  BinaryOperatorRule,
+  ES6Parser,
+  IdentifierRule,
+  IRuleSet,
+  MEMBER_TYPE,
+  MEMBER_TYPE_COMP,
+  NumberRule,
+  Parser,
+  StringRule,
+  toRawPosition,
+} from 'espression';
 import {
   ArrayASTNode,
   ASTNode,
@@ -20,7 +31,22 @@ import {
   Thenable,
 } from 'vscode-json-languageservice';
 
-import { lvalueRule } from '../../../rx-json-ui/src/lib/core/expressions/expressionProvider';
+// import { lvalueRule } from '../../../rx-json-ui/src/lib/core/expressions/expressionProvider';
+
+export function lvalueRule(): IRuleSet {
+  return {
+    lvalue: [
+      new BinaryOperatorRule({
+        '.': MEMBER_TYPE,
+        '[': { ...MEMBER_TYPE_COMP, subRules: 'computed' },
+      }),
+      'identifier',
+    ],
+    identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
+    computed: [new StringRule(), new NumberRule(), 'identifier'],
+    property: [new IdentifierRule()],
+  };
+}
 
 const esParser = new ES6Parser(true);
 const rules = { string: [new StringRule({ LT: false, hex: true, raw: false, escapes: true })] };
@@ -113,7 +139,13 @@ export function validateExpr(
         else range = toArrayPostion(n.node, rawPos);
 
         addProblem(
-          Diagnostic.create(range, err.description || err.message, DiagnosticSeverity.Error)
+          Diagnostic.create(
+            range,
+            err.description || err.message,
+            DiagnosticSeverity.Error,
+            'expr',
+            'expression'
+          )
         );
 
         // convert from raw to array

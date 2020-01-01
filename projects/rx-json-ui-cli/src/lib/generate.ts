@@ -8,12 +8,21 @@
 import { generateSchemas } from './jsonschema';
 import { getWidgets, ngCompile } from './metadata';
 
-const { program, config } = ngCompile('./src');
-if (!program) process.exit(1);
+interface GenerateOptions {
+  project: string;
+  module: string;
+  out: string;
+  base: string;
+}
+export function generate(outPath: string, opts: GenerateOptions): void {
+  const { program, config } = ngCompile(opts.project);
+  if (!program) process.exit(1);
 
-const widgets = getWidgets(program, 'src/app/app.module', 'AppModule');
-if (!widgets.length) process.exit(1);
+  const [file, module] = opts.module.split('#');
+  const widgets = getWidgets(program, file, module);
+  if (!widgets.length) process.exit(1);
 
-generateSchemas(program.getTsProgram(), widgets);
+  generateSchemas(program.getTsProgram(), widgets, outPath, opts.out, opts.base);
 
-console.log('end');
+  process.exit(0);
+}

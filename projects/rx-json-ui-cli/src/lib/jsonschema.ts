@@ -14,15 +14,16 @@ import * as TJS from 'typescript-json-schema';
 import { WidgetRef } from './metadata';
 
 const WIDGETREF = 'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean>';
-const BASE_ID = 'http://ianchi.github.io/rx-json-ui';
 
 const JP = new JsonPath();
 
-export function generateSchemas(program: ts.Program, widgets: WidgetRef[]): void {
-  const basePath = 'projects/rx-json-ui';
-  const outPath = 'dist/jsonschema';
-  const outSchemaFile = 'AppWidgetDef.schema.json';
-
+export function generateSchemas(
+  program: ts.Program,
+  widgets: WidgetRef[],
+  outPath: string,
+  outSchemaFile: string,
+  base: string
+): void {
   const settings: TJS.PartialArgs = {
     aliasRef: false,
     ref: true,
@@ -38,7 +39,7 @@ export function generateSchemas(program: ts.Program, widgets: WidgetRef[]): void
 
   const widgetSchema = {
     $schema: 'http://json-schema.org/draft-07/schema#',
-    $id: `${BASE_ID}/${outSchemaFile}`,
+    $id: `${base}/${outSchemaFile}`,
     type: 'object',
     properties: {
       widget: {
@@ -52,12 +53,14 @@ export function generateSchemas(program: ts.Program, widgets: WidgetRef[]): void
 
   let parent: any = widgetSchema;
   const tags: string[] = [];
+  const generator = TJS.buildGenerator(program, settings);
 
   widgets.forEach(({ type: tag, component: { name: symbolName } }, i) => {
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
     process.stdout.write(`Generating schemas ${i + 1}/${widgets.length}`);
-    const component = TJS.generateSchema(program, symbolName, settings);
+
+    const component = generator.getSchemaForSymbol(symbolName, true);
 
     // check component and get symbol
     if (!component.definitions) return;
@@ -99,8 +102,9 @@ export function generateSchemas(program: ts.Program, widgets: WidgetRef[]): void
 
     const schemaFile = `${tag}.schema.json`;
     symbolDef.$schema = 'http://json-schema.org/draft-07/schema#';
-    symbolDef.$id = `${BASE_ID}/${schemaFile}`;
+    symbolDef.$id = `${base}/${schemaFile}`;
     symbolDef.definitions = definitions;
+    symbolDef.description = component.description;
 
     // generate expression options
     if (typeof symbolDef.properties.options === 'object') ExprOptions(symbolDef);
@@ -143,7 +147,7 @@ function ExprOptions(schema: TJS.Definition): void {
   const extendedProp = { ...optionsSchema.properties };
   const exprSchema = {
     anyOf: [{ type: 'array', items: { type: 'string' } }, { type: 'string' }],
-    parser: 'multi-ES6',
+    parser: 'ES6',
   };
   if (schema.definitions) schema.definitions.multilineExpr = exprSchema;
   else schema.definitions = { multilineExpr: exprSchema };

@@ -11,6 +11,7 @@
  */
 
 import * as fs from 'fs';
+import * as glob from 'glob';
 import * as path from 'path';
 import { getErrorStatusDescription, xhr, XHRResponse } from 'request-light';
 import * as URL from 'url';
@@ -29,29 +30,52 @@ import { URI } from 'vscode-uri';
 
 import { validateExpr } from './languageservice';
 
-const languageService = getLanguageService({
-  schemaRequestService: getSchemaRequestService(),
-  workspaceContext: {
-    resolveRelativePath: (relativePath: string, resource: string) => {
-      return URL.resolve(resource, relativePath);
+export function validate(fileMatch: string[], { schema }: { schema: string }): void {
+  const languageService = getLanguageService({
+    schemaRequestService: getSchemaRequestService(),
+    workspaceContext: {
+      resolveRelativePath: (relativePath: string, resource: string) => {
+        return URL.resolve(resource, relativePath);
+      },
     },
-  },
-  contributions: [],
-  clientCapabilities: ClientCapabilities.LATEST,
-});
+    contributions: [],
+    clientCapabilities: ClientCapabilities.LATEST,
+  });
 
-languageService.configure({
-  allowComments: false,
-  validate: true,
-  schemas: [
-    {
-      fileMatch: ['src/assets/views/*'],
-      uri: URI.file(path.resolve('./dist/jsonschema/AppWidgetDef.schema.json')).toString(),
-    },
-  ],
-});
+  languageService.configure({
+    allowComments: false,
+    validate: true,
+    schemas: [
+      {
+        fileMatch,
+        uri: URI.file(path.resolve(schema)).toString(),
+      },
+    ],
+  });
 
-export function validate(file: string): Thenable<Diagnostic[]> {
+  let error = 0;
+  const files = fileMatch.reduce((acc, pattern) => acc.concat(glob.sync(pattern)), []);
+
+  Promise.all(
+    files.map(file =>
+      validateFile(languageService, path.resolve(file)).then(diagnostics => ({ file, diagnostics }))
+    )
+  )
+    .then(fileDiags => {
+      fileDiags.forEach(({ file, diagnostics }) =>
+        diagnostics.forEach(diag => {
+          console.log(
+            `${file} (${diag.range.start.line + 1}, ${diag.range.start.character + 1}) ${
+              diag.source
+            }: ${diag.message}`
+          );
+          error = 1;
+        })
+      );
+    })
+    .then(() => process.exit(error));
+}
+function validateFile(languageService: LanguageService, file: string): Thenable<Diagnostic[]> {
   const content = fs.readFileSync(file);
   const textDocument = TextDocument.create(
     URI.file(file).toString(),
@@ -67,12 +91,14 @@ export function validate(file: string): Thenable<Diagnostic[]> {
   ]).then(([schema, expr]) => schema.concat(expr));
 }
 export function validateSchema(
-  languageservice: LanguageService,
+  languageService: LanguageService,
   textDocument: TextDocument,
   jsonDocument: JSONDocument
 ): Thenable<Diagnostic[]> {
   const documentSettings: DocumentLanguageSettings = { comments: 'error', trailingCommas: 'error' };
-  return languageService.doValidation(textDocument, jsonDocument, documentSettings);
+  return languageService
+    .doValidation(textDocument, jsonDocument, documentSettings)
+    .then(diags => diags.map(d => ((d.source = 'schema'), d)));
 }
 
 function getSchemaRequestService(

@@ -15,13 +15,13 @@ export interface WidgetRef {
 
 export function ngCompile(
   project: string = '.'
-): { program: ng.Program; config: ng.ParsedConfiguration } | undefined {
+): { program: ng.Program; config: ng.ParsedConfiguration } {
   const config = ng.readConfiguration(project);
 
   if (config.errors.length) {
     console.error('Error reading project configuration');
     console.error(ng.formatDiagnostics(config.errors));
-    return undefined;
+    return { program: undefined, config };
   }
   console.log('Compiling application...');
   const { diagnostics, program } = ng.performCompilation(config);
@@ -29,7 +29,7 @@ export function ngCompile(
   if (diagnostics.length) {
     console.error('Errors compiling application');
     console.error(ng.formatDiagnostics(diagnostics));
-    return undefined;
+    return { program: undefined, config };
   }
 
   console.log('Compiled OK');
@@ -42,8 +42,14 @@ export function getWidgets(program: ng.Program, file: string, module: string): W
   const modules: ngc.NgAnalyzedModules = (program as any).analyzedModules;
 
   const configToken = compiler.reflector.findDeclaration('rx-json-ui', 'AF_CONFIG_TOKEN');
-  const entryToken = compiler.reflector.findDeclaration(file, module);
+  let entryToken: ngc.StaticSymbol;
 
+  try {
+    entryToken = compiler.reflector.findDeclaration(file, module);
+  } catch (e) {
+    console.error(e.message);
+    return [];
+  }
   const meta = modules.ngModules.filter(m => m.type.reference === entryToken);
 
   if (!meta.length) {
