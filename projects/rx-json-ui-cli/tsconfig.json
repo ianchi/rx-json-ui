@@ -1,21 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../out-tsc/lib",
     "target": "es2015",
-    "module": "CommonJS",
+    "module": "es2015",
     "esModuleInterop": true,
-    "declaration": true,
+    "declaration": false,
     "inlineSources": true,
-    "lib": ["dom", "es2018"]
+    "lib": ["es2018"]
   },
-  "angularCompilerOptions": {
-    "annotateForClosureCompiler": true,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "enableResourceInlining": true
-  },
+
   "exclude": ["src/test.ts", "**/*.spec.ts"]
 }

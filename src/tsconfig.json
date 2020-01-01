@@ -5,8 +5,7 @@
     "module": "es2015",
     "types": [],
     "paths": {
-      "rx-json-ui": ["projects/rx-json-ui/src/public_api"],
-      "rx-json-ui/*": ["projects/rx-json-ui/src/*"]
+      "rx-json-ui": ["dist/rx-json-ui"]
     }
   },
   "exclude": ["src/test.ts", "**/*.spec.ts"],

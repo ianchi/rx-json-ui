@@ -16,7 +16,7 @@
     },
     {
       "fileMatch": ["src/assets/views/*"],
-      "url": "./dist/jsonschema/AppWidgetDef.schema.json"
+      "url": "./dist/schema/WidgetsDef.json"
     }
   ],
 

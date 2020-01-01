@@ -1,0 +1,6 @@
+*
+!/dist/**/*
+!/bin/**/*
+!*.md
+!package.json
+!LICENSE*
