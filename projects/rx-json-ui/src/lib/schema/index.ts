@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-export * from './validation';
+export * from './validation/index';
 export * from './interface';
 export * from './builder';
 export * from './utils';
