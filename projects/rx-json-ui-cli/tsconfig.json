@@ -6,7 +6,12 @@
     "esModuleInterop": true,
     "declaration": false,
     "inlineSources": true,
-    "lib": ["es2018"]
+    "lib": ["es2018"],
+    "baseUrl": ".",
+    "paths": {
+      "rx-json-ui": ["../../dist/rx-json-ui/esm2015/public_api"],
+      "rx-json-ui/*": ["../../dist/rx-json-ui/esm2015/lib/*"]
+    }
   },
 
   "exclude": ["src/test.ts", "**/*.spec.ts"]

@@ -5,40 +5,14 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  BinaryOperatorRule,
-  ES6Parser,
-  IdentifierRule,
-  ILvalue,
-  INode,
-  IRuleSet,
-  MEMBER_TYPE,
-  MEMBER_TYPE_COMP,
-  NumberRule,
-  Parser,
-  StaticEval,
-  StringRule,
-} from 'espression';
+import { ES6Parser, ILvalue, INode, Parser, StaticEval } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
 
 import { Context } from './context';
 import { Expressions } from './expressions';
+import { lvalueRule } from './lvalueRule';
 
-export function lvalueRule(): IRuleSet {
-  return {
-    lvalue: [
-      new BinaryOperatorRule({
-        '.': MEMBER_TYPE,
-        '[': { ...MEMBER_TYPE_COMP, subRules: 'computed' },
-      }),
-      'identifier',
-    ],
-    identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
-    computed: [new StringRule(), new NumberRule(), 'identifier'],
-    property: [new IdentifierRule()],
-  };
-}
 /**
  * Service for Parsing and for evaluating expressions in Widget's configuration
  * The functionality is provided by the ESpression package

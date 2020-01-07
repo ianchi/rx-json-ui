@@ -1,0 +1,5 @@
+{
+  "main": "../dist/lib-api",
+  "module": "../dist/esm/lib-api",
+  "typings": "../dist/lib-api.d.ts"
+}

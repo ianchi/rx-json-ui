@@ -17,6 +17,8 @@ import {
   StringRule,
   toRawPosition,
 } from 'espression';
+// tslint:disable-next-line: no-implicit-dependencies
+import { lvalueRule } from 'rx-json-ui/core/expressions/lvalueRule';
 import {
   ArrayASTNode,
   ASTNode,
@@ -30,23 +32,6 @@ import {
   TextDocument,
   Thenable,
 } from 'vscode-json-languageservice';
-
-// import { lvalueRule } from '../../../rx-json-ui/src/lib/core/expressions/expressionProvider';
-
-export function lvalueRule(): IRuleSet {
-  return {
-    lvalue: [
-      new BinaryOperatorRule({
-        '.': MEMBER_TYPE,
-        '[': { ...MEMBER_TYPE_COMP, subRules: 'computed' },
-      }),
-      'identifier',
-    ],
-    identifier: [new IdentifierRule({ reserved: ['this', 'true', 'false'] })],
-    computed: [new StringRule(), new NumberRule(), 'identifier'],
-    property: [new IdentifierRule()],
-  };
-}
 
 const esParser = new ES6Parser(true);
 const rules = { string: [new StringRule({ LT: false, hex: true, raw: false, escapes: true })] };

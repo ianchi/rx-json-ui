@@ -4,6 +4,7 @@ import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json';
 
 const MAIN_FILE = 'src/public-api.ts';
+const LIB_FILE = 'src/lib-api.ts';
 
 let external = ['fs', 'path', 'url'];
 
@@ -12,11 +13,12 @@ if (pkg.dependencies) external = external.concat(Object.keys(pkg.dependencies));
 
 export default [
   {
-    input: MAIN_FILE,
+    input: [MAIN_FILE, LIB_FILE],
+
     external,
     output: [
       {
-        file: pkg.main,
+        dir: './dist',
         format: 'cjs',
         sourcemap: true,
       },
@@ -25,10 +27,10 @@ export default [
   },
 
   {
-    input: MAIN_FILE,
+    input: [MAIN_FILE, LIB_FILE],
     external,
     output: {
-      file: pkg.module,
+      dir: './dist/esm',
       format: 'esm',
       sourcemap: true,
     },

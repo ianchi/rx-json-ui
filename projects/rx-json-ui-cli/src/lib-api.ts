@@ -6,7 +6,7 @@
  */
 
 /*
- * Public API Surface of rx-json-ui-cli
+ * Public Lib Surface of rx-json-ui-cli
  */
 
-export { main } from './lib/main';
+export { hoverData, validateExpr } from './lib/languageservice';
