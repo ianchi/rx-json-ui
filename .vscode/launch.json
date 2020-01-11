@@ -11,7 +11,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch TS Program",
+      "name": "Validate View",
       "args": [
         "${workspaceRoot}/projects/rx-json-ui-cli/src/lib/main.ts",
         "validate",
@@ -24,6 +24,29 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "TS_NODE_PROJECT": "${workspaceRoot}/projects/rx-json-ui-cli/src/lib/tsconfig.json"
+      },
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Generate Schemas",
+      "args": [
+        "${workspaceRoot}/projects/rx-json-ui-cli/bin/cli.js",
+        "generate",
+        "-p",
+        "./src",
+        "-m",
+        "src/app/app.module#AppModule",
+        "dist/schemas"
+      ],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceRoot}/projects/rx-json-ui-cli/src/lib/tsconfig.debug.json"
       },
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",

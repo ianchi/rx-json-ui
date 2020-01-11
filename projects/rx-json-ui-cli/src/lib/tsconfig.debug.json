@@ -6,5 +6,10 @@
     "types": ["node"],
     "target": "ES2017"
   },
+  "baseUrl": ".",
+  "paths": {
+    "rx-json-ui": ["../../../rx-json-ui/src/public_api"],
+    "rx-json-ui/*": ["../../../rx-json-ui/src/lib/*"]
+  },
   "exclude": ["src/test.ts", "**/*.spec.ts"]
 }
