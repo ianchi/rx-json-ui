@@ -7,7 +7,6 @@
 
 import * as ngc from '@angular/compiler';
 import * as ng from '@angular/compiler-cli';
-
 export interface WidgetRef {
   type: string;
   component: ng.StaticSymbol;
@@ -17,6 +16,7 @@ export function ngCompile(
   project: string = '.'
 ): { program: ng.Program; config: ng.ParsedConfiguration } {
   const config = ng.readConfiguration(project);
+  config.options.enableIvy = false;
 
   if (config.errors.length) {
     console.error('Error reading project configuration');
@@ -24,25 +24,25 @@ export function ngCompile(
     return { program: undefined, config };
   }
   console.log('Compiling application...');
-  const { diagnostics, program } = ng.performCompilation(config);
-
-  if (diagnostics.length) {
-    console.error('Errors compiling application');
-    console.error(ng.formatDiagnostics(diagnostics));
-    return { program: undefined, config };
-  }
-
-  console.log('Compiled OK');
+  const program = ng.createProgram({
+    rootNames: config.rootNames,
+    host: ng.createCompilerHost({ options: config.options }),
+    options: config.options,
+  });
 
   return { program, config };
 }
 export function getWidgets(program: ng.Program, file: string, module: string): WidgetRef[] {
   // UNSAFE: Access private properties
   const compiler: ngc.AotCompiler = (program as any).compiler;
-  const modules: ngc.NgAnalyzedModules = (program as any).analyzedModules;
+  const staticSymbolResolver: ngc.StaticSymbolResolver = (compiler as any)._symbolResolver;
+  const metadataResolver: ngc.CompileMetadataResolver = (compiler as any)._metadataResolver;
+  const compilerHost: ngc.AotCompilerHost = (compiler as any)._host;
 
   const configToken = compiler.reflector.findDeclaration('rx-json-ui', 'AF_CONFIG_TOKEN');
   let entryToken: ngc.StaticSymbol;
+  const filePath = compilerHost.moduleNameToFileName(file);
+  const modules = ngc.analyzeFile(compilerHost, staticSymbolResolver, metadataResolver, filePath);
 
   try {
     entryToken = compiler.reflector.findDeclaration(file, module);
@@ -52,7 +52,7 @@ export function getWidgets(program: ng.Program, file: string, module: string): W
   }
   const meta = modules.ngModules.filter(m => m.type.reference === entryToken);
 
-  if (!meta.length) {
+  if (!meta || !meta.length) {
     console.error(`Module ${module} not found`);
     return [];
   } else if (meta.length > 1) {
