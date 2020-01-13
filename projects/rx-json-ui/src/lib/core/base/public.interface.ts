@@ -9,6 +9,7 @@ export type Constrain<T, K> = { [key in keyof T]: K };
 export type ConstrainSlots<S> = Constrain<S, SimpleContentDef> & MainSlotContentDef;
 export type ConstrainEvents<E> = Constrain<E, multilineExpr | undefined> & CommonEventsDef;
 
+/** Auxiliary type to generate json schema definitions */
 export type JsonWidgetDef<
   O extends AbstractOptionsDef = {},
   S extends ConstrainSlots<S> | undefined = undefined,
@@ -18,6 +19,9 @@ export type JsonWidgetDef<
   WidgetDef<O, S, E, B> & (B extends true ? { bind: lvalueExpr } : {}),
   (S extends undefined ? 'content' : never) | (B extends undefined ? 'bind' : never)
 >;
+
+/** Auxiliary type to generate json schema definitions */
+export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
 
 /**
  * Definition of a generic Widget.

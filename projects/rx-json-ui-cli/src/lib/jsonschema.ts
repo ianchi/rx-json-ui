@@ -14,6 +14,7 @@ import * as TJS from 'typescript-json-schema';
 import { WidgetRef } from './metadata';
 
 const WIDGETREF = 'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean>';
+const CONTENTREF = 'JsonContentDef';
 
 const JP = new JsonPath();
 
@@ -127,6 +128,15 @@ export function generateSchemas(
     path.resolve(outPath, outSchemaFile),
     JSON.stringify(widgetSchema, undefined, 2)
   );
+
+  // generate Content file
+
+  const contentSchema = generator.getSchemaForSymbol(CONTENTREF, false);
+  const contentFile = `${path.basename(outSchemaFile, 'json')}content.json`;
+  contentSchema.$id = `${base}/${contentFile}`;
+  contentSchema.definitions = { [WIDGETREF]: { $ref: `${outSchemaFile}#` } };
+  fs.writeFileSync(path.resolve(outPath, contentFile), JSON.stringify(contentSchema, undefined, 2));
+
   process.stdout.clearLine(0);
   process.stdout.cursorTo(0);
 
