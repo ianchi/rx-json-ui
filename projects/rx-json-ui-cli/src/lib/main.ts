@@ -36,7 +36,7 @@ function configure(): void {
     )
     .requiredOption(
       '-m, --module <ngModule>',
-      'Ng Module to start extracting widget definitions. Must be in the form "module#name"'
+      'Ng Module to start extracting widget definitions. Must be in the form "fileModule(#ngModuleSymbol)". If Symbol is ommited all NgModules in the file are considered'
     )
     .option('-o, --out <name>', 'Name for the main schema', 'WidgetsDef.json')
     .option(
