@@ -17,6 +17,8 @@ export function ngCompile(
 ): { program: ng.Program; config: ng.ParsedConfiguration } {
   const config = ng.readConfiguration(project);
   config.options.enableIvy = false;
+  config.options.noUnusedLocals = false;
+  config.options.noUnusedParameters = false;
 
   if (config.errors.length) {
     console.error('Error reading project configuration');
@@ -29,7 +31,15 @@ export function ngCompile(
     host: ng.createCompilerHost({ options: config.options }),
     options: config.options,
   });
+  let diagnostics = program.getTsSyntacticDiagnostics();
+  diagnostics = diagnostics.concat(program.getTsSemanticDiagnostics());
 
+  if (diagnostics.length) {
+    console.error(ng.formatDiagnostics(diagnostics));
+    return { program: undefined, config };
+  }
+
+  console.log('Compiled OK');
   return { program, config };
 }
 export function getWidgets(program: ng.Program, file: string, module: string): WidgetRef[] {
@@ -42,15 +52,22 @@ export function getWidgets(program: ng.Program, file: string, module: string): W
   const configToken = compiler.reflector.findDeclaration('rx-json-ui', 'AF_CONFIG_TOKEN');
   let entryToken: ngc.StaticSymbol;
   const filePath = compilerHost.moduleNameToFileName(file);
-  const modules = ngc.analyzeFile(compilerHost, staticSymbolResolver, metadataResolver, filePath);
 
-  try {
-    entryToken = compiler.reflector.findDeclaration(file, module);
-  } catch (e) {
-    console.error(e.message);
+  if (!filePath) {
+    console.error(`Could not resolve ${file}`);
     return [];
   }
-  const meta = modules.ngModules.filter(m => m.type.reference === entryToken);
+  const modules = ngc.analyzeFile(compilerHost, staticSymbolResolver, metadataResolver, filePath);
+  let meta = modules.ngModules;
+  if (module) {
+    try {
+      entryToken = compiler.reflector.findDeclaration(file, module);
+    } catch (e) {
+      console.error(e.message);
+      return [];
+    }
+    meta = meta.filter(m => m.type.reference === entryToken);
+  }
 
   if (!meta || !meta.length) {
     console.error(`Module ${module} not found`);
