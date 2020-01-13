@@ -17,8 +17,7 @@
   "types": "./dist/public-api.d.ts",
   "peerDependencies": {
     "@angular/compiler": "^8.2.14",
-    "@angular/compiler-cli": "^8.2.14",
-    "typescript": "~3.5.3"
+    "@angular/compiler-cli": "^8.2.14"
   },
   "dependencies": {
     "commander": "^4.0.1",

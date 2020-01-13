@@ -8,7 +8,6 @@
 import { JsonPath } from 'espression-jsonpath';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as ts from 'typescript';
 import * as TJS from 'typescript-json-schema';
 
 import { WidgetRef } from './metadata';
@@ -19,7 +18,7 @@ const CONTENTREF = 'JsonContentDef';
 const JP = new JsonPath();
 
 export function generateSchemas(
-  program: ts.Program,
+  program: TJS.Program,
   widgets: WidgetRef[],
   outPath: string,
   outSchemaFile: string,
