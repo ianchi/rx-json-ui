@@ -5,20 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  BinaryOperatorRule,
-  ES6Parser,
-  IdentifierRule,
-  IRuleSet,
-  MEMBER_TYPE,
-  MEMBER_TYPE_COMP,
-  NumberRule,
-  Parser,
-  StringRule,
-  toRawPosition,
-} from 'espression';
+import { ES6Parser, Parser, StringRule, toRawPosition } from 'espression';
 // tslint:disable-next-line: no-implicit-dependencies
-import { lvalueRule } from 'rx-json-ui/core/expressions/lvalueRule';
+import { lvalueRule } from 'rx-json-ui/lvalueRule';
 import {
   ArrayASTNode,
   ASTNode,

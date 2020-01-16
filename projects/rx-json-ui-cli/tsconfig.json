@@ -10,7 +10,7 @@
     "baseUrl": ".",
     "paths": {
       "rx-json-ui": ["../../dist/rx-json-ui/esm2015/public_api"],
-      "rx-json-ui/*": ["../../dist/rx-json-ui/esm2015/lib/*"]
+      "rx-json-ui/*": ["../../dist/rx-json-ui/*"]
     }
   },
 
