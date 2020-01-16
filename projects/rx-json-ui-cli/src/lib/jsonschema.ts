@@ -12,9 +12,6 @@ import * as TJS from 'typescript-json-schema';
 
 import { WidgetRef } from './metadata';
 
-const WIDGETREF = 'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean>';
-const CONTENTREF = 'JsonContentDef';
-
 const JP = new JsonPath();
 
 export function generateSchemas(
@@ -45,7 +42,7 @@ export function generateSchemas(
       widget: {
         description: 'Type of the Widget to instantiate',
         type: 'string',
-        enum: [],
+        enum: [] as string[],
       },
     },
     required: ['widget'],
@@ -59,6 +56,18 @@ export function generateSchemas(
     console.error('Error generating schema');
     return process.exit(1);
   }
+
+  // for strictNullChecks == false
+  generator.setSchemaOverride(
+    'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean>',
+    { $ref: `${outSchemaFile}#` }
+  );
+  // for strictNullChecks == true
+  generator.setSchemaOverride(
+    'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean|undefined>',
+    { $ref: `${outSchemaFile}#` }
+  );
+
   widgets.forEach(({ type: tag, component: { name: symbolName } }, i) => {
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
@@ -81,8 +90,7 @@ export function generateSchemas(
     if (typeof symbolDef.properties !== 'object') return;
 
     // Reference consolidated schema
-    const definitions = {};
-    definitions[WIDGETREF] = { $ref: `${outSchemaFile}#` };
+    const definitions: { [prop: string]: TJS.Definition } = {};
 
     // Generate schema for def
 
@@ -115,6 +123,17 @@ export function generateSchemas(
     // generate expression options
     if (typeof symbolDef.properties.options === 'object') ExprOptions(symbolDef);
 
+    // ensure 'parser' on events, in case there was no jsDoc
+    if (typeof symbolDef.properties.events === 'object' && symbolDef.properties.events.properties) {
+      for (const event in symbolDef.properties.events.properties) {
+        if (
+          typeof symbolDef.properties.events.properties[event] === 'object' &&
+          !(symbolDef.properties.events.properties[event] as any).parser
+        )
+          (symbolDef.properties.events.properties[event] as any).parser = 'ES6';
+      }
+    }
+
     // save schema
     parent.if = {
       properties: { widget: { const: tag } },
@@ -136,10 +155,14 @@ export function generateSchemas(
 
   // generate Content file
 
-  const contentSchema = generator.getSchemaForSymbol(CONTENTREF, false);
+  const contentSchema = generator.getSchemaForSymbol('JsonContentDef', false);
   const contentFile = `${path.basename(outSchemaFile, 'json')}content.json`;
   contentSchema.$id = `${base}/${contentFile}`;
-  contentSchema.definitions = { [WIDGETREF]: { $ref: `${outSchemaFile}#` } };
+  if (!contentSchema.definitions) contentSchema.definitions = {};
+  findRefs(contentSchema).forEach(
+    ref => (contentSchema.definitions![ref] = generator.ReffedDefinitions[ref])
+  );
+
   fs.writeFileSync(path.resolve(outPath, contentFile), JSON.stringify(contentSchema, undefined, 2));
 
   process.stdout.clearLine(0);
