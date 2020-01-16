@@ -16,7 +16,7 @@ interface GenerateOptions {
 }
 export function generate(outPath: string, opts: GenerateOptions): void {
   const { program, config } = ngCompile(opts.project);
-  if (!program) process.exit(1);
+  if (!program) return process.exit(1);
 
   const [file, module] = opts.module.split('#');
   const widgets = getWidgets(program, file, module);

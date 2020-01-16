@@ -54,7 +54,7 @@ export function validate(fileMatch: string[], { schema }: { schema: string }): v
   });
 
   let error = 0;
-  const files = fileMatch.reduce((acc, pattern) => acc.concat(glob.sync(pattern)), []);
+  const files = fileMatch.reduce((acc, pattern) => acc.concat(glob.sync(pattern)), [] as string[]);
 
   Promise.all(
     files.map(file =>

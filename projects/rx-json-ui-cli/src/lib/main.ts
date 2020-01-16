@@ -19,11 +19,11 @@ export function main(args: string[]): void {
 }
 
 function configure(): void {
-  const pkg = readPkg({ cwd: path.dirname(module.filename) }).packageJson;
+  const pkg = readPkg({ cwd: path.dirname(module.filename) });
 
   program
     .name('rx-json-ui')
-    .version(pkg.version)
+    .version((pkg && pkg.packageJson.version) || '0.0.0')
     .description('Tool to generate json schema validation for rx-json-ui widgets definitions');
 
   program

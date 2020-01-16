@@ -55,6 +55,10 @@ export function generateSchemas(
   const tags: string[] = [];
   const generator = TJS.buildGenerator(program, settings);
 
+  if (!generator) {
+    console.error('Error generating schema');
+    return process.exit(1);
+  }
   widgets.forEach(({ type: tag, component: { name: symbolName } }, i) => {
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
@@ -64,13 +68,14 @@ export function generateSchemas(
 
     // check component and get symbol
     if (!component.definitions) return;
+    const componentDefinitions = component.definitions;
     if (typeof component.properties !== 'object') return;
 
     let symbolDef = component.properties.jsonWidgetDef;
 
     if (typeof symbolDef !== 'object') return;
     if (symbolDef.$ref) {
-      symbolDef = component.definitions[symbolDef.$ref.substring(14)];
+      symbolDef = componentDefinitions[symbolDef.$ref.substring(14)];
       if (typeof symbolDef !== 'object') return;
     }
     if (typeof symbolDef.properties !== 'object') return;
@@ -88,11 +93,12 @@ export function generateSchemas(
     };
 
     // copy relevant definitions
-    const walkRefs = schema => {
+    const walkRefs = (schema: TJS.Definition) => {
       findRefs(schema).forEach(ref => {
         if (definitions[ref]) return;
 
-        definitions[ref] = component.definitions[ref];
+        if (typeof componentDefinitions[ref] !== 'boolean')
+          definitions[ref] = componentDefinitions[ref] as TJS.Definition;
         walkRefs(definitions[ref]);
       });
     };
@@ -143,6 +149,7 @@ export function generateSchemas(
 }
 /** Adds expression version on options */
 function ExprOptions(schema: TJS.Definition): void {
+  if (!schema.properties) return;
   let optionsSchema = schema.properties.options;
   if (typeof optionsSchema === 'object' && optionsSchema.$ref && schema.definitions) {
     optionsSchema = schema.definitions[optionsSchema.$ref.substring(14)];
@@ -169,11 +176,11 @@ function ExprOptions(schema: TJS.Definition): void {
       const expKey = `${key}=`;
       if (typeof optionsSchema !== 'object') return;
       extendedProp[expKey] = { $ref: '#/definitions/multilineExpr' };
-      const origSchema = optionsSchema.properties[key];
+      const origSchema = optionsSchema.properties![key];
       if (typeof origSchema === 'object' && origSchema.description)
         (extendedProp[expKey] as TJS.Definition).description = origSchema.description;
 
-      optionsSchema.allOf.push({
+      optionsSchema.allOf!.push({
         if: { required: [key] },
         then: { not: { required: [expKey] } },
       });

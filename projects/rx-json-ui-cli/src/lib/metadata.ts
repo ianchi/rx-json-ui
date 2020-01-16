@@ -14,7 +14,7 @@ export interface WidgetRef {
 
 export function ngCompile(
   project: string = '.'
-): { program: ng.Program; config: ng.ParsedConfiguration } {
+): { program: ng.Program | undefined; config: ng.ParsedConfiguration } {
   const config = ng.readConfiguration(project);
   config.options.enableIvy = false;
   config.options.noUnusedLocals = false;
