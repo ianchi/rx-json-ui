@@ -47,8 +47,8 @@ function configure(): void {
     .action(generate);
 
   program
-    .command('validate <glob...>')
-    .alias('val')
+    .command('lint <glob...>')
+    .alias('l')
     .description(
       'Validate widget definitions, adding expression syntactic validation to the json schema validation'
     )

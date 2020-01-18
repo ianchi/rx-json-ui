@@ -13,6 +13,10 @@ import * as TJS from 'typescript-json-schema';
 import { WidgetRef } from './metadata';
 
 const JP = new JsonPath();
+const EXPR_SCHEMA = {
+  anyOf: [{ type: 'array', items: { type: 'string' } }, { type: 'string' }],
+  parser: 'ES6',
+};
 
 export function generateSchemas(
   program: TJS.Program,
@@ -121,7 +125,7 @@ export function generateSchemas(
     symbolDef.description = component.description;
 
     // generate expression options
-    if (typeof symbolDef.properties.options === 'object') ExprOptions(symbolDef);
+    if (typeof symbolDef.properties.options === 'object') exprOptions(symbolDef);
 
     // ensure 'parser' on events, in case there was no jsDoc
     if (typeof symbolDef.properties.events === 'object' && symbolDef.properties.events.properties) {
@@ -133,6 +137,13 @@ export function generateSchemas(
           (symbolDef.properties.events.properties[event] as any).parser = 'ES6';
       }
     }
+
+    // remove undefined `bind`
+    if (
+      typeof symbolDef.properties.bind === 'object' &&
+      symbolDef.properties.bind.type === 'undefined'
+    )
+      delete symbolDef.properties.bind;
 
     // save schema
     parent.if = {
@@ -171,26 +182,35 @@ export function generateSchemas(
   process.stdout.write('Schema files generated\n');
 }
 /** Adds expression version on options */
-function ExprOptions(schema: TJS.Definition): void {
+function exprOptions(schema: TJS.Definition): void {
+  let optionsSchema: TJS.DefinitionOrBoolean[];
+
   if (!schema.properties) return;
-  let optionsSchema = schema.properties.options;
+
+  if (schema.definitions) schema.definitions.multilineExpr = EXPR_SCHEMA;
+  else schema.definitions = { multilineExpr: EXPR_SCHEMA };
+
+  if (typeof schema.properties.options !== 'object') return;
+
+  optionsSchema = schema.properties.options.anyOf ||
+    schema.properties.options.oneOf || [schema.properties.options];
+
+  let hasOptions = false;
+  optionsSchema.map(options => (hasOptions = hasOptions || exprAddOptions(options, schema)));
+  // if (!hasOptions) delete schema.properties.options;
+}
+function exprAddOptions(optionsSchema: TJS.DefinitionOrBoolean, schema: TJS.Definition): boolean {
   if (typeof optionsSchema === 'object' && optionsSchema.$ref && schema.definitions) {
     optionsSchema = schema.definitions[optionsSchema.$ref.substring(14)];
   }
+  if (typeof optionsSchema !== 'object') return false;
 
-  if (typeof optionsSchema !== 'object' || typeof optionsSchema.properties !== 'object') return;
+  const extendedProp: { [key: string]: TJS.DefinitionOrBoolean } = { ...optionsSchema.properties };
 
+  if (typeof optionsSchema !== 'object' || typeof optionsSchema.properties !== 'object')
+    return false;
   delete optionsSchema.patternProperties;
   optionsSchema.additionalProperties = false;
-
-  const extendedProp = { ...optionsSchema.properties };
-  const exprSchema = {
-    anyOf: [{ type: 'array', items: { type: 'string' } }, { type: 'string' }],
-    parser: 'ES6',
-  };
-  if (schema.definitions) schema.definitions.multilineExpr = exprSchema;
-  else schema.definitions = { multilineExpr: exprSchema };
-
   if (!optionsSchema.allOf) optionsSchema.allOf = [];
 
   Object.keys(optionsSchema.properties)
@@ -212,7 +232,7 @@ function ExprOptions(schema: TJS.Definition): void {
     });
 
   optionsSchema.properties = extendedProp;
-  if (!optionsSchema.allOf.length) delete schema.properties.options;
+  return true;
 }
 
 function findRefs(schema: TJS.Definition): string[] {

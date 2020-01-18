@@ -62,7 +62,9 @@ export function validate(fileMatch: string[], { schema }: { schema: string }): v
     )
   )
     .then(fileDiags => {
-      fileDiags.forEach(({ file, diagnostics }) =>
+      process.stdout.clearLine(0);
+      process.stdout.cursorTo(0);
+      fileDiags.forEach(({ file, diagnostics }) => {
         diagnostics.forEach(diag => {
           console.log(
             `${file} (${diag.range.start.line + 1}, ${diag.range.start.character + 1}) ${
@@ -70,12 +72,17 @@ export function validate(fileMatch: string[], { schema }: { schema: string }): v
             }: ${diag.message}`
           );
           error = 1;
-        })
-      );
+        });
+      });
+      if (!error) console.log('All files pass validation.');
     })
     .then(() => process.exit(error));
 }
 function validateFile(languageService: LanguageService, file: string): Thenable<Diagnostic[]> {
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
+  process.stdout.write(file);
+
   const content = fs.readFileSync(file);
   const textDocument = TextDocument.create(
     URI.file(file).toString(),
