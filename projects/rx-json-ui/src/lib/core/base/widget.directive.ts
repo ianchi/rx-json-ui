@@ -47,7 +47,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   widgetDef: AbstractWidgetDef | undefined;
   @Input()
   parentContext: Context | undefined;
-
+  structuralContext: Context | undefined;
   private subscriptions: Subscription | undefined;
   private componentFactory: ComponentFactory<AbstractWidget> | undefined;
   private widgetRef: Array<ComponentRef<AbstractWidget>> = [];
@@ -81,52 +81,41 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (!this.widgetDef) return;
     this.validateWidgetDef();
     this.parentContext = this.parentContext || this.rootContext || new Context();
+    this.structuralContext = Context.create(this.parentContext);
 
     // create the structural observable
     if (this.widgetDef.if) {
-      const ifContext = Context.create(this.parentContext);
       const ifExpr = Array.isArray(this.widgetDef.if)
         ? this.widgetDef.if.join('\n')
         : this.widgetDef.if;
-      structural$ = this.expr.eval(ifExpr, ifContext, true).pipe(
+      structural$ = this.expr.eval(ifExpr, this.structuralContext, true).pipe(
         map(v => !!v),
         distinctUntilChanged()
       );
+    } else structural$ = of(true);
 
-      if (this.widgetDef.for) {
-        // if we have an `if` and a `for` first evaluate the `if`
-        // and each time it evaluates to truthy evaluate the `for`
-        const forExpr = Array.isArray(this.widgetDef.for)
-          ? this.widgetDef.for.join('\n')
-          : this.widgetDef.for;
-        structural$ = structural$.pipe(
-          switchMap(val => {
-            const forContext = Context.create(this.parentContext);
-            return val
-              ? this.expr
-                  .eval(forExpr, forContext, true)
-                  .pipe(map(a => (Array.isArray(a) ? a : [])))
-              : of([]);
-          })
-        );
-      }
-    } else if (this.widgetDef.for) {
+    if (this.widgetDef.for) {
+      // if we have an `if` and a `for` first evaluate the `if`
+      // and each time it evaluates to truthy evaluate the `for`
       const forExpr = Array.isArray(this.widgetDef.for)
         ? this.widgetDef.for.join('\n')
         : this.widgetDef.for;
-      const forContext = Context.create(this.parentContext);
-      structural$ = this.expr
-        .eval(forExpr, forContext, true)
-        .pipe(map(a => (Array.isArray(a) ? a : [])));
+      structural$ = structural$.pipe(
+        switchMap(val => {
+          return val
+            ? this.expr
+                .eval(forExpr, this.structuralContext!, true)
+                .pipe(map(a => (Array.isArray(a) ? a : [])))
+            : of([]);
+        })
+      );
     }
 
-    if (structural$) {
-      this.subscriptions = structural$.subscribe(val => {
-        // check if the `if` was false
-        if (val === false) this.destroyWidgets();
-        else this.createWidgets(val);
-      });
-    } else this.createWidgets(true);
+    this.subscriptions = structural$.subscribe(val => {
+      // check if the `if` was false
+      if (val === false) this.destroyWidgets();
+      else this.createWidgets(val);
+    });
   }
 
   createWidgets(data: true | any[]): void {
@@ -136,7 +125,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (data === true) {
       this.widgetRef = [this.container.createComponent(this.componentFactory)];
 
-      this.widgetRef[0].instance.setup(this.widgetDef, Context.create(this.parentContext));
+      this.widgetRef[0].instance.setup(this.widgetDef, Context.create(this.structuralContext));
     } else {
       this.setFor(data);
     }
@@ -147,7 +136,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
       throw new Error('Invalid widget definition');
 
     // expose a read-only `$for` reactive property with the `item` and the `index`
-    const context = Context.create(this.parentContext, undefined, {
+    const context = Context.create(this.structuralContext, undefined, {
       $for: RxObject({ item, index }),
     });
 
@@ -211,6 +200,12 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   private setFor(value: any[]): void {
     if (!this.forDiffer && value) {
       try {
+        if (
+          this.structuralContext &&
+          this.structuralContext.hasOwnProperty('$trackBy') &&
+          typeof this.structuralContext.$trackBy === 'function'
+        )
+          this.forTrackBy = this.structuralContext.$trackBy;
         this.forDiffer = this.differs.find(value).create(this.forTrackBy);
       } catch {
         throw new Error(`Cannot find a differ supporting object '${value}'`);

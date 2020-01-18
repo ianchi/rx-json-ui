@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, ButtonWidgetEvents, Expressions } from '../../../core/index';
+import { BaseWidget, ButtonWidgetEvents } from '../../../core/index';
 
 export interface SetButtonWidgetOptions {
   title: string;
@@ -37,10 +32,6 @@ export class SetButtonWidgetComponent extends BaseWidget<
   ButtonWidgetEvents
 > {
   running = false;
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-
   clickEvent(): void {
     this.running = true;
     this.emmit('onClick', {}, () => (this.running = false));

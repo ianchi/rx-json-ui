@@ -5,14 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions, SliderWidgetOptions } from '../../../core/index';
+import { AbstractFormFieldWidget } from '../../../core/index';
+import { SchemaNumber } from '../../../schema';
 
 @Component({
   selector: 'set-slider',
@@ -22,8 +18,4 @@ import { AbstractFormFieldWidget, Expressions, SliderWidgetOptions } from '../..
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSliderWidgetComponent extends AbstractFormFieldWidget<SliderWidgetOptions> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetSliderWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaNumber>> {}

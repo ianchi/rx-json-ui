@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions, InputWidgetOptions } from '../../../core/index';
+import { AbstractFormFieldWidget, InputWidgetOptions } from '../../../core/index';
 
 @Component({
   selector: 'set-input',
@@ -22,8 +17,4 @@ import { AbstractFormFieldWidget, Expressions, InputWidgetOptions } from '../../
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {}

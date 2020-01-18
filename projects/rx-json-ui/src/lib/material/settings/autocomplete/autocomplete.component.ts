@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AutocompleteWidgetMixin, Expressions } from '../../../core/index';
+import { AutocompleteWidgetMixin } from '../../../core/index';
 
 @Component({
   selector: 'set-autocomplete',
@@ -22,8 +17,4 @@ import { AutocompleteWidgetMixin, Expressions } from '../../../core/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin {}

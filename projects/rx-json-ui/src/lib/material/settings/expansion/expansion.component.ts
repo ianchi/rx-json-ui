@@ -5,15 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
-import { Expressions } from '../../../core/index';
 
 export interface SetExpansionWidgetOptions {
   title: string;
@@ -33,9 +27,6 @@ export class SetExpansionWidgetComponent extends AbstractFormWidgetComponent<
   SetExpansionWidgetOptions
 > {
   expanded = false;
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
 
   dynOnAfterBind(): void {
     this.map('expanded', e => (this.expanded = !!e));

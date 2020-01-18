@@ -1,10 +1,10 @@
 <div>
-  <section class="table-title" *ngIf="options.title || options.filterBy">
+  <section class="table-title" *ngIf="options.title || options.filter">
     <h6>{{ options.title }}</h6>
 
     <div class="spacer"></div>
 
-    <mat-form-field *ngIf="options.filterBy">
+    <mat-form-field *ngIf="options.filter">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
     </mat-form-field>
   </section>
@@ -19,15 +19,15 @@
       <!-- Dynamic Column definitions-->
       <ng-container
         [matColumnDef]="colKey"
-        *ngFor="let colKey of options.colKeys; index as colIndex"
+        *ngFor="let colKey of options.columns; index as colIndex"
       >
         <th
           mat-header-cell
           *matHeaderCellDef
           mat-sort-header
-          [disabled]="options.disableSort?.indexOf(colKey) >= 0"
+          [disabled]="!disableSort || disableSort!.indexOf(colKey) >= 0"
         >
-          {{ options.colHeaders[colIndex] || colKey }}
+          {{ options.headers[colKey] || colKey }}
         </th>
         <ng-container
           *ngIf="options.colFormat && options.colFormat[colIndex]; else noFormatCellDef"
@@ -63,7 +63,7 @@
       </ng-container>
 
       <!-- Row definitions-->
-      <ng-container *ngIf="options.colHeaders">
+      <ng-container *ngIf="options.headers">
         <tr mat-header-row *matHeaderRowDef="showCols" class="header-row"></tr>
       </ng-container>
       <tr mat-row *matRowDef="let element; columns: showCols" class="data-row"></tr>

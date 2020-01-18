@@ -5,20 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions } from '../../../core/index';
-import { SchemaBase } from '../../../schema/interface';
-
-export interface TextAreaWidgetOptions extends SchemaBase<any> {
-  type: string;
-  required?: boolean;
-}
+import { AbstractFormFieldWidget } from '../../../core/index';
+import { SchemaString } from '../../../schema/interface';
 
 @Component({
   selector: 'wdg-textarea',
@@ -27,8 +17,4 @@ export interface TextAreaWidgetOptions extends SchemaBase<any> {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextAreaWidgetComponent extends AbstractFormFieldWidget<TextAreaWidgetOptions> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class TextAreaWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaString>> {}

@@ -5,15 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
-import { Expressions, TitleOption } from '../../../core/index';
+import { TitleOption } from '../../../core/index';
 
 @Component({
   selector: 'set-section',
@@ -23,8 +18,4 @@ import { Expressions, TitleOption } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSectionWidgetComponent extends AbstractFormWidgetComponent<TitleOption> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetSectionWidgetComponent extends AbstractFormWidgetComponent<TitleOption> {}

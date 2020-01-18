@@ -15,11 +15,15 @@ export interface IMap<T> {
 /**
  * Generic schema definition, with keywords valid for all types
  */
-export interface SchemaBase<T> {
-  type?: string | string[];
-
+export interface SchemaBase<T> extends SchemaBaseValidations<T> {
   title?: string;
   description?: string;
+  ui?: SchemaUI;
+}
+
+export interface SchemaBaseValidations<T> {
+  type?: string | string[];
+
   enum?: T[];
   const?: T;
   enumDescription?: string[];
@@ -27,7 +31,6 @@ export interface SchemaBase<T> {
 
   'depends='?: string;
   required?: boolean;
-  ui?: SchemaUI;
 }
 
 /**

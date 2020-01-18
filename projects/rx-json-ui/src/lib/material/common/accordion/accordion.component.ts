@@ -5,19 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
-
-export interface AccordionWidgetOptions {
-  title: string;
-  description: string;
-}
+import { BaseWidget, MainSlotContentDef, TitleDescOption } from '../../../core/index';
 
 @Component({
   selector: 'wdg-accordion',
@@ -26,11 +16,4 @@ export interface AccordionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccordionWidgetComponent extends BaseWidget<
-  AccordionWidgetOptions,
-  MainSlotContentDef
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class AccordionWidgetComponent extends BaseWidget<TitleDescOption, MainSlotContentDef> {}

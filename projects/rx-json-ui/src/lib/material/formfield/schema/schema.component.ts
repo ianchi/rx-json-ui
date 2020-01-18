@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, MainSlotContentDef } from '../../../core/index';
 import { buildUI, ISchema } from '../../../schema';
 
 export interface SchemaWidgetOptions {
@@ -29,9 +24,7 @@ export interface SchemaWidgetOptions {
 })
 export class SchemaWidgetComponent extends BaseWidget<SchemaWidgetOptions, undefined> {
   resolvedContent: MainSlotContentDef = { main: [] };
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
+
   dynOnChange(): void {
     this.resolvedContent = { main: [buildUI(this.options.schema, this.options.bind)] };
   }

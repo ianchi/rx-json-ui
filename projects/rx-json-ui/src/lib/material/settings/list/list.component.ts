@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
+import { AbstractArrayWidgetComponent } from '../../../core/index';
 
 export interface SetListWidgetOptions {
   title: string;
@@ -20,7 +15,6 @@ export interface SetListWidgetOptions {
 
   inputType: string;
   required: boolean;
-  newRow: string;
 }
 
 @Component({
@@ -31,8 +25,4 @@ export interface SetListWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SetListWidgetOptions> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SetListWidgetOptions> {}

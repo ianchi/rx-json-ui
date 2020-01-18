@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions, MainSlotContentDef, TitleOption } from '../../../core/index';
+import { BaseWidget, MainSlotContentDef, TitleOption } from '../../../core/index';
 
 @Component({
   selector: 'set-sectiongroup',
@@ -23,10 +18,6 @@ import { BaseWidget, Expressions, MainSlotContentDef, TitleOption } from '../../
 })
 export class SetSectionGroupWidgetComponent extends BaseWidget<TitleOption, MainSlotContentDef> {
   expanded = false;
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-
   toggle(): void {
     this.expanded = !this.expanded;
   }

@@ -5,19 +5,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions, MainSlotContentDef } from '../../../core/index';
+import { AbstractFormFieldWidget, MainSlotContentDef } from '../../../core/index';
+import { SchemaBoolean } from '../../../schema';
 
-export interface SetToggleWidgetOptions {
-  title: string;
-  description: string;
-}
 @Component({
   selector: 'set-toggle',
   templateUrl: './toggle.component.html',
@@ -27,10 +19,6 @@ export interface SetToggleWidgetOptions {
   host: { class: 'set-row' },
 })
 export class SetToggleWidgetComponent extends AbstractFormFieldWidget<
-  SetToggleWidgetOptions,
+  Partial<SchemaBoolean>,
   MainSlotContentDef
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+> {}

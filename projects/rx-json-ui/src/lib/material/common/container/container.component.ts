@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, MainSlotContentDef } from '../../../core/index';
 
 export interface ContainerWidgetOptions {
   direction: string;
@@ -35,10 +30,6 @@ export class ContainerWidgetComponent extends BaseWidget<
   ContainerWidgetOptions,
   MainSlotContentDef
 > {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-
   dynOnBeforeBind(): void {
     this.map('direction', dir => dir || 'row');
   }

@@ -5,14 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractFormFieldWidget, Expressions, TitleOption } from '../../../core/index';
+import { AbstractFormFieldWidget } from '../../../core/index';
+import { SchemaBoolean } from '../../../schema';
 
 @Component({
   selector: 'wdg-checkbox',
@@ -21,8 +17,4 @@ import { AbstractFormFieldWidget, Expressions, TitleOption } from '../../../core
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxWidgetComponent extends AbstractFormFieldWidget<TitleOption> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class CheckboxWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaBoolean>> {}

@@ -11,10 +11,10 @@ export type ConstrainEvents<E> = Constrain<E, multilineExpr | undefined> & Commo
 
 /** Auxiliary type to generate json schema definitions */
 export type JsonWidgetDef<
-  O extends AbstractOptionsDef = {},
+  O extends EmptyOptionsDef = {},
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean | undefined = undefined
+  B extends boolean = false
 > = Omit<
   WidgetDef<O, S, E, B> & (B extends true ? { bind: lvalueExpr } : {}),
   (S extends undefined ? 'content' : never) | (B extends undefined ? 'bind' : never)
@@ -27,10 +27,10 @@ export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
  * Definition of a generic Widget.
  * Specific Widgets can further restrict the available options
  */ export interface WidgetDef<
-  O extends AbstractOptionsDef,
+  O extends EmptyOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean | undefined = undefined
+  B extends boolean = false
 > {
   $schema?: string;
 
@@ -44,7 +44,7 @@ export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
    *
    * @parser lvalue
    */
-  bind?: B extends undefined ? undefined : lvalueExpr;
+  bind?: B extends true ? lvalueExpr : undefined;
   exportAs?: string;
   elementAs?: string;
   indexAs?: string;
@@ -52,8 +52,8 @@ export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
   /**
    * Structural property, it is an expression that is evaluated before the creation of the component.
    * The widget is created only when it evaluates to truthy.
-   * The expression is bound, so if it later emits a falsey value, the widget will be destroyed.
-   * It is evaluated in its own sub context.
+   * The expression is bound, so if it later emits a falsy value, the widget will be destroyed.
+   * It is evaluated in an intermediate sub context, that will be the parent context of the widget.
    *
    * @parser ES6
    */
@@ -73,7 +73,7 @@ export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
    * If the result is anything other than an array, no widget is instantiated.
    *
    * The expression is bound, so if it later changes, widgets will be created/destroyed/moved accordingly.
-   * It is evaluated in its own sub context and only after the `if` is evaluated to truthy.
+   * It is evaluated in the same sub context than the `if` and only after the `if` is evaluated to truthy.
    *
    * @parser ES6
    */
@@ -88,13 +88,11 @@ export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
 
   /**
    * Object with expressions to execute as event listener.
-   * Expressions are evaluated and only one result is taken (and the unsubscribed).
-   * `on` events don't wait for the result of the expression
-   * `before` events wait for the expressions result, and may act depending on it.
+   * Expressions are evaluated and only one result is taken (and then unsubscribed).
    *
-   * All hooks are evaluated on its own child context, so variables created are not seen
-   * at the parent widget and lost after the event.
-   * To keep results, assign to `$parentContext` properties.
+   * All hooks are evaluated on its own child context, so variables created are not
+   * seen at the parent widget and are lost after the event.
+   * To create new variables, assign to `$parentContext` properties.
    */
   events?: E;
 
@@ -113,7 +111,7 @@ export type AbstractWidgetDef = WidgetDef<
   AbstractOptionsDef,
   AbstractSlotContentDef,
   AbstractEventsDef,
-  boolean | undefined
+  boolean
 >;
 /**
  *
@@ -121,13 +119,14 @@ export type AbstractWidgetDef = WidgetDef<
 export interface AbstractOptionsDef {
   [option: string]: any;
 }
+export interface EmptyOptionsDef {} // tslint:disable-line: no-empty-interface
 
 /**
  * Definition of the content of the widget.
  * It can be defined as an object with named slots with different content
  * or as a single array of widgets that default to the `main` slot.
  */
-export type AbstractContentDef = AbstractSlotContentDef | SimpleContentDef;
+export type AbstractContentDef = MainSlotContentDef | SimpleContentDef;
 
 /**
  * Content definition for widgets with a single slot *
@@ -135,11 +134,10 @@ export type AbstractContentDef = AbstractSlotContentDef | SimpleContentDef;
  */
 export type SimpleContentDef = Array<AbstractWidgetDef | multilineExpr>;
 
-// tslint:disable-next-line: interface-over-type-literal
-export type MainSlotContentDef = {
+export interface MainSlotContentDef {
   /** The content for the main slot. It must always be present */
   main: SimpleContentDef;
-};
+}
 
 export type ContentDef<S> = S extends undefined ? undefined : S | SimpleContentDef;
 
@@ -213,8 +211,7 @@ export interface AbstractEventsDef extends CommonEventsDef {
   [onCustomEvent: string]: multilineExpr | undefined;
 }
 
-// tslint:disable-next-line: interface-over-type-literal
-export type CommonEventsDef = {
+export interface CommonEventsDef {
   /**
    * First event emitted after the widget component is created and before any other actions takes place.
    * Only structural properties (`if` and `for`) are evaluated first, so the widget instance is already created.
@@ -256,15 +253,20 @@ export type CommonEventsDef = {
    * @parser ES6
    */
   onDestroy?: multilineExpr;
-};
+}
 
-export type FieldEventDef = CommonEventsDef & {
+export interface FieldEventDef extends CommonEventsDef {
   /**
    * @parser ES6
    */
   onValueChange?: multilineExpr;
   /**
+   * An expression used to do custom validation on the field's data.
+   * It must return falsy if the content is valid.
+   * If it returns a `string` it will be displayed as error message.
+   *
+   * It receives `$value` in the context with the value to validate
    * @parser ES6
    */
   onValidate?: multilineExpr;
-};
+}

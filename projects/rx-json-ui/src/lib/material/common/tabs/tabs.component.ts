@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions } from '../../../core/index';
+import { BaseWidget, MainSlotContentDef } from '../../../core/index';
 
 export interface TabsWidgetOptions {
   /** Text to show as tabs labels */
@@ -26,8 +21,4 @@ export interface TabsWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabsWidgetComponent extends BaseWidget<TabsWidgetOptions> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class TabsWidgetComponent extends BaseWidget<TabsWidgetOptions, MainSlotContentDef> {}

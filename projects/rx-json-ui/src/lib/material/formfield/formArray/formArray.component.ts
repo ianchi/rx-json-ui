@@ -5,19 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
-
-import { AbstractArrayWidgetComponent, Expressions, MainSlotContentDef } from '../../../core/index';
-
-export interface FormArrayWidgetOptions {
-  newRow: string;
-  allowDel: boolean;
-}
+  AbstractArrayWidgetComponent,
+  EmptyOptionsDef,
+  MainSlotContentDef,
+} from '../../../core/index';
 
 @Component({
   selector: 'wdg-form-array',
@@ -27,10 +21,6 @@ export interface FormArrayWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  FormArrayWidgetOptions,
+  EmptyOptionsDef,
   MainSlotContentDef
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+> {}

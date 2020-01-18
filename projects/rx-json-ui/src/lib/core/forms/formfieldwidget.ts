@@ -18,8 +18,8 @@ import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 
-import { AbstractOptionsDef } from '..';
-import { ERROR_MSG, schemaValidator, ValidatorFn } from '../../schema';
+import { ERROR_MSG, SchemaBaseValidations, schemaValidator, ValidatorFn } from '../../schema';
+import { ERR_CUSTOM } from '../../schema/validation/base';
 import { BaseWidget } from '../base/abstractwidget';
 import {
   ConstrainEvents,
@@ -32,7 +32,7 @@ import { Context, Expressions } from '../expressions/index';
 export const FORM_CONTROL = '$form';
 
 export class AbstractFormFieldWidget<
-  O extends AbstractOptionsDef = {},
+  O extends SchemaBaseValidations<any>,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & FieldEventDef = FieldEventDef
 > extends BaseWidget<O, S, E, true> {
@@ -76,9 +76,13 @@ export class AbstractFormFieldWidget<
           .pipe(
             take(1),
             map(res => {
-              return res ? null : { validate: 'validation error' };
+              return !res
+                ? null
+                : { code: ERR_CUSTOM, message: typeof res === 'string' ? res : '' };
             }),
-            catchError(_e => of({ validate: 'error evaluating expression' }))
+            catchError(_e =>
+              of({ code: ERR_CUSTOM, message: 'Error evaluating validation expression' })
+            )
           );
       };
     }

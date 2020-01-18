@@ -11,10 +11,10 @@ import { isReactive, RxObject } from 'espression-rx';
 
 import { BaseWidget } from '../base/abstractwidget';
 import {
-  AbstractOptionsDef,
   CommonEventsDef,
   ConstrainEvents,
   ConstrainSlots,
+  EmptyOptionsDef,
   MainSlotContentDef,
   WidgetDef,
 } from '../base/public.interface';
@@ -24,10 +24,10 @@ import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
 export class AbstractFormWidgetComponent<
-  O extends AbstractOptionsDef = {},
+  O extends EmptyOptionsDef = {},
   S extends ConstrainSlots<S> = MainSlotContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean | undefined = undefined
+  B extends boolean = false
 > extends BaseWidget<O, S, E, B> {
   formGroup: FormGroup | undefined;
   boundData: object | undefined;
@@ -42,7 +42,8 @@ export class AbstractFormWidgetComponent<
     const parentForm: FormGroup | FormArray =
       this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
-      if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formGroup);
+      if (parentForm instanceof FormGroup)
+        parentForm.addControl('control', this.formGroup);
       else if (parentForm instanceof FormArray) parentForm.push(this.formGroup);
     }
 
@@ -57,7 +58,9 @@ export class AbstractFormWidgetComponent<
       const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext);
 
       if (!lvalue)
-        throw new Error('Form field "bind" property must be an identifier or member expression');
+        throw new Error(
+          'Form field "bind" property must be an identifier or member expression'
+        );
 
       if (!isReactive(lvalue.o[lvalue.m])) {
         if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject({}, true);

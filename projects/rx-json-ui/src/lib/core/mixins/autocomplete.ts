@@ -10,7 +10,6 @@ import { merge, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
-  AbstractSlotContentDef,
   ConstrainEvents,
   ConstrainSlots,
   FieldEventDef,
@@ -22,7 +21,7 @@ import { SelectWidgetMixin, SelectWidgetOptions } from './select';
 
 export class AutocompleteWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
-  S extends ConstrainSlots<S> = AbstractSlotContentDef,
+  S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = FieldEventDef
 > extends SelectWidgetMixin<O, S, E> {
   /** Array with filtered options to display in dropdown */

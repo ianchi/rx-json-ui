@@ -14,15 +14,14 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Context, Expressions } from '../expressions/index';
 
 import {
-  AbstractEventsDef,
-  AbstractOptionsDef,
-  AbstractSlotContentDef,
   AbstractWidgetDef,
   CommonEventsDef,
   ConstrainEvents,
   ConstrainSlots,
   ContentDef,
+  EmptyOptionsDef,
   JsonWidgetDef,
+  MainSlotContentDef,
   multilineExpr,
   SimpleContentDef,
   WidgetDef,
@@ -33,25 +32,25 @@ export type Bindings<T> = { [P in keyof T]-?: Observable<T[P]> };
 export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<T[P]> };
 
 export type AbstractWidget = BaseWidget<
-  AbstractOptionsDef,
-  AbstractSlotContentDef | undefined,
-  AbstractEventsDef,
-  boolean | undefined
+  EmptyOptionsDef,
+  MainSlotContentDef | undefined,
+  CommonEventsDef,
+  boolean
 >;
 /**
  * Base class for all dynamic widget elements
  */
 export class BaseWidget<
-  O extends AbstractOptionsDef,
+  O extends EmptyOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean | undefined = undefined
+  B extends boolean = false
 > implements OnDestroy, OnChanges, OnInit {
   /** Configuration object for the widget */
   widgetDef: WidgetDef<O, S, E, B> | undefined;
 
   /** Used to generate de json schema files */
-  jsonWidgetDef = {} as JsonWidgetDef<O, S, E, B>;
+  jsonWidgetDef: JsonWidgetDef<O, S, E, B> | undefined;
   context = new Context();
 
   /**
@@ -107,24 +106,24 @@ export class BaseWidget<
   }
 
   private parseContentDef(content: ContentDef<S>): Observable<S> {
-    let sloted: AbstractSlotContentDef;
+    let sloted: S;
     // check invalid definition and convert to slotted
     if (typeof content === 'undefined' || typeof content !== 'object') {
-      this.content = { main: [] as AbstractWidgetDef[] } as S;
+      this.content = { main: [] as SimpleContentDef } as S;
       throw new Error('Invalid content definition');
     }
 
-    if (Array.isArray(content)) sloted = { main: content } as AbstractSlotContentDef;
+    if (Array.isArray(content)) sloted = { main: content as SimpleContentDef } as S;
     else if (!('main' in content)) {
       this.content = { main: [] as AbstractWidgetDef[] } as S;
       throw new Error('Missing "main" slot in content definition');
-    } else sloted = content as AbstractSlotContentDef;
+    } else sloted = content as S;
 
     // parse each slot definition
-    const slots: Array<keyof AbstractSlotContentDef> = Object.keys(sloted);
+    const slots: Array<keyof S> = Object.keys(sloted!) as Array<keyof S>;
 
     return combineLatest(
-      slots.map((slot: keyof AbstractSlotContentDef) => this.parseSimpleContentDef(sloted[slot]))
+      slots.map((slot: keyof S) => this.parseSimpleContentDef(sloted![slot]))
     ).pipe(
       map(simple =>
         slots.reduce(
@@ -132,13 +131,13 @@ export class BaseWidget<
             if (cont) cont[slot as keyof S] = simple[idx] as any;
             return cont;
           },
-          { main: [] as AbstractWidgetDef[] } as S
+          { main: [] as SimpleContentDef } as S
         )
       )
     );
   }
 
-  private parseEventsDef(eventsDef: AbstractEventsDef): void {
+  private parseEventsDef(eventsDef: E): void {
     let expr: multilineExpr | undefined;
     // tslint:disable-next-line: forin
     for (const event in eventsDef) {

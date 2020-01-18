@@ -1,5 +1,5 @@
 <div>
-  <button mat-button *ngIf="options.newRow" (click)="addRow()">New row</button>
+  <button mat-button *ngIf="events.onNewRow" (click)="addRow()">New row</button>
   <div *ngFor="let row of boundData; index as idx">
     <ng-container
       *ngFor="let element of content!.main"
@@ -7,7 +7,7 @@
       [parentContext]="rowContext[idx]"
     >
     </ng-container>
-    <button mat-button *ngIf="options.allowDel" (click)="deleteRow(idx)">
+    <button mat-button *ngIf="events.onDeleteRow" (click)="deleteRow(idx)">
       Delete
     </button>
   </div>

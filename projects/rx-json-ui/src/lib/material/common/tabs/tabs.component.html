@@ -1,6 +1,6 @@
 <mat-tab-group>
   <mat-tab
-    *ngFor="let tab of content; index as tabIndex"
+    *ngFor="let tab of content?.main; index as tabIndex"
     [label]="(options.tabLabels && options.tabLabels[tabIndex]) || 'Tab' + tabIndex"
   >
     <ng-template matTabContent>

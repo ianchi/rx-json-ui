@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { SchemaBase } from '../../schema';
+import { SchemaNumber, SchemaString } from '../../schema';
 import { CommonEventsDef, multilineExpr, SimpleContentDef } from '../base/public.interface';
 
 export type ButtonWidgetEvents = CommonEventsDef & {
@@ -17,20 +17,14 @@ export interface TitleOption {
   title?: string;
 }
 
-export interface InputWidgetOptions extends SchemaBase<any> {
-  type: string;
-  inputType?: string;
-  required?: boolean;
-}
-
-export interface SliderWidgetOptions {
+export interface TitleDescOption {
   title?: string;
   description?: string;
-
-  minimum: number;
-  maximum: number;
-  step: number;
 }
+
+export type InputWidgetOptions = (Partial<SchemaString> | Partial<SchemaNumber>) & {
+  inputType?: string;
+};
 
 // tslint:disable-next-line: interface-over-type-literal
 export type PopupSlotsDef = {

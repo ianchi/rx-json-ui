@@ -5,15 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation } from '@angular/core';
 
-import { Expressions } from '../../../core/index';
 import { FileWidgetMixin } from '../../../core/mixins/index';
 
 @Component({
@@ -25,8 +18,4 @@ import { FileWidgetMixin } from '../../../core/mixins/index';
 })
 export class FileWidgetComponent extends FileWidgetMixin {
   @ViewChild('fileInput', { static: true }) fileInput: any;
-
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
 }

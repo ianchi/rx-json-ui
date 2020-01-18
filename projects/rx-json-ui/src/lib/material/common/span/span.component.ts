@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions } from '../../../core/index';
+import { BaseWidget } from '../../../core/index';
 
 export interface SpanWidgetOptions {
   text: string;
@@ -26,8 +21,4 @@ export interface SpanWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpanWidgetComponent extends BaseWidget<SpanWidgetOptions> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SpanWidgetComponent extends BaseWidget<SpanWidgetOptions> {}

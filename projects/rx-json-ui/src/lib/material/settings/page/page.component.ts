@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, MainSlotContentDef } from '../../../core/index';
 
 @Component({
   selector: 'set-page',
@@ -22,8 +17,4 @@ import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core/index
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetPageWidgetComponent extends BaseWidget<{}, MainSlotContentDef> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetPageWidgetComponent extends BaseWidget<{}, MainSlotContentDef> {}

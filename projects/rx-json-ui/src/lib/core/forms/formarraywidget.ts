@@ -10,16 +10,40 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 
 import { BaseWidget } from '../base/abstractwidget';
-import { CommonEventsDef, ConstrainSlots, WidgetDef } from '../base/public.interface';
+import {
+  CommonEventsDef,
+  ConstrainEvents,
+  ConstrainSlots,
+  EmptyOptionsDef,
+  multilineExpr,
+  WidgetDef,
+} from '../base/public.interface';
 import { Context, Expressions } from '../expressions/index';
 
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
+export interface ArrayEventsDef extends CommonEventsDef {
+  /**
+   * Expression that must return the new object to add to the array.
+   * If it is empty or returns undefined, no row is added
+   * When the handler is present the button is added
+   */
+  onNewRow?: multilineExpr;
+  /**
+   * Emitted when a row is about to be deleted
+   * It receives `$idx` in with the index of the element about to be removed.
+   * If the expression returns false, the operation is canceled.
+   * The handler must be present for the delete action to be available
+   */
+  onDeleteRow?: multilineExpr;
+}
+
 export class AbstractArrayWidgetComponent<
-  T extends { newRow: any },
-  S extends ConstrainSlots<S> | undefined = undefined
-> extends BaseWidget<T, S, CommonEventsDef, false> {
+  T extends EmptyOptionsDef,
+  S extends ConstrainSlots<S> | undefined = undefined,
+  E extends ConstrainEvents<E> & ArrayEventsDef = ArrayEventsDef
+> extends BaseWidget<T, S, E, true> {
   formArray: FormArray | undefined;
   boundData: any[] | undefined;
 
@@ -29,9 +53,7 @@ export class AbstractArrayWidgetComponent<
     super(cdr, expr);
   }
 
-  dynOnSetup(
-    def: WidgetDef<T, S, CommonEventsDef, false>
-  ): WidgetDef<T, S, CommonEventsDef, false> {
+  dynOnSetup(def: WidgetDef<T, S, E, true>): WidgetDef<T, S, E, true> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
@@ -84,14 +106,13 @@ export class AbstractArrayWidgetComponent<
   }
 
   addRow(): void {
-    if (!this.options.newRow) return;
-    let newRow = this.expr.eval(this.options.newRow, this.context);
-    if (typeof newRow === 'object' && !isReactive(newRow)) newRow = RxObject(newRow);
-    if (newRow) this.boundData!.push(newRow);
+    this.emmit('onNewRow', undefined, newRow => {
+      if (typeof newRow === 'object' && !isReactive(newRow)) newRow = RxObject(newRow);
+      if (typeof newRow !== 'undefined') this.boundData!.push(newRow);
+    });
   }
 
   deleteRow(idx: number): void {
-    console.log('Delete row', idx);
-    this.boundData!.splice(idx, 1);
+    this.emmit('onDeleteRow', { $idx: idx }, result => result && this.boundData!.splice(idx, 1));
   }
 }

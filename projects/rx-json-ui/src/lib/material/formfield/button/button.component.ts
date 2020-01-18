@@ -5,14 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, ButtonWidgetEvents, Expressions } from '../../../core/index';
+import { BaseWidget, ButtonWidgetEvents } from '../../../core/index';
 
 export interface ButtonWidgetOptions {
   title: string;
@@ -30,8 +25,4 @@ export class ButtonWidgetComponent extends BaseWidget<
   ButtonWidgetOptions,
   undefined,
   ButtonWidgetEvents
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+> {}

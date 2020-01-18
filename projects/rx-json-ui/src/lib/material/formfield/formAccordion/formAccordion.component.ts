@@ -5,21 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
-
-import { AbstractArrayWidgetComponent, Expressions } from '../../../core/index';
-
-export interface FormAccordionWidgetOptions {
-  title: string;
-  description: string;
-  newRow: string;
-  allowDel: boolean;
-}
+  AbstractArrayWidgetComponent,
+  MainSlotContentDef,
+  TitleDescOption,
+} from '../../../core/index';
 
 @Component({
   selector: 'wdg-form-accordion',
@@ -29,9 +21,6 @@ export interface FormAccordionWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormAccordionWidgetComponent extends AbstractArrayWidgetComponent<
-  FormAccordionWidgetOptions
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+  TitleDescOption,
+  MainSlotContentDef
+> {}

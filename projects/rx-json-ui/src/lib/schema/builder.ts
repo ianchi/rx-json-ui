@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { AbstractSlotContentDef, AbstractWidgetDef } from '../core/index';
+import { AbstractWidgetDef } from '../core/index';
 
 import { ISchema, SchemaArray, SchemaObject, SchemaUI } from './interface';
 
@@ -152,7 +152,7 @@ function buildObject(
     } else ordered = keys;
 
     keys = ordered;
-    widget.content = { main: [] } as AbstractSlotContentDef;
+    widget.content = { main: [] };
 
     if (ui.fieldsets) {
       const sets = ui.fieldsets.sets,
@@ -181,7 +181,7 @@ function buildObject(
         // ignore fields not present in properties
         const fields = fset.fields.filter(prop => prop in schema.properties!);
 
-        // hide empty fieldsets
+        // hide empty field sets
         if (fields.length)
           widget.content.main.push({
             widget: BUILDER_WIDGETS.set,

@@ -5,14 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { Expressions } from '../../../core/expressions/index';
 import { SelectWidgetMixin } from '../../../core/index';
 
 @Component({
@@ -23,8 +17,4 @@ import { SelectWidgetMixin } from '../../../core/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSelectWidgetComponent extends SelectWidgetMixin {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class SetSelectWidgetComponent extends SelectWidgetMixin {}

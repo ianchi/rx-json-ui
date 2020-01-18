@@ -9,12 +9,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 import { SchemaBase } from '../../schema';
-import {
-  AbstractSlotContentDef,
-  ConstrainEvents,
-  ConstrainSlots,
-  FieldEventDef,
-} from '../base/public.interface';
+import { ConstrainEvents, ConstrainSlots, FieldEventDef } from '../base/public.interface';
 import { Expressions } from '../expressions/index';
 import { AbstractFormFieldWidget } from '../forms/index';
 
@@ -41,7 +36,7 @@ export interface SelectWidgetOptions extends SchemaBase<any> {
 
 export class SelectWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
-  S extends ConstrainSlots<S> = AbstractSlotContentDef,
+  S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = FieldEventDef
 > extends AbstractFormFieldWidget<O, S, E> {
   constructor(cdr: ChangeDetectorRef, expr: Expressions) {

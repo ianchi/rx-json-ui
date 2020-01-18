@@ -5,19 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
-
-import { AbstractArrayWidgetComponent, Expressions, MainSlotContentDef } from '../../../core/index';
-
-export interface RowArrayWidgetOptions {
-  newRow: string;
-  allowDel: boolean;
-}
+  AbstractArrayWidgetComponent,
+  EmptyOptionsDef,
+  MainSlotContentDef,
+} from '../../../core/index';
 
 @Component({
   selector: 'set-row-array',
@@ -28,10 +22,6 @@ export interface RowArrayWidgetOptions {
   host: { class: 'set-row' },
 })
 export class SetRowArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  RowArrayWidgetOptions,
+  EmptyOptionsDef,
   MainSlotContentDef
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+> {}

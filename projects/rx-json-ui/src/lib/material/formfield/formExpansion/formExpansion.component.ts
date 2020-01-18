@@ -5,20 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
-import { Expressions } from '../../../core/index';
-
-export interface FormExpansionWidgetOptions {
-  title: string;
-  description: string;
-}
+import { TitleDescOption } from '../../../core/index';
 
 @Component({
   selector: 'wdg-form-expansion',
@@ -27,10 +17,4 @@ export interface FormExpansionWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormExpansionWidgetComponent extends AbstractFormWidgetComponent<
-  FormExpansionWidgetOptions
-> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class FormExpansionWidgetComponent extends AbstractFormWidgetComponent<TitleDescOption> {}

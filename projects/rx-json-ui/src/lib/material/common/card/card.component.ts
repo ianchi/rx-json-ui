@@ -5,24 +5,19 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+  BaseWidget,
+  MainSlotContentDef,
+  SimpleContentDef,
+  TitleDescOption,
+} from '../../../core/index';
 
-import { BaseWidget, Expressions, MainSlotContentDef, SimpleContentDef } from '../../../core/index';
-
-export interface CardWidgetOptions {
-  title: string;
-  description: string;
-}
-
-type CardWidgetSlots = MainSlotContentDef & {
+interface CardWidgetSlots extends MainSlotContentDef {
   /** Content for the *actions* section of the card */
   actions: SimpleContentDef;
-};
+}
 
 @Component({
   selector: 'wdg-card',
@@ -31,8 +26,4 @@ type CardWidgetSlots = MainSlotContentDef & {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardWidgetComponent extends BaseWidget<CardWidgetOptions, CardWidgetSlots> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-}
+export class CardWidgetComponent extends BaseWidget<TitleDescOption, CardWidgetSlots> {}

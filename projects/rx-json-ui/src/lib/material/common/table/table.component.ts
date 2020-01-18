@@ -7,7 +7,6 @@
 
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit,
   ViewChild,
@@ -19,7 +18,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { combineMixed } from 'espression-rx';
 import { isObservable } from 'rxjs';
 
-import { BaseWidget, Context, Expressions, parseDefObject } from '../../../core/index';
+import { BaseWidget, CommonEventsDef, parseDefObject } from '../../../core/index';
 
 export interface TableWidgetOptions {
   /**  Label to show on the control (fixed text) */
@@ -27,45 +26,56 @@ export interface TableWidgetOptions {
   /** Table's data. Each element's key maps to a column */
   dataSource: object[];
   /** Order list of column keys (each maps to a property of the row element). */
-  colKeys: string[];
-  /** Order list of column headers (if omitted the key is used as header). */
-  colHeaders: string[];
-  colsVisible: string[];
+  columns: string[];
+  /**
+   * Map of column keys to headers display names.
+   * If a map is present and a column key is omitted that key is used as header.
+   * If `undefined` no header row is displayed.
+   */
+  headers: { [column: string]: string };
   /** If set, the table has paging footer, with multiple options of page sizes */
   pageSizes: number[];
   /**
-   * Allow filtering by the content of the listed columns (provided as array of keys).
-   * If not set, filter field is not present. If empty array, all columns are used
+   * Adds a textbox to filter by the content of any column
    */
-  filterBy: string[];
+  filter: boolean;
   /**
    * Disable sorting for the listed columns (provided as array of keys)
-   * If not set or false, all columns allow sorting. If `true`, sorting is disabled for all columns
+   * If not set or false, all columns allow sorting.
+   * If `true`, sorting is disabled for all columns.
    */
-  disableSort: string[];
-  /**
-   * Expression to apply to each column's data
-   * The following local variables are available in the expression's context:
-   */
+  disableSort: string[] | boolean;
 
-  colTransform: string[];
   /**
-   * Format to apply to each column's data for rendering\nIt must be a valid *Angular* format pipe string
+   * Format to apply to each column's data for rendering
+   * It must be a valid *Angular* format pipe string
    */
   colFormat: string[];
 
   actions: Array<{
     /** SVG icon name to show */
-    icon: string;
+    icon?: string;
     /** Label for the action */
-    label: string;
-    /** Expression to evaluate when the actions is selected */
-    action: string;
+    label?: string;
+    /** Optional data to pass to the `onAction` event when this action is clicked */
+    data?: any;
   }>;
 
   /** Label to show on the actions column */
   actionsHeader: string;
 }
+
+type TableWidgetEvents = CommonEventsDef & {
+  /**
+   * Expression to evaluate when an action is clicked.
+   * It receives the following parameters in the context:
+   *
+   * `$row` the row's data
+   * `$action.index` the index of the current action in the actions array
+   * `$action.data` the additional data defined in the action
+   */
+  onAction: string;
+};
 
 @Component({
   selector: 'wdg-table',
@@ -74,20 +84,18 @@ export interface TableWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableWidgetComponent extends BaseWidget<TableWidgetOptions> implements OnInit {
-  tableDataSource: MatTableDataSource<object[]>;
+export class TableWidgetComponent
+  extends BaseWidget<TableWidgetOptions, undefined, TableWidgetEvents>
+  implements OnInit {
+  tableDataSource: MatTableDataSource<object[]> = new MatTableDataSource();
 
   showCols: string[] = [];
 
   @ViewChild(MatPaginator, { static: true })
-  paginator: MatPaginator | undefined;
+  matPaginator: MatPaginator | undefined;
   @ViewChild(MatSort, { static: true })
-  sort: MatSort | undefined;
-
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-    this.tableDataSource = new MatTableDataSource();
-  }
+  matSort: MatSort | undefined;
+  disableSort: string[] | undefined;
 
   dynOnBeforeBind(): void {
     const opt = this.widgetDef!.options;
@@ -106,46 +114,23 @@ export class TableWidgetComponent extends BaseWidget<TableWidgetOptions> impleme
       else this.options.dataSource = <any[]>dataSource;
     }
 
-    this.map('disableSort', sort => {
-      if (sort === true) return undefined;
-      if (!Array.isArray(sort)) return [];
-      return sort;
-    });
-
     this.map(
-      'dataSource',
-      (table: any[]) =>
-        (this.tableDataSource.data = table.map(row => {
-          row = parseDefObject(row, Context.create(this.context, { $data: row }), false, this.expr);
-
-          if (Array.isArray(this.options.colTransform)) {
-            for (let i = 0; i < this.options.colTransform.length; i++) {
-              if (this.options.colTransform[i]) {
-                const context: any = Context.create(this.context);
-                context.$data = row[this.options.colKeys[i]];
-                row[this.options.colKeys[i]] = this.expr.eval(
-                  this.options.colTransform[i],
-                  context,
-                  false
-                );
-              }
-            }
-          }
-
-          return row;
-        }))
+      'disableSort',
+      sort => (this.disableSort = sort === true ? undefined : !Array.isArray(sort) ? [] : sort)
     );
+
+    this.map('dataSource', (table: any[]) => (this.tableDataSource.data = table));
 
     this.map('pageSizes', value => {
       if (!Array.isArray(value) || !value.length) {
         this.tableDataSource.paginator = null;
         return null;
       }
-      this.tableDataSource.paginator = this.paginator || null;
+      this.tableDataSource.paginator = this.matPaginator || null;
       return value;
     });
 
-    this.map('colKeys', keys => {
+    this.map('columns', keys => {
       this.showCols =
         this.options.actions && this.options.actions.length ? keys.concat('__actions__') : keys;
       return keys;
@@ -154,8 +139,8 @@ export class TableWidgetComponent extends BaseWidget<TableWidgetOptions> impleme
       if (!Array.isArray(actions)) actions = [];
 
       this.showCols = actions.length
-        ? this.options.colKeys.concat('__actions__')
-        : this.options.colKeys;
+        ? this.options.columns.concat('__actions__')
+        : this.options.columns;
 
       return actions;
     });
@@ -164,23 +149,19 @@ export class TableWidgetComponent extends BaseWidget<TableWidgetOptions> impleme
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.tableDataSource.sort = this.sort || null;
+    this.tableDataSource.sort = this.matSort || null;
   }
   applyFilter(filterValue: string): void {
     this.tableDataSource.filter = filterValue;
-
     if (this.tableDataSource.paginator) {
       this.tableDataSource.paginator.firstPage();
     }
   }
 
   actionClick(rowData: any, actionIndex: number): void {
-    const context = Context.create(this.context, { $data: rowData });
-
-    this.addSubscription = this.expr
-      .eval(this.options.actions[actionIndex].action, context, true)
-      .subscribe(() => {
-        // TODO logic to reload table
-      });
+    this.emmit('onAction', {
+      $row: rowData,
+      $action: { data: this.options.actions[actionIndex].data, index: actionIndex },
+    });
   }
 }
