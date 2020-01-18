@@ -27,7 +27,7 @@
     "file-header": [
       true,
       "Copyright \\(c\\) \\d{4}",
-      "Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>\n\nThis software is released under the MIT License.\nhttps://opensource.org/licenses/MIT"
+      "Copyright (c) 2020 Adrian Panella <ianchi74@outlook.com>\n\nThis software is released under the MIT License.\nhttps://opensource.org/licenses/MIT"
     ],
     "forin": true,
     "import-blacklist": [true, "rxjs/Rx"],
