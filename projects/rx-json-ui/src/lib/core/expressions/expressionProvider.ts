@@ -5,13 +5,12 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ES6Parser, ILvalue, INode, Parser, StaticEval } from 'espression';
+import { ES6Parser, es6Rules, ILvalue, INode, Parser, StaticEval } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
 
 import { Context } from './context';
 import { Expressions } from './expressions';
-import { lvalueRule } from './lvalueRule';
 
 /**
  * Service for Parsing and for evaluating expressions in Widget's configuration
@@ -30,7 +29,7 @@ export class ESpression extends Expressions {
     // remove Program / Statements rules, and keep only expressions
     this._parser = new ES6Parser(true);
 
-    this._keyParser = new Parser(lvalueRule(), 'lvalue');
+    this._keyParser = new Parser(es6Rules(), 'lvalue');
 
     this._rxEval = new ReactiveEval();
   }

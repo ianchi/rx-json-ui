@@ -5,9 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ES6Parser, Parser, StringRule, toRawPosition } from 'espression';
+import { ES6Parser, es6Rules, Parser, StringRule, toRawPosition } from 'espression';
 // tslint:disable-next-line: no-implicit-dependencies
-import { lvalueRule } from 'rx-json-ui/lvalueRule';
 import {
   ArrayASTNode,
   ASTNode,
@@ -25,7 +24,7 @@ import {
 const esParser = new ES6Parser(true);
 const rules = { string: [new StringRule({ LT: false, hex: true, raw: false, escapes: true })] };
 const stringParser = new Parser(rules, 'string');
-const lvalueParser = new Parser(lvalueRule(), 'lvalue');
+const lvalueParser = new Parser(es6Rules(), 'lvalue');
 
 export function hoverData(
   languageservice: LanguageService,
