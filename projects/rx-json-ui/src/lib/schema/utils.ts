@@ -5,9 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ISchema } from "./interface";
+import { Schema } from "./interface";
 
-export function setSchemaDefaults(obj: any, schema?: ISchema | boolean): void {
+export function setSchemaDefaults(obj: any, schema?: Schema | boolean): void {
 
   if (typeof obj !== 'object' || typeof schema!=='object') return;
 

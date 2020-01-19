@@ -8,10 +8,10 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { BaseWidget, MainSlotContentDef } from '../../../core/index';
-import { buildUI, ISchema } from '../../../schema';
+import { buildUI, Schema } from '../../../schema';
 
 export interface SchemaWidgetOptions {
-  schema: ISchema;
+  schema: Schema;
   bind: string;
 }
 

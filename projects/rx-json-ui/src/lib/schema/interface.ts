@@ -7,7 +7,7 @@
 
 import { AbstractWidgetDef } from '../core/index';
 
-export type ISchema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
+export type Schema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
 export interface IMap<T> {
   [property: string]: T;
 }
@@ -110,7 +110,7 @@ export interface SchemaArray extends SchemaBase<any[]> {
    * in the keyword should be valid according to the schemas with the same indices.
    * Whether additional items are valid will depend on “additionalItems” keyword.
    */
-  items?: ISchema | ISchema[];
+  items?: Schema | Schema[];
   /**
    * If `items` keyword is not present or it is an object, `additionalItems` keyword is ignored regardless of its value.
    *
@@ -126,7 +126,7 @@ export interface SchemaArray extends SchemaBase<any[]> {
    * (i.e. items with indices greater or equal than `items` keyword value length)
    * are valid according to the schema in `additionalItems` keyword.
    */
-  additionalItems?: ISchema | boolean;
+  additionalItems?: Schema | boolean;
 }
 
 export interface SchemaObject extends SchemaBase<IMap<object>> {
@@ -136,7 +136,7 @@ export interface SchemaObject extends SchemaBase<IMap<object>> {
   /** This value is the minimum (inclusive) allowed number of properties in the object for the data to be valid. */
   minProperties?: number;
 
-  properties?: IMap<ISchema>;
+  properties?: IMap<Schema>;
 
   /**
    * The value of this keyword should be a map where keys should be regular expressions
@@ -150,7 +150,7 @@ export interface SchemaObject extends SchemaBase<IMap<object>> {
    * Please note: patternProperties keyword does not require that properties matching patterns
    * are present in the object (see examples).
    */
-  patternProperties?: IMap<ISchema>;
+  patternProperties?: IMap<Schema>;
 
   /**
    * If the value is true the keyword is ignored.
@@ -164,7 +164,7 @@ export interface SchemaObject extends SchemaBase<IMap<object>> {
    */
   additionalProperties?: boolean;
   /** For data object to be valid each property name in this object should be valid according to this schema */
-  propertyNames?: ISchema;
+  propertyNames?: Schema;
 }
 
 export interface SchemaError {

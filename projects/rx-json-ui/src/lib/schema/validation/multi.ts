@@ -5,7 +5,7 @@
 
 import {
   IMap,
-  ISchema,
+  Schema,
   SchemaArray,
   SchemaBoolean,
   SchemaNumber,
@@ -45,7 +45,7 @@ ERROR_MSG[EOBJ_NAME] = '`Invalid property names`';
 ERROR_MSG[EOBJ_ADD] = '`Invalid extra properties`';
 ERROR_MSG[EOBJ_PROP] = '`Invalid properties`';
 
-export function schemaValidator(schema: ISchema): ValidatorFn {
+export function schemaValidator(schema: Schema): ValidatorFn {
   if (typeof schema.type === 'string')
     switch (schema.type) {
       case 'number':

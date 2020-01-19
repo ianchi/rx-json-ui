@@ -23,7 +23,7 @@ export const BUILDER_WIDGETS = {
 };
 
 export function buildUI(
-  schema: ISchema,
+  schema: Schema,
   bind: string,
   ui?: SchemaUI,
   propInclude?: string[],
