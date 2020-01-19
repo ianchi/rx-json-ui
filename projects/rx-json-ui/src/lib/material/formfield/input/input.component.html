@@ -9,6 +9,7 @@
     [type]="options.inputType || 'text'"
     [formControl]="formControl"
     [required]="options.required"
+    [readonly]="options.readonly"
   />
 
   <mat-error [id]="null" *ngIf="formControl?.invalid">

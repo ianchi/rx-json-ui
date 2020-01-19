@@ -20,6 +20,7 @@
     [formControl]="formControl"
     [matAutocomplete]="auto"
     [required]="options.required"
+    [readonly]="options.readonly"
   />
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn()" [panelWidth]="200">
     <mat-option *ngFor="let option of filteredOptions$ | async; index as optIndex" [value]="option">

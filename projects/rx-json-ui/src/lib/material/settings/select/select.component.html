@@ -19,7 +19,7 @@
 </div>
 
 <mat-form-field appearance="fill" class="set-row-ctrl">
-  <mat-select name="aaa" [formControl]="formControl" [required]="options.required">
+  <mat-select name="aaa" [formControl]="formControl" [required]="options.required" [disabled]="options.readonly">
     <mat-option *ngIf="!options.required">
       {{ options.emptyLabel }}
     </mat-option>

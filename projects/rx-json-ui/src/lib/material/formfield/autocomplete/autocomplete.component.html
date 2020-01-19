@@ -10,6 +10,7 @@
     [formControl]="formControl"
     [matAutocomplete]="auto"
     [required]="options.required"
+    [readonly]="options.readonly"
   />
 
   <mat-error [id]="null" *ngIf="formControl?.invalid">

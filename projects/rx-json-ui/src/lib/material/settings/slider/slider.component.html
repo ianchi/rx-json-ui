@@ -21,5 +21,6 @@
         : options.maximum
     "
     [step]="options.multipleOf || (options.type === 'integer' && 1)"
+    [disabled]="options.readonly"
   ></mat-slider>
 </div>

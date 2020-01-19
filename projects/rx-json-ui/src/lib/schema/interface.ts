@@ -31,6 +31,8 @@ export interface SchemaBaseValidations<T> {
 
   'depends='?: string;
   required?: boolean;
+
+  readonly?: boolean;
 }
 
 /**

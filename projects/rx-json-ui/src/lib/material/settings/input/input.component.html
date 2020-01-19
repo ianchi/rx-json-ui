@@ -3,17 +3,11 @@
     {{ options.title }}
   </div>
 
-  <div
-    *ngIf="!formControl?.invalid"
-    class="set-row-description"
-  >
+  <div *ngIf="!formControl?.invalid" class="set-row-description">
     {{ options.description }}
   </div>
 
-  <div
-    *ngIf="formControl?.invalid"
-    class="set-row-error"
-  >
+  <div *ngIf="formControl?.invalid" class="set-row-error">
     {{ getError() }}
   </div>
 </div>
@@ -25,5 +19,6 @@
     [type]="options.inputType || 'text'"
     [formControl]="formControl"
     [required]="options.required"
+    [readonly]="options.readonly"
   />
 </mat-form-field>

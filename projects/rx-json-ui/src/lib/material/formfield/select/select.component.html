@@ -11,7 +11,12 @@
     {{ options.description }}
   </mat-hint>
 
-  <mat-select name="aaa" [formControl]="formControl" [required]="options.required">
+  <mat-select
+    name="aaa"
+    [formControl]="formControl"
+    [required]="options.required"
+    [disabled]="options.readonly"
+  >
     <mat-option *ngIf="!options.required">
       {{ options.emptyLabel }}
     </mat-option>

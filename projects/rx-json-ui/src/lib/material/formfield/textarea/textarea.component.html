@@ -9,6 +9,7 @@
     name="aaa"
     [formControl]="formControl"
     [required]="options.required"
+    [readonly]="options.readonly"
   ></textarea>
 
   <mat-error [id]="null" *ngIf="formControl?.invalid && formControl?.hasError('message')">

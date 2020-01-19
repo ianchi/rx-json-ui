@@ -9,7 +9,8 @@
     </div>
   </div>
 
-  <mat-slide-toggle [formControl]="formControl" class="set-row-ctrl"> </mat-slide-toggle>
+  <mat-slide-toggle [formControl]="formControl" class="set-row-ctrl" [disabled]="options.readonly">
+  </mat-slide-toggle>
 </div>
 
 <div
