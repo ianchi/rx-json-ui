@@ -18,11 +18,12 @@ const EXPR_SCHEMA = {
   parser: 'ES6',
 };
 
+const outSchemaFile = 'widgets.json';
 export function generateSchemas(
   program: TJS.Program,
   widgets: WidgetRef[],
   outPath: string,
-  outSchemaFile: string,
+
   base: string
 ): void {
   const settings: TJS.PartialArgs = {
@@ -61,21 +62,13 @@ export function generateSchemas(
     return process.exit(1);
   }
 
-  // for strictNullChecks == false
   generator.setSchemaOverride(
-    'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean>',
-    { $ref: `${outSchemaFile}#` }
-  );
-  // for strictNullChecks == true
-  generator.setSchemaOverride(
-    'WidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef,boolean|undefined>',
+    'BaseWidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef>',
     { $ref: `${outSchemaFile}#` }
   );
 
   widgets.forEach(({ type: tag, component: { name: symbolName } }, i) => {
-    process.stdout.clearLine(0);
-    process.stdout.cursorTo(0);
-    process.stdout.write(`Generating schemas ${i + 1}/${widgets.length}`);
+    message(`Generating schemas ${i + 1}/${widgets.length}`);
 
     const component = generator.getSchemaForSymbol(symbolName, true);
 
@@ -93,9 +86,6 @@ export function generateSchemas(
     }
     if (typeof symbolDef.properties !== 'object') return;
 
-    // Reference consolidated schema
-    const definitions: { [prop: string]: TJS.Definition } = {};
-
     // Generate schema for def
 
     symbolDef.properties.widget = {
@@ -104,46 +94,34 @@ export function generateSchemas(
       description: component.description,
     };
 
-    // copy relevant definitions
-    const walkRefs = (schema: TJS.Definition) => {
-      findRefs(schema).forEach(ref => {
-        if (definitions[ref]) return;
-
-        if (typeof componentDefinitions[ref] !== 'boolean')
-          definitions[ref] = componentDefinitions[ref] as TJS.Definition;
-        walkRefs(definitions[ref]);
-      });
-    };
-    walkRefs(symbolDef);
+    walkRefs(symbolDef, generator.ReffedDefinitions);
 
     // complete general properties
 
     const schemaFile = `${tag}.schema.json`;
     symbolDef.$schema = 'http://json-schema.org/draft-07/schema#';
     symbolDef.$id = `${base}/${schemaFile}`;
-    symbolDef.definitions = definitions;
     symbolDef.description = component.description;
 
     // generate expression options
-    if (typeof symbolDef.properties.options === 'object') exprOptions(symbolDef);
+    if (typeof symbolDef.properties.options === 'object')
+      exprOptions(symbolDef.properties.options, symbolDef, []);
 
     // ensure 'parser' on events, in case there was no jsDoc
-    if (typeof symbolDef.properties.events === 'object' && symbolDef.properties.events.properties) {
-      for (const event in symbolDef.properties.events.properties) {
-        if (
-          typeof symbolDef.properties.events.properties[event] === 'object' &&
-          !(symbolDef.properties.events.properties[event] as any).parser
-        )
-          (symbolDef.properties.events.properties[event] as any).parser = 'ES6';
+    let events = symbolDef.properties.events;
+    if (typeof events === 'object') {
+      if (events.$ref) events = generator.ReffedDefinitions[events.$ref.substring(14)];
+
+      if (events.properties) {
+        for (const event in events.properties) {
+          if (
+            typeof events.properties[event] === 'object' &&
+            !(events.properties[event] as any).parser
+          )
+            (events.properties[event] as any).parser = 'ES6';
+        }
       }
     }
-
-    // remove undefined `bind`
-    if (
-      typeof symbolDef.properties.bind === 'object' &&
-      symbolDef.properties.bind.type === 'undefined'
-    )
-      delete symbolDef.properties.bind;
 
     // save schema
     parent.if = {
@@ -165,41 +143,61 @@ export function generateSchemas(
   );
 
   // generate Content file
-
   const contentSchema = generator.getSchemaForSymbol('JsonContentDef', false);
-  const contentFile = `${path.basename(outSchemaFile, 'json')}content.json`;
-  contentSchema.$id = `${base}/${contentFile}`;
-  if (!contentSchema.definitions) contentSchema.definitions = {};
-  findRefs(contentSchema).forEach(
-    ref => (contentSchema.definitions![ref] = generator.ReffedDefinitions[ref])
-  );
+  walkRefs(contentSchema, generator!.ReffedDefinitions);
+  saveSchema(contentSchema, `${path.basename(outSchemaFile, 'json')}content.json`);
 
-  fs.writeFileSync(path.resolve(outPath, contentFile), JSON.stringify(contentSchema, undefined, 2));
+  // generate meta schema for schemas
+  for (const key in generator!.ReffedDefinitions) delete generator!.ReffedDefinitions[key];
+  const metaSchema = generator.getSchemaForSymbol('Schema', false);
+  walkRefs(metaSchema, generator!.ReffedDefinitions);
+  exprOptions(metaSchema, metaSchema, ['ui', 'type']);
+  const schemaUI = generator.ReffedDefinitions.SchemaUI;
+  if (
+    typeof schemaUI === 'object' &&
+    schemaUI.properties &&
+    typeof schemaUI.properties.widget === 'object'
+  )
+    schemaUI.properties.widget.enum = tags;
+  saveSchema(metaSchema, 'schema.json');
 
+  message('Schema files generated\n');
+
+  function saveSchema(contentSchema: TJS.Definition, filename: string): void {
+    contentSchema.$id = `${base}/${filename}`;
+    if (!contentSchema.definitions) contentSchema.definitions = {};
+
+    fs.writeFileSync(path.resolve(outPath, filename), JSON.stringify(contentSchema, undefined, 2));
+  }
+}
+function message(text: string): void {
   process.stdout.clearLine(0);
   process.stdout.cursorTo(0);
-
-  process.stdout.write('Schema files generated\n');
+  process.stdout.write(text);
 }
-/** Adds expression version on options */
-function exprOptions(schema: TJS.Definition): void {
-  let optionsSchema: TJS.DefinitionOrBoolean[];
 
-  if (!schema.properties) return;
+/** Adds expression version on options */
+function exprOptions(
+  options: TJS.DefinitionOrBoolean,
+  schema: TJS.Definition,
+  exclude: string[]
+): void {
+  let optionsSchema: TJS.DefinitionOrBoolean[];
 
   if (schema.definitions) schema.definitions.multilineExpr = EXPR_SCHEMA;
   else schema.definitions = { multilineExpr: EXPR_SCHEMA };
 
-  if (typeof schema.properties.options !== 'object') return;
+  if (typeof options !== 'object') return;
 
-  optionsSchema = schema.properties.options.anyOf ||
-    schema.properties.options.oneOf || [schema.properties.options];
+  optionsSchema = options.anyOf || options.oneOf || [options];
 
-  let hasOptions = false;
-  optionsSchema.map(options => (hasOptions = hasOptions || exprAddOptions(options, schema)));
-  // if (!hasOptions) delete schema.properties.options;
+  optionsSchema.forEach(opt => exprAddOptions(opt, schema, exclude));
 }
-function exprAddOptions(optionsSchema: TJS.DefinitionOrBoolean, schema: TJS.Definition): boolean {
+function exprAddOptions(
+  optionsSchema: TJS.DefinitionOrBoolean,
+  schema: TJS.Definition,
+  exclude: string[]
+): boolean {
   if (typeof optionsSchema === 'object' && optionsSchema.$ref && schema.definitions) {
     optionsSchema = schema.definitions[optionsSchema.$ref.substring(14)];
   }
@@ -214,7 +212,7 @@ function exprAddOptions(optionsSchema: TJS.DefinitionOrBoolean, schema: TJS.Defi
   if (!optionsSchema.allOf) optionsSchema.allOf = [];
 
   Object.keys(optionsSchema.properties)
-    .filter(key => !key.endsWith('='))
+    .filter(key => !key.endsWith('=') && !exclude.includes(key))
     .forEach(key => {
       const expKey = `${key}=`;
       if (typeof optionsSchema !== 'object') return;
@@ -239,4 +237,25 @@ function findRefs(schema: TJS.Definition): string[] {
   return JP.query(schema, `$..$ref`)
     .values.filter(ref => typeof ref === 'string' && ref.startsWith('#/definitions/'))
     .map((ref: string) => ref.substring(14));
+}
+
+// copy relevant definitions
+function walkRefs(
+  schema: TJS.DefinitionOrBoolean,
+  reffedDefinitions: { [key: string]: TJS.DefinitionOrBoolean },
+  definitions?: { [key: string]: TJS.DefinitionOrBoolean }
+): void {
+  if (typeof schema !== 'object') return;
+  const append = !definitions;
+  if (!definitions) definitions = {};
+
+  findRefs(schema).forEach(ref => {
+    if (definitions![ref]) return;
+
+    if (typeof reffedDefinitions[ref] !== 'boolean')
+      definitions![ref] = reffedDefinitions[ref] as TJS.Definition;
+    walkRefs(definitions![ref], reffedDefinitions, definitions);
+  });
+
+  if (append) schema.definitions = { ...schema.definitions, ...definitions };
 }

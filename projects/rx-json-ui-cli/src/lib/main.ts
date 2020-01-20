@@ -38,7 +38,6 @@ function configure(): void {
       '-m, --module <ngModule>',
       'Ng Module to start extracting widget definitions. Must be in the form "fileModule(#ngModuleSymbol)". If Symbol is ommited all NgModules in the file are considered'
     )
-    .option('-o, --out <name>', 'Name for the main schema', 'WidgetsDef.json')
     .option(
       '-b, --base <uri>',
       'Base URI to use for generating the schmas $ID',

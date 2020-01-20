@@ -11,7 +11,6 @@ import { getWidgets, ngCompile } from './metadata';
 interface GenerateOptions {
   project: string;
   module: string;
-  out: string;
   base: string;
 }
 export function generate(outPath: string, opts: GenerateOptions): void {
@@ -22,7 +21,7 @@ export function generate(outPath: string, opts: GenerateOptions): void {
   const widgets = getWidgets(program, file, module);
   if (!widgets.length) process.exit(1);
 
-  generateSchemas(program.getTsProgram(), widgets, outPath, opts.out, opts.base);
+  generateSchemas(program.getTsProgram(), widgets, outPath, opts.base);
 
   process.exit(0);
 }
