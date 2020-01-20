@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { SelectWidgetMixin } from '../../../core/index';
+import { SelectWidgetMixin, SelectWidgetOptions } from '../../../core/index';
 
 @Component({
   selector: 'set-select',
@@ -17,4 +17,4 @@ import { SelectWidgetMixin } from '../../../core/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSelectWidgetComponent extends SelectWidgetMixin {}
+export class SetSelectWidgetComponent extends SelectWidgetMixin<SelectWidgetOptions> {}

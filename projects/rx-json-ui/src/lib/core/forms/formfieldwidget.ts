@@ -1,11 +1,10 @@
-/**
- * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+/*!
+ * Copyright (c) 2020 Adrian Panella <ianchi74@outlook.com>
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -18,24 +17,25 @@ import { GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 
-import { ERROR_MSG, SchemaBaseValidations, schemaValidator, ValidatorFn } from '../../schema';
+import { ERROR_MSG, SchemaPrimitiveValidations, schemaValidator, ValidatorFn } from '../../schema';
 import { ERR_CUSTOM } from '../../schema/validation/base';
 import { BaseWidget } from '../base/abstractwidget';
 import {
+  BindWidgetDef,
   ConstrainEvents,
   ConstrainSlots,
   FieldEventDef,
   WidgetDef,
 } from '../base/public.interface';
-import { Context, Expressions } from '../expressions/index';
+import { Context } from '../expressions/index';
 
 export const FORM_CONTROL = '$form';
 
 export class AbstractFormFieldWidget<
-  O extends SchemaBaseValidations<any>,
+  O extends SchemaPrimitiveValidations<any>,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & FieldEventDef = FieldEventDef
-> extends BaseWidget<O, S, E, true> {
+> extends BaseWidget<O, S, E, BindWidgetDef> {
   formControl: FormControl | undefined;
 
   validateFn: AsyncValidatorFn | undefined;
@@ -46,10 +46,7 @@ export class AbstractFormFieldWidget<
 
   default: any;
 
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-  dynOnSetup(def: WidgetDef<O, S, E, true>): WidgetDef<O, S, E, true> {
+  dynOnSetup(def: WidgetDef<O, S, E, BindWidgetDef>): WidgetDef<O, S, E, BindWidgetDef> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 

@@ -8,7 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormFieldWidget } from '../../../core/index';
-import { SchemaNumber } from '../../../schema';
+import { SchemaNumber, SchemaOptions } from '../../../schema';
 
 @Component({
   selector: 'set-slider',
@@ -18,4 +18,4 @@ import { SchemaNumber } from '../../../schema';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSliderWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaNumber>> {}
+export class SetSliderWidgetComponent extends AbstractFormFieldWidget<SchemaOptions<SchemaNumber>> {}

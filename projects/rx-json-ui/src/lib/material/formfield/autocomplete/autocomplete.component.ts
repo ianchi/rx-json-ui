@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AutocompleteWidgetMixin } from '../../../core/mixins/index';
+import { AutocompleteWidgetMixin, SelectWidgetOptions } from '../../../core/mixins/index';
 
 @Component({
   selector: 'wdg-autocomplete',
@@ -16,4 +16,4 @@ import { AutocompleteWidgetMixin } from '../../../core/mixins/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AutocompleteWidgetComponent extends AutocompleteWidgetMixin {}
+export class AutocompleteWidgetComponent extends AutocompleteWidgetMixin<SelectWidgetOptions> {}

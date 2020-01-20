@@ -8,7 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormFieldWidget, MainSlotContentDef } from '../../../core/index';
-import { SchemaBoolean } from '../../../schema';
+import { SchemaBoolean, SchemaOptions } from '../../../schema';
 
 @Component({
   selector: 'set-toggle',
@@ -19,6 +19,6 @@ import { SchemaBoolean } from '../../../schema';
   host: { class: 'set-row' },
 })
 export class SetToggleWidgetComponent extends AbstractFormFieldWidget<
-  Partial<SchemaBoolean>,
+  SchemaOptions<SchemaBoolean>,
   MainSlotContentDef
 > {}

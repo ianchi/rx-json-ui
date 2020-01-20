@@ -1,26 +1,21 @@
-/**
- * Copyright (c) 2019 Adrian Panella <ianchi74@outlook.com>
+/*!
+ * Copyright (c) 2020 Adrian Panella <ianchi74@outlook.com>
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
-import { SchemaBase } from '../../schema';
+import { SchemaOptions, SchemaPrimitiveValidations } from '../../schema';
 import { ConstrainEvents, ConstrainSlots, FieldEventDef } from '../base/public.interface';
-import { Expressions } from '../expressions/index';
 import { AbstractFormFieldWidget } from '../forms/index';
 
-export interface SelectWidgetOptions extends SchemaBase<any> {
-  title: string;
-  description: string;
-  required: boolean;
-  default: any;
+import { TitleDescOption } from './interfaces';
 
-  enum: any[];
-
+export interface SelectWidgetOptions
+  extends SchemaOptions<SchemaPrimitiveValidations<any>>,
+    TitleDescOption {
   /** Label to show for `undefined` value */
   emptyLabel: string;
 
@@ -39,10 +34,6 @@ export class SelectWidgetMixin<
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = FieldEventDef
 > extends AbstractFormFieldWidget<O, S, E> {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-
   dynOnBeforeBind(): void {
     // make sure that enum is an array
     this.map('enum', val => (Array.isArray(val) ? val : []));

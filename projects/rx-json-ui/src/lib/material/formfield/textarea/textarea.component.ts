@@ -8,7 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormFieldWidget } from '../../../core/index';
-import { SchemaString } from '../../../schema/interface';
+import { SchemaOptions, SchemaString } from '../../../schema/interface';
 
 @Component({
   selector: 'wdg-textarea',
@@ -17,4 +17,4 @@ import { SchemaString } from '../../../schema/interface';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextAreaWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaString>> {}
+export class TextAreaWidgetComponent extends AbstractFormFieldWidget<SchemaOptions<SchemaString>> {}

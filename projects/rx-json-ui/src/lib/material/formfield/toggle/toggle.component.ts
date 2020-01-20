@@ -8,7 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormFieldWidget } from '../../../core/index';
-import { SchemaBoolean } from '../../../schema';
+import { SchemaBoolean, SchemaOptions } from '../../../schema';
 
 @Component({
   selector: 'wdg-toggle',
@@ -17,4 +17,4 @@ import { SchemaBoolean } from '../../../schema';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaBoolean>> {}
+export class ToggleWidgetComponent extends AbstractFormFieldWidget<SchemaOptions<SchemaBoolean>> {}

@@ -1,22 +1,20 @@
-/**
- * Copyright (c) 2019 Adrian Panella <ianchi74@outlook.com>
+/*!
+ * Copyright (c) 2020 Adrian Panella <ianchi74@outlook.com>
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef } from '@angular/core';
 import { ILvalue } from 'espression';
 import { isReactive } from 'espression-rx';
 
 import { BaseWidget } from '../base/abstractwidget';
 import {
   CommonEventsDef,
-  MainSlotContentDef,
   multilineExpr,
+  OptBindWidgetDef,
   WidgetDef,
 } from '../base/public.interface';
-import { Expressions } from '../expressions/index';
 
 export interface FileWidgetOptions {
   title: string;
@@ -24,15 +22,19 @@ export interface FileWidgetOptions {
   disabled: boolean;
 }
 
-export type FileWidgetEvents = CommonEventsDef & {
+export interface FileWidgetEvents extends CommonEventsDef {
+  /**
+   * Emitted when files have been read (and optional bound element updated).
+   * Exports `$files` with an array of selected files.
+   */
   onAdded: multilineExpr;
-};
+}
 
 export class FileWidgetMixin extends BaseWidget<
   FileWidgetOptions,
-  MainSlotContentDef,
+  undefined,
   FileWidgetEvents,
-  true
+  OptBindWidgetDef
 > {
   private lvalue: ILvalue | undefined;
 
@@ -46,13 +48,9 @@ export class FileWidgetMixin extends BaseWidget<
   fileInput: any;
   files: File[] = [];
 
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-
   dynOnSetup(
-    def: WidgetDef<FileWidgetOptions, MainSlotContentDef, FileWidgetEvents, true>
-  ): WidgetDef<FileWidgetOptions, MainSlotContentDef, FileWidgetEvents, true> {
+    def: WidgetDef<FileWidgetOptions, undefined, FileWidgetEvents, OptBindWidgetDef>
+  ): WidgetDef<FileWidgetOptions, undefined, FileWidgetEvents, OptBindWidgetDef> {
     if (typeof def.bind === 'string') {
       const lvalue = this.expr.lvalue(def.bind, this.context);
 
@@ -62,7 +60,7 @@ export class FileWidgetMixin extends BaseWidget<
       if (!isReactive(lvalue.o)) throw new Error('Bound Key must be of Reactive Type');
 
       this.lvalue = lvalue;
-    }
+    } else throw new Error('Missing "bind" property');
 
     return def;
   }
@@ -82,6 +80,6 @@ export class FileWidgetMixin extends BaseWidget<
     // emit selection
     if (this.lvalue) this.lvalue!.o[this.lvalue!.m] = this.files;
 
-    this.emmit('onAdded');
+    this.emmit('onAdded', { $files: this.files });
   }
 }

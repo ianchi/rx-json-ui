@@ -8,7 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormFieldWidget } from '../../../core/index';
-import { SchemaBoolean } from '../../../schema';
+import { SchemaBoolean, SchemaOptions } from '../../../schema';
 
 @Component({
   selector: 'wdg-checkbox',
@@ -17,4 +17,6 @@ import { SchemaBoolean } from '../../../schema';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaBoolean>> {}
+export class CheckboxWidgetComponent extends AbstractFormFieldWidget<
+  SchemaOptions<SchemaBoolean>
+> {}

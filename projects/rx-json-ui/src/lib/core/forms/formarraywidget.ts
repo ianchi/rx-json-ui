@@ -1,16 +1,16 @@
-/**
+/*!
  * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 
 import { BaseWidget } from '../base/abstractwidget';
 import {
+  BindWidgetDef,
   CommonEventsDef,
   ConstrainEvents,
   ConstrainSlots,
@@ -18,7 +18,7 @@ import {
   multilineExpr,
   WidgetDef,
 } from '../base/public.interface';
-import { Context, Expressions } from '../expressions/index';
+import { Context } from '../expressions/index';
 
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
@@ -39,21 +39,27 @@ export interface ArrayEventsDef extends CommonEventsDef {
   onDeleteRow?: multilineExpr;
 }
 
+/**
+ * Widget for editing arrays
+ * Each element is in a sub-context that exposes:
+ *
+ * `$row: {data, index, array}`
+ *
+ * `data` a reference to the current's row data object
+ * `array` a reference to the containing array
+ * `index` the index of the current element in the array
+ */
 export class AbstractArrayWidgetComponent<
   T extends EmptyOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & ArrayEventsDef = ArrayEventsDef
-> extends BaseWidget<T, S, E, true> {
+> extends BaseWidget<T, S, E, BindWidgetDef> {
   formArray: FormArray | undefined;
   boundData: any[] | undefined;
 
   rowContext: Context[] = [];
-  exportAs = '$model';
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
 
-  dynOnSetup(def: WidgetDef<T, S, E, true>): WidgetDef<T, S, E, true> {
+  dynOnSetup(def: WidgetDef<T, S, E, BindWidgetDef>): WidgetDef<T, S, E, BindWidgetDef> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
@@ -84,21 +90,24 @@ export class AbstractArrayWidgetComponent<
       if (!(lvalue.m in lvalue.o)) lvalue.o[lvalue.m] = RxObject([], true);
       else throw new Error(`Bound Key '${def.bind}' must be Array of Reactive Type`);
     }
-    this.exportAs = def.exportAs || '$model';
-    this.context[this.exportAs] = this.boundData = lvalue.o[lvalue.m];
+    this.boundData = lvalue.o[lvalue.m];
 
     // sync the row contexts if the data changed
     this.addSubscription = (<any>this.boundData)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
-      this.rowContext = arr.map((data: any, idx: number) =>
+      this.rowContext = arr.map((data: any, index: number) =>
         // keep old Context if no change, so no DOM change is triggered
-        !this.rowContext[idx] ||
-        this.rowContext[idx].$data !== data ||
-        this.rowContext[idx].$index !== idx
+        !this.rowContext[index] ||
+        this.rowContext[index].$data !== data ||
+        this.rowContext[index].$index !== index
           ? Context.create(this.context, undefined, {
-              $data: data,
-              $index: idx,
+              _: data,
+              $row: {
+                data,
+                index,
+                array: this.boundData,
+              },
             })
-          : this.rowContext[idx]
+          : this.rowContext[index]
       );
       this._cdr.markForCheck();
     });

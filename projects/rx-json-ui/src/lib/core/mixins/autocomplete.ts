@@ -1,21 +1,20 @@
-/**
- * Copyright (c) 2019 Adrian Panella <ianchi74@outlook.com>
+/*!
+ * Copyright (c) 2020 Adrian Panella <ianchi74@outlook.com>
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
+  BindWidgetDef,
   ConstrainEvents,
   ConstrainSlots,
   FieldEventDef,
   WidgetDef,
 } from '../base/public.interface';
-import { Expressions } from '../expressions/index';
 
 import { SelectWidgetMixin, SelectWidgetOptions } from './select';
 
@@ -28,10 +27,6 @@ export class AutocompleteWidgetMixin<
   filteredOptions$: Observable<any[]> | undefined;
   private enumSubject = new Subject<any>();
 
-  constructor(cdr: ChangeDetectorRef, expr: Expressions) {
-    super(cdr, expr);
-  }
-
   dynOnAfterBind(): void {
     super.dynOnAfterBind();
 
@@ -40,7 +35,7 @@ export class AutocompleteWidgetMixin<
     this.map('enum', val => (this.enumSubject.next(undefined), val));
   }
 
-  dynOnSetup(def: WidgetDef<O, S, E, true>): WidgetDef<O, S, E, true> {
+  dynOnSetup(def: WidgetDef<O, S, E, BindWidgetDef>): WidgetDef<O, S, E, BindWidgetDef> {
     const result = super.dynOnSetup(def);
     if (!this.formControl) return def;
 

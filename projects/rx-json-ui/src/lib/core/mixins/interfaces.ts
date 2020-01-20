@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { SchemaNumber, SchemaString } from '../../schema';
+import { SchemaNumber, SchemaOptions, SchemaString } from '../../schema';
 import { CommonEventsDef, multilineExpr, SimpleContentDef } from '../base/public.interface';
 
 export type ButtonWidgetEvents = CommonEventsDef & {
@@ -22,10 +22,15 @@ export interface TitleDescOption {
   description?: string;
 }
 
-export type InputWidgetOptions = (Partial<SchemaString> | Partial<SchemaNumber>) & {
-  inputType?: string;
-};
+export type InputWidgetOptions = NumberInputOptions | StringInputOptions;
 
+interface NumberInputOptions extends SchemaOptions<SchemaNumber> {
+  inputType?: string;
+}
+
+interface StringInputOptions extends SchemaOptions<SchemaString> {
+  inputType?: string;
+}
 // tslint:disable-next-line: interface-over-type-literal
 export type PopupSlotsDef = {
   main: SimpleContentDef;

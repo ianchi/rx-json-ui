@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AutocompleteWidgetMixin } from '../../../core/index';
+import { AutocompleteWidgetMixin, SelectWidgetOptions } from '../../../core/index';
 
 @Component({
   selector: 'set-autocomplete',
@@ -17,4 +17,4 @@ import { AutocompleteWidgetMixin } from '../../../core/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin {}
+export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin<SelectWidgetOptions> {}

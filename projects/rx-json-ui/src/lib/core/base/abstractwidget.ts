@@ -16,6 +16,7 @@ import { Context, Expressions } from '../expressions/index';
 import {
   AbstractWidgetDef,
   CommonEventsDef,
+  ConstrainBind,
   ConstrainEvents,
   ConstrainSlots,
   ContentDef,
@@ -23,6 +24,7 @@ import {
   JsonWidgetDef,
   MainSlotContentDef,
   multilineExpr,
+  NoBindWidgetDef,
   SimpleContentDef,
   WidgetDef,
 } from './public.interface';
@@ -35,7 +37,7 @@ export type AbstractWidget = BaseWidget<
   EmptyOptionsDef,
   MainSlotContentDef | undefined,
   CommonEventsDef,
-  boolean
+  ConstrainBind
 >;
 /**
  * Base class for all dynamic widget elements
@@ -44,7 +46,7 @@ export class BaseWidget<
   O extends EmptyOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean = false
+  B extends ConstrainBind = NoBindWidgetDef
 > implements OnDestroy, OnChanges, OnInit {
   /** Configuration object for the widget */
   widgetDef: WidgetDef<O, S, E, B> | undefined;
@@ -84,7 +86,6 @@ export class BaseWidget<
   /** Initializes the widget from a json definition */
   setup(widgetDef: WidgetDef<O, S, E, B>, context?: Context): void {
     widgetDef.options = widgetDef.options || ({} as O);
-
     this.context = context || new Context();
 
     this.widgetDef = widgetDef = this.dynOnSetup(widgetDef);

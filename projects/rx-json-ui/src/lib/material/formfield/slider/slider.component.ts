@@ -8,7 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormFieldWidget } from '../../../core/index';
-import { SchemaNumber } from '../../../schema';
+import { SchemaNumber, SchemaOptions } from '../../../schema';
 
 @Component({
   selector: 'wdg-slider',
@@ -17,4 +17,4 @@ import { SchemaNumber } from '../../../schema';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SliderWidgetComponent extends AbstractFormFieldWidget<Partial<SchemaNumber>> {}
+export class SliderWidgetComponent extends AbstractFormFieldWidget<SchemaOptions<SchemaNumber>> {}

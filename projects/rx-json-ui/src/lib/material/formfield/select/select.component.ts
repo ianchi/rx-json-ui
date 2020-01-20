@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { SelectWidgetMixin } from '../../../core/mixins/index';
+import { SelectWidgetMixin, SelectWidgetOptions } from '../../../core/mixins/index';
 
 @Component({
   selector: 'wdg-select',
@@ -16,4 +16,4 @@ import { SelectWidgetMixin } from '../../../core/mixins/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectWidgetComponent extends SelectWidgetMixin {}
+export class SelectWidgetComponent extends SelectWidgetMixin<SelectWidgetOptions> {}

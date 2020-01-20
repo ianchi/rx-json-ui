@@ -6,48 +6,46 @@
  */
 
 export type Constrain<T, K> = { [key in keyof T]: K };
-export type ConstrainSlots<S> = Constrain<S, SimpleContentDef> & MainSlotContentDef;
+export type ConstrainSlots<S> = (Constrain<S, SimpleContentDef> & MainSlotContentDef) | undefined;
 export type ConstrainEvents<E> = Constrain<E, multilineExpr | undefined> & CommonEventsDef;
+
+export type ConstrainBind = boolean | undefined;
 
 /** Auxiliary type to generate json schema definitions */
 export type JsonWidgetDef<
-  O extends EmptyOptionsDef = {},
-  S extends ConstrainSlots<S> | undefined = undefined,
-  E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean = false
+  O extends EmptyOptionsDef,
+  S extends ConstrainSlots<S>,
+  E extends ConstrainEvents<E>,
+  B extends ConstrainBind
 > = Omit<
-  WidgetDef<O, S, E, B> & (B extends true ? { bind: lvalueExpr } : {}),
+  WidgetDef<O, S, E, B>,
   (S extends undefined ? 'content' : never) | (B extends undefined ? 'bind' : never)
 >;
-
 /** Auxiliary type to generate json schema definitions */
 export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
 
+export type WidgetDef<
+  O extends EmptyOptionsDef,
+  S extends ConstrainSlots<S> = NoContentDef,
+  E extends ConstrainEvents<E> = CommonEventsDef,
+  B extends ConstrainBind = NoBindWidgetDef
+> = BaseWidgetDef<O, S, E> & (B extends true ? BindDef : B extends false ? OptBindDef : {});
 /**
  * Definition of a generic Widget.
  * Specific Widgets can further restrict the available options
- */ export interface WidgetDef<
+ */
+export interface BaseWidgetDef<
   O extends EmptyOptionsDef,
-  S extends ConstrainSlots<S> | undefined = undefined,
-  E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean = false
+  S extends ConstrainSlots<S> = NoContentDef,
+  E extends ConstrainEvents<E> = CommonEventsDef
 > {
+  /** Explicit reference to validation schema */
   $schema?: string;
 
   /**
    * Type of the Widget to instantiate
    */
   widget: string;
-
-  /**
-   * Object/property to bind the form field to.
-   *
-   * @parser lvalue
-   */
-  bind?: B extends true ? lvalueExpr : undefined;
-  exportAs?: string;
-  elementAs?: string;
-  indexAs?: string;
 
   /**
    * Structural property, it is an expression that is evaluated before the creation of the component.
@@ -107,15 +105,39 @@ export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
   content?: ContentDef<S>;
 }
 
+export type BindWidgetDef = true;
+export type OptBindWidgetDef = false;
+export type NoBindWidgetDef = undefined;
+
+interface BindDef {
+  /**
+   * Object/property to bind the form field to.
+   *
+   * @parser lvalue
+   */
+  bind: lvalueExpr;
+}
+interface OptBindDef {
+  /**
+   * Object/property to bind the form field to.
+   *
+   * @parser lvalue
+   */
+  bind?: lvalueExpr;
+}
 export type AbstractWidgetDef = WidgetDef<
   AbstractOptionsDef,
   AbstractSlotContentDef,
   AbstractEventsDef,
-  boolean
+  ConstrainBind
 >;
-/**
- *
- */
+
+export type AbstractFieldWidgetDef = WidgetDef<
+  AbstractOptionsDef,
+  AbstractSlotContentDef,
+  AbstractEventsDef,
+  BindWidgetDef
+>;
 export interface AbstractOptionsDef {
   [option: string]: any;
 }
@@ -127,6 +149,7 @@ export interface EmptyOptionsDef {} // tslint:disable-line: no-empty-interface
  * or as a single array of widgets that default to the `main` slot.
  */
 export type AbstractContentDef = MainSlotContentDef | SimpleContentDef;
+export type NoContentDef = undefined;
 
 /**
  * Content definition for widgets with a single slot *
