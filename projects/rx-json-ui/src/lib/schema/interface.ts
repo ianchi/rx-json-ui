@@ -5,40 +5,38 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { AbstractWidgetDef } from '../core/index';
+import { AbstractEventsDef, AbstractOptionsDef } from '../core/index';
 
 export type Schema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
-export interface IMap<T> {
-  [property: string]: T;
-}
 
 /**
  * Generic schema definition, with keywords valid for all types
  */
-export interface SchemaBase<T> extends SchemaBaseValidations<T> {
+interface SchemaHeader {
   title?: string;
   description?: string;
   ui?: SchemaUI;
 }
 
-export interface SchemaBaseValidations<T> {
-  type?: string | string[];
-
+export interface SchemaPrimitiveValidations<T> extends SchemaBaseValidations {
+  type: 'string' | 'number' | 'integer' | 'boolean';
   enum?: T[];
   const?: T;
   enumDescription?: string[];
   default?: T;
+}
+export interface SchemaBaseValidations {
+  type?: string | string[];
 
   'depends='?: string;
   required?: boolean;
 
   readonly?: boolean;
 }
-
 /**
  * Schema Keywords specific for validating number and integer types
  */
-export interface SchemaNumber extends SchemaBase<number> {
+export interface SchemaNumber extends SchemaHeader, SchemaPrimitiveValidations<number> {
   type: 'number' | 'integer';
 
   /**
@@ -59,7 +57,7 @@ export interface SchemaNumber extends SchemaBase<number> {
 /**
  * Schema Keywords specific for validating strings
  */
-export interface SchemaString extends SchemaBase<string> {
+export interface SchemaString extends SchemaHeader, SchemaPrimitiveValidations<string> {
   type: 'string';
   /**
    * The data to be valid should have at least this minimum number of characters (inclusive).
@@ -84,14 +82,14 @@ export interface SchemaString extends SchemaBase<string> {
 /**
  * Schema Keywords specific for validating a boolean
  */
-export interface SchemaBoolean extends SchemaBase<boolean> {
+export interface SchemaBoolean extends SchemaHeader, SchemaPrimitiveValidations<boolean> {
   type: 'boolean';
 }
 
 /**
  * Schema Keywords specific for validating arrays
  */
-export interface SchemaArray extends SchemaBase<any[]> {
+export interface SchemaArray extends SchemaHeader, SchemaBaseValidations {
   type: 'array';
 
   /** This value is the maximum (inclusive) allowed number of items in the array for the data to be valid. */
@@ -129,14 +127,14 @@ export interface SchemaArray extends SchemaBase<any[]> {
   additionalItems?: Schema | boolean;
 }
 
-export interface SchemaObject extends SchemaBase<IMap<object>> {
+export interface SchemaObject extends SchemaHeader, SchemaBaseValidations {
   type: 'object';
   /** This value is the maximum (inclusive) allowed number of properties in the object for the data to be valid. */
   maxProperties?: number;
   /** This value is the minimum (inclusive) allowed number of properties in the object for the data to be valid. */
   minProperties?: number;
 
-  properties?: IMap<Schema>;
+  properties?: { [name: string]: Schema };
 
   /**
    * The value of this keyword should be a map where keys should be regular expressions
@@ -150,7 +148,7 @@ export interface SchemaObject extends SchemaBase<IMap<object>> {
    * Please note: patternProperties keyword does not require that properties matching patterns
    * are present in the object (see examples).
    */
-  patternProperties?: IMap<Schema>;
+  patternProperties?: { [pattern: string]: Schema };
 
   /**
    * If the value is true the keyword is ignored.
@@ -174,18 +172,13 @@ export interface SchemaError {
 
 export type ValidatorFn = (value: any) => SchemaError | null;
 
-export interface SchemaUI extends Partial<AbstractWidgetDef> {
-  order?: string[];
-
-  fieldset?: number;
-  fieldsets?: {
-    widget?: string;
-    default?: number;
-    sets: FieldSet[];
-  };
-}
-
-export interface FieldSet {
-  title?: string;
-  fields: string[];
+/** Converts Schema type to OptionsWidgetDef type */
+export type SchemaOptions<T> = Omit<T, 'ui' | 'depends='>;
+export interface SchemaUI {
+  titles?: string[];
+  include?: string[] | string[][];
+  exclude?: string[];
+  widget?: string;
+  events?: AbstractEventsDef;
+  options?: AbstractOptionsDef;
 }

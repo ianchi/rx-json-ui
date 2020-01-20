@@ -4,7 +4,6 @@
  */
 
 import {
-  IMap,
   Schema,
   SchemaArray,
   SchemaBoolean,
@@ -45,6 +44,9 @@ ERROR_MSG[EOBJ_NAME] = '`Invalid property names`';
 ERROR_MSG[EOBJ_ADD] = '`Invalid extra properties`';
 ERROR_MSG[EOBJ_PROP] = '`Invalid properties`';
 
+interface ValidatorMap {
+  [type: string]: ValidatorFn;
+}
 export function schemaValidator(schema: Schema): ValidatorFn {
   if (typeof schema.type === 'string')
     switch (schema.type) {
@@ -66,14 +68,14 @@ export function schemaValidator(schema: Schema): ValidatorFn {
     }
 
   // case or multiple types or any type
-  const validators: IMap<ValidatorFn> = {
-      number: numberValidator(<SchemaNumber>schema),
-      string: stringValidator(<SchemaString>schema),
-      boolean: booleanValidator(<SchemaBoolean>schema),
-      array: arrayValidator(<SchemaArray>schema),
-      object: objectValidator(<SchemaObject>schema),
-    },
-    types = Array.isArray((<any>schema).type) ? (<any>schema).type : null;
+  const validators: ValidatorMap = {
+    number: numberValidator(<SchemaNumber>schema),
+    string: stringValidator(<SchemaString>schema),
+    boolean: booleanValidator(<SchemaBoolean>schema),
+    array: arrayValidator(<SchemaArray>schema),
+    object: objectValidator(<SchemaObject>schema),
+  };
+  const types = Array.isArray((<any>schema).type) ? (<any>schema).type : null;
 
   return val => {
     const type = Array.isArray(val) ? 'array' : typeof val;
@@ -99,6 +101,7 @@ export function arrayValidator(schema: SchemaArray): ValidatorFn {
       typeof schema.additionalItems === 'object' ? schemaValidator(schema.additionalItems) : null;
 
   return (value: any) => {
+    if (typeof value === 'undefined' && !schema.required) return null;
     if (!Array.isArray(value)) return { code: ERR_TYPE, type: 'array' };
 
     if (minItems !== null && value.length < minItems) return { code: EARR_MIN, minItems };
@@ -147,8 +150,8 @@ export function objectValidator(schema: SchemaObject): ValidatorFn {
         ? schemaValidator(schema.additionalProperties)
         : null,
     properties = Object.entries(schema.properties || {}).reduce(
-      (res: IMap<ValidatorFn>, [k, s]) => ((res[k] = schemaValidator(s)), res),
-      <IMap<ValidatorFn>>{}
+      (res, [k, s]) => ((res[k] = schemaValidator(s)), res),
+      {} as ValidatorMap
     ),
     patternProperties = schema.patternProperties
       ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(([pattern, s]) => [
@@ -157,6 +160,7 @@ export function objectValidator(schema: SchemaObject): ValidatorFn {
         ])
       : null;
   return (value: any) => {
+    if (typeof value === 'undefined' && !schema.required) return null;
     if (typeof value !== 'object' || Array.isArray(value))
       return { code: ERR_TYPE, type: 'object' };
 

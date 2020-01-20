@@ -5,9 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { AbstractWidgetDef } from '../core/index';
+import { AbstractFieldWidgetDef, AbstractWidgetDef } from '../core/index';
 
-import { ISchema, SchemaArray, SchemaObject, SchemaUI } from './interface';
+import { Schema, SchemaArray, SchemaObject, SchemaUI } from './interface';
 
 export const BUILDER_WIDGETS = {
   default: 'default',
@@ -19,16 +19,10 @@ export const BUILDER_WIDGETS = {
   array: 'set-rowarray',
   list: 'set-list',
   object: 'set-expansion',
-  set: '',
+  set: 'set-expansion',
 };
 
-export function buildUI(
-  schema: Schema,
-  bind: string,
-  ui?: SchemaUI,
-  propInclude?: string[],
-  propExclude?: string[]
-): AbstractWidgetDef {
+export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWidgetDef {
   let widget: AbstractWidgetDef = {
     widget: BUILDER_WIDGETS.default,
     bind,
@@ -37,11 +31,11 @@ export function buildUI(
   };
 
   if (!schema) return widget;
-  if (!ui) ui = schema.ui || {};
+  ui = { ...schema.ui, ...ui };
 
   switch (schema.type) {
     case 'integer':
-      widget.options!.step = 1;
+      widget.options!.multipleOf = 1;
 
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'number':
@@ -62,7 +56,7 @@ export function buildUI(
       break;
 
     case 'object':
-      widget = buildObject(schema, bind, propInclude, propExclude);
+      widget = buildObject(schema, bind, ui);
       break;
 
     default:
@@ -84,26 +78,22 @@ export function buildUI(
 }
 
 function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
-  const ui = schema.ui || {},
-    widget: AbstractWidgetDef = {
-      widget: BUILDER_WIDGETS.list,
-      bind,
-      exportAs: ui.exportAs || '$model',
-      elementAs: ui.elementAs,
-      indexAs: ui.indexAs,
-    };
+  const widget: AbstractWidgetDef = {
+    widget: BUILDER_WIDGETS.list,
+    bind,
+  };
 
   if (Array.isArray(schema.items)) {
     // TODO: express tuple case
 
-    widget.content = schema.items.map(sch => buildUI(sch, `${widget.exportAs}[$index]`));
+    widget.content = schema.items.map(sch => buildUI(sch, `$row.array[$row.index]`));
     if (typeof schema.additionalItems === 'object') {
       widget.options = { additionalItems: true };
-      widget.content.push(buildUI(schema.additionalItems, `${widget.exportAs}[$index]`));
+      widget.content.push(buildUI(schema.additionalItems, `$row.array[$row.index]`));
     } else widget.options = { additionalItems: false };
   } else if (typeof schema.items === 'object') {
     widget.options = { additionalItems: true };
-    widget.content = [buildUI(schema.items, `${widget.exportAs}[$index]`)];
+    widget.content = [buildUI(schema.items, `$row.array[$row.index]`)];
     switch (schema.items.type) {
       case 'object':
         widget.options.newRow = '{}';
@@ -131,78 +121,71 @@ function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
 
   return widget;
 }
-function buildObject(
-  schema: SchemaObject,
-  bind: string,
-  _propInclude?: string[],
-  propExclude?: string[]
-): AbstractWidgetDef {
-  const ui: SchemaUI = schema.ui || {},
-    widget: AbstractWidgetDef = {
-      widget: BUILDER_WIDGETS.object,
-      exportAs: ui.exportAs || '$model',
-      bind,
-    };
+function buildObject(schema: SchemaObject, bind: string, ui?: SchemaUI): AbstractWidgetDef {
+  const widget: AbstractFieldWidgetDef = {
+    widget: BUILDER_WIDGETS.object,
+    bind,
+  };
+
+  ui = ui || {};
+  const include = Array.isArray(ui.include) ? ui.include : ['*'];
+  const exclude = Array.isArray(ui.exclude) ? ui.exclude : [];
+
   if (schema.properties) {
-    let keys = Object.keys(schema.properties),
-      ordered: string[];
-    if (Array.isArray(ui.order)) {
-      ordered = ui.order.filter(prop => prop in schema.properties!);
-      ordered = ordered.concat(keys.filter(prop => !ordered.includes(prop)));
-    } else ordered = keys;
+    const allKeys = Object.keys(schema.properties);
+    const includedKeys: string[] = [];
+    let hasRest = false,
+      hasSets = false;
 
-    keys = ordered;
-    widget.content = { main: [] };
+    widget.content = [] as AbstractWidgetDef[];
 
-    if (ui.fieldsets) {
-      const sets = ui.fieldsets.sets,
-        defaultSet =
-          typeof ui.fieldsets.default === 'number'
-            ? ui.fieldsets.default
-            : ui.fieldsets.sets.length;
-
-      if (!sets[defaultSet].fields) sets[defaultSet].fields = [];
-
-      ordered.forEach(prop => {
-        const propSchema = schema.properties![prop];
-        if (propSchema.ui && typeof propSchema.ui.fieldset !== 'undefined') {
-          if (!sets[propSchema.ui.fieldset].fields.includes(prop))
-            sets[propSchema.ui.fieldset].fields.push(prop);
-        } else {
-          for (const fset of sets) {
-            if (fset.fields && fset.fields.includes(prop)) return;
-          }
-
-          sets[defaultSet].fields.push(prop);
+    // get all included properties
+    for (const fieldOrSet of include) {
+      if (Array.isArray(fieldOrSet)) {
+        hasSets = true;
+        for (const field of fieldOrSet) {
+          if (field === '*') hasRest = true;
+          includedKeys.push(field);
         }
-      });
-
-      for (const fset of sets) {
-        // ignore fields not present in properties
-        const fields = fset.fields.filter(prop => prop in schema.properties!);
-
-        // hide empty field sets
-        if (fields.length)
-          widget.content.main.push({
-            widget: BUILDER_WIDGETS.set,
-            bind: widget.exportAs,
-            exportAs: widget.exportAs,
-            content: fields.map(prop =>
-              buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`)
-            ),
-          });
+      } else {
+        if (fieldOrSet === '*') hasRest = true;
+        includedKeys.push(fieldOrSet);
       }
-      widget.content.main = [
-        {
-          widget: 'tabs',
-          options: { tabLabels: sets.map(fset => fset.title) },
-          content: widget.content,
-        },
-      ];
-    } else
-      widget.content!.main = ordered
-        .filter(prop => !(propExclude && propExclude.includes(prop)))
-        .map(prop => buildUI(schema.properties![prop], `${widget.exportAs}['${prop}']`));
+    }
+
+    // calculate rest properties
+    const restKeys = !hasRest
+      ? []
+      : allKeys.filter(key => !includedKeys.includes(key)).filter(key => !exclude.includes(key));
+
+    function addProp(key: string, content: AbstractWidgetDef[]): void {
+      if (allKeys.includes(key)) {
+        content.push(buildUI(schema.properties![key], `${bind}['${key}']`));
+      } else if (key === '*')
+        content.push(
+          ...restKeys.map(rest => buildUI(schema.properties![rest], `${bind}['${rest}']`))
+        );
+    }
+
+    for (let i = 0; i < include.length; i++) {
+      const fieldOrSet = include[i];
+      // check if it is a set
+      if (Array.isArray(fieldOrSet)) {
+        const setWidget: AbstractWidgetDef = { widget: BUILDER_WIDGETS.object, content: [] };
+        setWidget.content = [];
+        if (ui.titles && ui.titles[i]) setWidget.options = { title: ui.titles[i] };
+
+        for (const key of fieldOrSet) addProp(key, setWidget.content as AbstractWidgetDef[]);
+        widget.content.push(setWidget);
+      } else if (!hasSets) {
+        addProp(fieldOrSet, widget.content as AbstractWidgetDef[]);
+      }
+    }
+
+    if (hasSets) {
+      widget.widget = BUILDER_WIDGETS.set;
+      widget.options = { titles: ui.titles };
+    }
   }
   return widget;
 }
