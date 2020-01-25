@@ -100,3 +100,27 @@
 set-page {
   font-size: 13px;
 }
+
+.set-icon-container {
+  flex: 0 0 auto;
+  margin-right: 8px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 36px;
+  background-color: #aaa;
+
+  .set-icon {
+    width: 24px;
+    height: 24px;
+
+    color: white;
+  }
+}
