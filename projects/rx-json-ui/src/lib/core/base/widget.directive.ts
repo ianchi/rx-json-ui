@@ -22,7 +22,6 @@ import {
   TrackByFunction,
   ViewContainerRef,
 } from '@angular/core';
-import { RxObject } from 'espression-rx';
 import { Observable, of, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
@@ -54,6 +53,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
   private forDiffer: IterableDiffer<any> | undefined;
   private forTrackBy: TrackByFunction<any> | undefined;
+  private forArray: any[] | undefined;
 
   constructor(
     private container: ViewContainerRef,
@@ -125,19 +125,24 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (data === true) {
       this.widgetRef = [this.container.createComponent(this.componentFactory)];
 
-      this.widgetRef[0].instance.setup(this.widgetDef, Context.create(this.structuralContext));
+      this.widgetRef[0].instance.setup(
+        this.widgetDef,
+        Context.create(this.structuralContext, undefined, { $parent: this.parentContext })
+      );
     } else {
       this.setFor(data);
     }
   }
 
-  createForWidget(item: any, index: number | null): ComponentRef<AbstractWidget> {
+  createForWidget(data: any, index: number | null): ComponentRef<AbstractWidget> {
     if (!this.componentFactory || !this.widgetDef || index === null)
       throw new Error('Invalid widget definition');
 
     // expose a read-only `$for` reactive property with the `item` and the `index`
     const context = Context.create(this.structuralContext, undefined, {
-      $for: RxObject({ item, index }),
+      $parent: this.parentContext,
+      _: data,
+      $for: { data, index, array: this.forArray },
     });
 
     const widgetRef = this.container.createComponent(this.componentFactory, index);
@@ -211,6 +216,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
         throw new Error(`Cannot find a differ supporting object '${value}'`);
       }
     }
+    this.forArray = value;
     if (this.forDiffer) {
       const changes = this.forDiffer.diff(value);
       if (changes) this.applyForChanges(changes);

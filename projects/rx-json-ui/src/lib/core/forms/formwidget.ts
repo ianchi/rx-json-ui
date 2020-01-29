@@ -27,7 +27,7 @@ export class AbstractFormWidgetComponent<
   O extends EmptyOptionsDef = {},
   S extends ConstrainSlots<S> = MainSlotContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef,
-  B extends boolean = OptBindWidgetDef
+  B extends OptBindWidgetDef = OptBindWidgetDef
 > extends BaseWidget<O, S, E, B> {
   formGroup: FormGroup | undefined;
   boundData: object | undefined;
@@ -63,7 +63,7 @@ export class AbstractFormWidgetComponent<
       this.boundData = lvalue.o[lvalue.m];
     } else this.boundData = RxObject({});
 
-    Context.defineReadonly(this.context, { _: this.boundData });
+    Context.defineReadonly(this.context, { [def.exportAs || '_']: this.boundData });
 
     return def;
   }

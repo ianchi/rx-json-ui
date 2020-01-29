@@ -124,6 +124,7 @@ interface OptBindDef {
    * @parser lvalue
    */
   bind?: lvalueExpr;
+  exportAs?: string;
 }
 export type AbstractWidgetDef = WidgetDef<
   AbstractOptionsDef,

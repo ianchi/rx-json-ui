@@ -7,30 +7,13 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, MainSlotContentDef } from '../../../core/index';
-
-export interface ContainerWidgetOptions {
-  direction: string;
-}
+import { BaseWidget, EmptyOptionsDef, MainSlotContentDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-container',
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
-
-  // tslint:disable-next-line:use-host-property-decorator
-  host: {
-    '[class.wdg-flex]': 'true',
-    '[style.flex-direction]': 'options.direction',
-  },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContainerWidgetComponent extends BaseWidget<
-  ContainerWidgetOptions,
-  MainSlotContentDef
-> {
-  dynOnBeforeBind(): void {
-    this.map('direction', dir => dir || 'row');
-  }
-}
+export class ContainerWidgetComponent extends BaseWidget<EmptyOptionsDef, MainSlotContentDef> {}

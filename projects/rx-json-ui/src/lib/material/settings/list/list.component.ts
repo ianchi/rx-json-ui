@@ -8,14 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractArrayWidgetComponent } from '../../../core/index';
-
-export interface SetListWidgetOptions {
-  title: string;
-  description: string;
-
-  inputType: string;
-  required: boolean;
-}
+import { SchemaArray } from '../../../schema';
 
 @Component({
   selector: 'set-list',
@@ -25,4 +18,4 @@ export interface SetListWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SetListWidgetOptions> {}
+export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SchemaArray> {}

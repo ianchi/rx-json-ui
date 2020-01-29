@@ -13,11 +13,15 @@
   <div class="set-row set-row-flex" *ngFor="let row of boundData; index as idx">
     <div class="set-row-label">
       <ng-container
-        [wdgWidget]="{ widget: 'input', bind: '$row.array[$row.index]' }"
+        [wdgWidget]="{ widget: 'input', bind: '$row.array[$row.index]', options: options.items }"
         [parentContext]="rowContext[idx]"
       ></ng-container>
     </div>
-    <div class="set-row-ctrl" (click)="deleteRow(idx)" *ngIf="events.onDeleteRow">
+    <div
+      class="set-row-ctrl"
+      (click)="deleteRow(idx)"
+      *ngIf="events.onDeleteRow && (!options?.minItems || boundData?.length > options.minItems!)"
+    >
       <mat-icon svgIcon="close"></mat-icon>
     </div>
   </div>

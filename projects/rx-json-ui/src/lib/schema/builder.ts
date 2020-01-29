@@ -82,39 +82,41 @@ function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
     widget: BUILDER_WIDGETS.list,
     bind,
   };
+  let additionalItems: Schema | undefined;
 
   if (Array.isArray(schema.items)) {
     // TODO: express tuple case
 
     widget.content = schema.items.map(sch => buildUI(sch, `$row.array[$row.index]`));
     if (typeof schema.additionalItems === 'object') {
-      widget.options = { additionalItems: true };
+      additionalItems = schema.additionalItems;
       widget.content.push(buildUI(schema.additionalItems, `$row.array[$row.index]`));
-    } else widget.options = { additionalItems: false };
+    }
   } else if (typeof schema.items === 'object') {
-    widget.options = { additionalItems: true };
+    additionalItems = schema.items;
     widget.content = [buildUI(schema.items, `$row.array[$row.index]`)];
-    switch (schema.items.type) {
+    widget.events = { onDeleteRow: 'true' };
+
+    switch (additionalItems.type) {
       case 'object':
-        widget.options.newRow = '{}';
+        widget.events.onNewRow = '{}';
         widget.widget = BUILDER_WIDGETS.array;
         break;
       case 'array':
-        widget.options.newRow = '[]';
+        widget.events.onNewRow = '[]';
         widget.widget = BUILDER_WIDGETS.array;
         break;
       case 'string':
-        widget.options.newRow = '""';
+        widget.events.onNewRow = '""';
         break;
       case 'number':
       case 'integer':
-        widget.options.newRow = '0';
+        widget.events.onNewRow = '0';
         break;
       case 'boolean':
-        widget.options.newRow = 'false';
+        widget.events.onNewRow = 'false';
         break;
       default:
-        widget.options.newRow = '';
         break;
     }
   }

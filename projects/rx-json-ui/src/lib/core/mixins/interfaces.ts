@@ -8,10 +8,10 @@
 import { SchemaNumber, SchemaOptions, SchemaString } from '../../schema';
 import { CommonEventsDef, multilineExpr, SimpleContentDef } from '../base/public.interface';
 
-export type ButtonWidgetEvents = CommonEventsDef & {
+export interface ButtonWidgetEvents extends CommonEventsDef {
   /** Event emitted when the button is clicked */
-  onClick: multilineExpr;
-};
+  onClick?: multilineExpr;
+}
 
 export interface TitleOption {
   title?: string;

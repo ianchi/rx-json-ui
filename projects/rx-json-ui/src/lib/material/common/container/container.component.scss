@@ -4,13 +4,3 @@
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
-
-wdg-container {
-  &.wdg-flex {
-    display: flex;
-    flex-wrap: wrap;
-    & > * {
-      flex: 1 1 auto;
-    }
-  }
-}
