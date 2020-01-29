@@ -17,12 +17,12 @@
     "build-lib": "rm -rf dist/rx-json-ui/* && ng build rx-json-ui --prod && npm run bundle-styles",
     "watch-lib": "ng build rx-json-ui --watch",
     "lint-lib": "ng lint rx-json-ui",
-    "publish-lib": "npm run build-lib && npm version patch -m 'Release %s' && npm publish dist/rx-json-ui && git push --tags",
+    "publish-lib": "npm run build-lib && cd dist/rx-json-ui && npm version patch -m 'LIB: Release %s' && npm publish && git push --tags",
     "bundle-styles": "scss-bundle -p .",
     "build-doc": "rm -rf dist/doc && typedoc --ignoreCompilerErrors --exclude projects/rx-json-ui/src/lib/core/base/widget.directive.ts --tsconfig projects/rx-json-ui/tsconfig.json projects/rx-json-ui",
     "build-cli": "rm -rf  ./projects/rx-json-ui-cli/dist && cd projects/rx-json-ui-cli && rollup -c ",
     "watch-cli": "rm -rf  ./projects/rx-json-ui-cli/dist && cd projects/rx-json-ui-cli && rollup -w -c ",
-    "publish-cli": "npm run build-cli && npm version patch -m 'Release %s' && npm publish projects/rx-json-ui-cli && git push --tags",
+    "publish-cli": "npm run build-cli && cd projects/rx-json-ui-cli && npm version patch -m 'CLI: Release %s' && npm publish && git push --tags",
     "generate-schemas": "rm -rf dist/schema && node ./projects/rx-json-ui-cli/bin/cli.js g -p src/ -m src/app/app.module#AppModule -o WidgetsDef.json dist/schema"
   },
   "husky": {
