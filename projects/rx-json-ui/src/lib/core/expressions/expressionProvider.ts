@@ -41,6 +41,7 @@ export class ESpression extends Expressions {
    */
   parse(expression: string): INode | undefined {
     let result: INode | undefined;
+    if (!expression) return undefined;
     try {
       result = this._parser.parse(expression);
     } catch (e) {
@@ -58,6 +59,7 @@ export class ESpression extends Expressions {
    */
   parseKey(expression: string): INode | undefined {
     let result: INode | undefined;
+    if (!expression) return undefined;
     try {
       result = this._keyParser.parse(expression);
     } catch (e) {

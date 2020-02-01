@@ -160,8 +160,8 @@ export function objectValidator(schema: SchemaObject): ValidatorFn {
         ])
       : null;
   return (value: any) => {
-    if (typeof value === 'undefined' && !schema.required) return null;
-    if (typeof value !== 'object' || Array.isArray(value))
+    if ((typeof value === 'undefined' || value === null) && !schema.required) return null;
+    if (typeof value !== 'object' || Array.isArray(value) || value === null)
       return { code: ERR_TYPE, type: 'object' };
 
     const keys = Object.keys(value);

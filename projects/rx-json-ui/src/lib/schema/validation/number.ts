@@ -24,16 +24,17 @@ export function numberValidator(schema: SchemaNumber): ValidatorFn {
     multipleOf = typeof schema.multipleOf === 'number' ? schema.multipleOf : null,
     minimum = typeof schema.minimum === 'number' ? schema.minimum : null,
     maximum = typeof schema.maximum === 'number' ? schema.maximum : null,
-    exclusiveMinimum =
-      typeof schema.exclusiveMinimum === 'number' ? schema.exclusiveMinimum : null,
-    exclusiveMaximum =
-      typeof schema.exclusiveMaximum === 'number' ? schema.exclusiveMaximum : null,
+    exclusiveMinimum = typeof schema.exclusiveMinimum === 'number' ? schema.exclusiveMinimum : null,
+    exclusiveMaximum = typeof schema.exclusiveMaximum === 'number' ? schema.exclusiveMaximum : null,
     base = baseValidator(schema);
 
   return (value: any) => {
-    if (value === '' || typeof value === 'undefined') return base(value);
+    if (value === '' || typeof value === 'undefined' || value === null) return base(value);
 
-    if (typeof value === 'string') value = parseFloat(value);
+    if (typeof value === 'string') {
+      value = parseFloat(value);
+      if (isNaN(value)) value = undefined;
+    }
     if (typeof value !== 'number')
       return { code: ERR_TYPE, type: isInteger ? 'integer' : 'number' };
     if (isInteger && !Number.isInteger(value)) return { code: ERR_TYPE, type: 'integer' };

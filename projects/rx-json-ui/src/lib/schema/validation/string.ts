@@ -28,7 +28,7 @@ export function stringValidator(schema: SchemaString): ValidatorFn {
     base = baseValidator(schema);
 
   return (value: any) => {
-    if (typeof value === 'undefined') return base(value);
+    if (typeof value === 'undefined' || value === null) return base(value);
     if (typeof value !== 'string') return { code: ERR_TYPE, type: 'string' };
     if (minLength && value.length < minLength) return { code: ESTR_MIN, minLength };
     if (maxLength !== null && value.length > maxLength) return { code: ESTR_MAX, maxLength };
