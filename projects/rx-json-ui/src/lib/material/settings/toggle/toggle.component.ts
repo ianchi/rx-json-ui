@@ -21,4 +21,11 @@ import { SchemaBoolean, SchemaOptions } from '../../../schema';
 export class SetToggleWidgetComponent extends AbstractFormFieldWidget<
   SchemaOptions<SchemaBoolean>,
   MainSlotContentDef
-> {}
+> {
+  dynOnAfterBind(): void {
+    this.map(
+      'readonly',
+      val => this.formControl && (val ? this.formControl.disable() : this.formControl.enable())
+    );
+  }
+}

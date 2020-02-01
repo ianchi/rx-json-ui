@@ -12,6 +12,7 @@ import { MaterialModule } from '../material.module';
 
 import { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
 import { SetButtonWidgetComponent } from './button/button.component';
+import { SetContainerWidgetComponent } from './container/container.component';
 import { SetExpansionWidgetComponent } from './expansion/expansion.component';
 import { SetInputWidgetComponent } from './input/input.component';
 import { SetLevelWidgetComponent } from './level/level.component';
@@ -29,6 +30,7 @@ import { SetToggleWidgetComponent } from './toggle/toggle.component';
 
 export { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
 export { SetButtonWidgetComponent } from './button/button.component';
+export { SetContainerWidgetComponent } from './container/container.component';
 export { SetExpansionWidgetComponent } from './expansion/expansion.component';
 export { SetInputWidgetComponent } from './input/input.component';
 export { SetLevelWidgetComponent } from './level/level.component';
@@ -66,6 +68,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'set-autocomplete', component: SetAutocompleteWidgetComponent },
         { type: 'set-select', component: SetSelectWidgetComponent },
         { type: 'set-level', component: SetLevelWidgetComponent },
+        { type: 'set-container', component: SetContainerWidgetComponent },
       ],
     }),
   ],
@@ -86,6 +89,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetAutocompleteWidgetComponent,
     SetSelectWidgetComponent,
     SetLevelWidgetComponent,
+    SetContainerWidgetComponent,
   ],
   exports: [],
 })

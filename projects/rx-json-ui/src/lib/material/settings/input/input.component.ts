@@ -17,4 +17,23 @@ import { AbstractFormFieldWidget, InputWidgetOptions } from '../../../core/index
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {}
+export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {
+  currentValue: any;
+  fldSetBoundValue(value: any): void {
+    if (!this.lvalue || value === this.lvalue.o[this.lvalue.m]) return;
+    if (this.options.type === 'number' || this.options.type === 'integer') {
+      const num = parseFloat(value);
+      if (isNaN(num)) {
+        if (value && value.trim() === '-') value = -0;
+        if (!value) value = undefined;
+        else if (isNaN(this.lvalue.o[this.lvalue.m])) return;
+      } else value = num;
+    }
+    this.lvalue.o[this.lvalue.m] = this.currentValue = value === null ? undefined : value;
+  }
+
+  fldSetFormValue(value: any): void {
+    if (value === this.currentValue || (isNaN(value) && isNaN(this.currentValue))) return;
+    super.fldSetFormValue(value);
+  }
+}

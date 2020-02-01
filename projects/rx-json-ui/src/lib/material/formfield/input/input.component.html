@@ -6,7 +6,7 @@
   <input
     matInput
     name="aaa"
-    [type]="options.inputType || 'text'"
+    [type]="options.inputType || (options.type === 'number' ? 'number' : 'text')"
     [formControl]="formControl"
     [required]="options.required"
     [readonly]="options.readonly"
