@@ -60,7 +60,7 @@ export class AbstractFormFieldWidget<
     if (!isReactive(this.lvalue.o))
       throw new Error(`Bound Key must be of Reactive Type (${def.bind})`);
 
-    Context.defineReadonly(this.context, { _: this.lvalue.o });
+    Context.defineReadonly(this.context, { $: this.lvalue.o });
 
     // setup validation
 

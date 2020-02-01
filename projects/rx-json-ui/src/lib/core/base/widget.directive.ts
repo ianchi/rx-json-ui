@@ -141,7 +141,6 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     // expose a read-only `$for` reactive property with the `item` and the `index`
     const context = Context.create(this.structuralContext, undefined, {
       $parent: this.parentContext,
-      _: data,
       $for: { data, index, array: this.forArray },
     });
 

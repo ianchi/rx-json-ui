@@ -91,7 +91,7 @@ export class AbstractArrayWidgetComponent<
       else throw new Error(`Bound Key '${def.bind}' must be Array of Reactive Type`);
     }
     this.boundData = lvalue.o[lvalue.m];
-    Context.defineReadonly(this.context, { _: lvalue.o });
+    Context.defineReadonly(this.context, { $: lvalue.o });
 
     // sync the row contexts if the data changed
     this.addSubscription = (<any>this.boundData)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
@@ -101,7 +101,6 @@ export class AbstractArrayWidgetComponent<
         this.rowContext[index].$row.data !== data ||
         this.rowContext[index].$row.index !== index
           ? Context.create(this.context, undefined, {
-              _: data,
               $row: {
                 data,
                 index,
