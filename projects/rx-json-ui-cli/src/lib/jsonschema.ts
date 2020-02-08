@@ -163,11 +163,11 @@ export function generateSchemas(
 
   message('Schema files generated\n');
 
-  function saveSchema(contentSchema: TJS.Definition, filename: string): void {
-    contentSchema.$id = `${base}/${filename}`;
-    if (!contentSchema.definitions) contentSchema.definitions = {};
+  function saveSchema(schema: TJS.Definition, filename: string): void {
+    schema.$id = `${base}/${filename}`;
+    if (!schema.definitions) schema.definitions = {};
 
-    fs.writeFileSync(path.resolve(outPath, filename), JSON.stringify(contentSchema, undefined, 2));
+    fs.writeFileSync(path.resolve(outPath, filename), JSON.stringify(schema, undefined, 2));
   }
 }
 function message(text: string): void {

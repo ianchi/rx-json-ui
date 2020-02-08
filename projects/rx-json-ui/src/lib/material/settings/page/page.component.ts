@@ -17,4 +17,4 @@ import { AbstractFormWidgetComponent, EmptyOptionsDef } from '../../../core/inde
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetPageWidgetComponent extends AbstractFormWidgetComponent<EmptyOptionsDef>{}
+export class SetPageWidgetComponent extends AbstractFormWidgetComponent<EmptyOptionsDef> {}
