@@ -19,7 +19,7 @@ export const BUILDER_WIDGETS = {
   array: 'set-rowarray',
   list: 'set-list',
   object: 'set-expansion',
-  set: 'set-expansion',
+  set: 'set-container',
 };
 
 export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWidgetDef {
@@ -173,7 +173,7 @@ function buildObject(schema: SchemaObject, bind: string, ui?: SchemaUI): Abstrac
       const fieldOrSet = include[i];
       // check if it is a set
       if (Array.isArray(fieldOrSet)) {
-        const setWidget: AbstractWidgetDef = { widget: BUILDER_WIDGETS.object, content: [] };
+        const setWidget: AbstractWidgetDef = { widget: BUILDER_WIDGETS.object, bind: `${bind}` };
         setWidget.content = [];
         if (ui.titles && ui.titles[i]) setWidget.options = { title: ui.titles[i] };
 
