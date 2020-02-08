@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { INode } from 'espression';
 import { combineMixed } from 'espression-rx';
 import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
@@ -42,6 +42,8 @@ export type AbstractWidget = BaseWidget<
 /**
  * Base class for all dynamic widget elements
  */
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class BaseWidget<
   O extends EmptyOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,

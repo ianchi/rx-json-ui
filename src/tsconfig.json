@@ -2,14 +2,13 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "module": "es2015",
     "types": [],
     "paths": {
       "rx-json-ui": ["dist/rx-json-ui"]
     }
   },
-  "exclude": ["src/test.ts", "**/*.spec.ts"],
   "angularCompilerOptions": {
     "enableIvy": false
-  }
+  },
+  "files": ["main.ts", "polyfills.ts"]
 }

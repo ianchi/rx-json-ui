@@ -3,6 +3,7 @@
   "dest": "../../dist/rx-json-ui",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": { "espression": "espression", "espression-rx": "espressionRx" }
   }
 }

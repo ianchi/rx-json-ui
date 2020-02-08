@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Directive } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 import { SchemaOptions, SchemaPrimitiveValidations } from '../../schema';
@@ -29,6 +30,8 @@ export interface SelectWidgetOptions
   propLabel: string;
 }
 
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class SelectWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
   S extends ConstrainSlots<S> | undefined = undefined,

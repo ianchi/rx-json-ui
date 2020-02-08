@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Directive } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 
@@ -49,6 +50,8 @@ export interface ArrayEventsDef extends CommonEventsDef {
  * `array` a reference to the containing array
  * `index` the index of the current element in the array
  */
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class AbstractArrayWidgetComponent<
   T extends EmptyOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,

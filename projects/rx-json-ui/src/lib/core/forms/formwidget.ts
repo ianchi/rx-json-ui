@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Directive } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { isReactive, RxObject } from 'espression-rx';
 
@@ -23,6 +24,8 @@ import { Context } from '../expressions/index';
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class AbstractFormWidgetComponent<
   O extends EmptyOptionsDef = {},
   S extends ConstrainSlots<S> = MainSlotContentDef,

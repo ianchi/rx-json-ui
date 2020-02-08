@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Directive } from '@angular/core';
 import { ILvalue } from 'espression';
 import { isReactive } from 'espression-rx';
 
@@ -30,6 +31,8 @@ export interface FileWidgetEvents extends CommonEventsDef {
   onAdded: multilineExpr;
 }
 
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class FileWidgetMixin extends BaseWidget<
   FileWidgetOptions,
   undefined,

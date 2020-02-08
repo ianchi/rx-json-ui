@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Directive } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -18,6 +19,8 @@ import {
 
 import { SelectWidgetMixin, SelectWidgetOptions } from './select';
 
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class AutocompleteWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
   S extends ConstrainSlots<S> | undefined = undefined,

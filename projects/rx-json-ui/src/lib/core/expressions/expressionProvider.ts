@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Injectable } from '@angular/core';
 import { ES6Parser, es6Rules, ILvalue, INode, Parser, StaticEval } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
@@ -17,6 +18,7 @@ import { Expressions } from './expressions';
  * The functionality is provided by the ESpression package
  *
  */
+@Injectable()
 export class ESpression extends Expressions {
   private _parser: Parser;
   private _keyParser: Parser;

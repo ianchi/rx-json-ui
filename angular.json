@@ -24,6 +24,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -89,12 +95,13 @@
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/rx-json-ui/tsconfig.json",
+            "tsConfig": "projects/rx-json-ui/tsconfig.lib.json",
             "project": "projects/rx-json-ui/ng-package.json"
           },
           "configurations": {
             "production": {
-              "project": "projects/rx-json-ui/ng-package.prod.json"
+              "project": "projects/rx-json-ui/ng-package.prod.json",
+              "tsConfig": "projects/rx-json-ui/tsconfig.lib.prod.json"
             }
           }
         },
@@ -110,7 +117,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/rx-json-ui/tsconfig.json",
+              "projects/rx-json-ui/tsconfig.lib.json",
               "projects/rx-json-ui/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
@@ -129,6 +136,11 @@
           "options": {
             "tsConfig": "projects/rx-json-ui-cli/tsconfig.json",
             "project": "projects/rx-json-ui-cli/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/rx-json-ui-cli/tsconfig.lib.prod.json"
+            }
           }
         },
         "lint": {
@@ -157,5 +169,8 @@
       "flat": true,
       "spec": false
     }
+  },
+  "cli": {
+    "analytics": "2e0818c8-09cb-45b3-8b0d-0b238a6cb255"
   }
 }

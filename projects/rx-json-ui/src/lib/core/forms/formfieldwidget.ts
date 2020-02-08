@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { Directive } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -31,6 +32,8 @@ import { Context } from '../expressions/index';
 
 export const FORM_CONTROL = '$form';
 
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export class AbstractFormFieldWidget<
   O extends SchemaPrimitiveValidations<any>,
   S extends ConstrainSlots<S> | undefined = undefined,

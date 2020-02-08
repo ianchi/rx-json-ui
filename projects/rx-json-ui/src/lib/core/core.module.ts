@@ -22,12 +22,13 @@ import { AF_CONFIG_TOKEN, AutoFormConfig } from './widgetregistry.service';
   exports: [WidgetDirective, RoutedWidgetComponent, FormatPipe],
 })
 export class WidgetsCoreModule {
-  static forRoot(config: AutoFormConfig = {}): ModuleWithProviders {
+  static forRoot(config: AutoFormConfig = {}): ModuleWithProviders<WidgetsCoreModule> {
     return {
       ngModule: WidgetsCoreModule,
       providers: [
         { provide: AF_CONFIG_TOKEN, useValue: config, multi: true },
         {
+          // tslint:disable-next-line: deprecation
           provide: ANALYZE_FOR_ENTRY_COMPONENTS,
           useValue: config,
           multi: true,
