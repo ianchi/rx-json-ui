@@ -29,7 +29,11 @@ export type WidgetDef<
   S extends ConstrainSlots<S> = NoContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef,
   B extends ConstrainBind = NoBindWidgetDef
-> = BaseWidgetDef<O, S, E> & (B extends true ? BindDef : B extends false ? OptBindDef : {});
+> = B extends true
+  ? BindDef<O, S, E>
+  : B extends false
+  ? OptBindDef<O, S, E>
+  : BaseWidgetDef<O, S, E>;
 /**
  * Definition of a generic Widget.
  * Specific Widgets can further restrict the available options
@@ -109,7 +113,11 @@ export type BindWidgetDef = true;
 export type OptBindWidgetDef = false;
 export type NoBindWidgetDef = undefined;
 
-interface BindDef {
+interface BindDef<
+  O extends EmptyOptionsDef,
+  S extends ConstrainSlots<S> = NoContentDef,
+  E extends ConstrainEvents<E> = CommonEventsDef
+> extends BaseWidgetDef<O, S, E> {
   /**
    * Object/property to bind the form field to.
    *
@@ -117,7 +125,11 @@ interface BindDef {
    */
   bind: lvalueExpr;
 }
-interface OptBindDef {
+interface OptBindDef<
+  O extends EmptyOptionsDef,
+  S extends ConstrainSlots<S> = NoContentDef,
+  E extends ConstrainEvents<E> = CommonEventsDef
+> extends BaseWidgetDef<O, S, E> {
   /**
    * Object/property to bind the form field to.
    *
@@ -129,7 +141,7 @@ export type AbstractWidgetDef = WidgetDef<
   AbstractOptionsDef,
   AbstractSlotContentDef,
   AbstractEventsDef,
-  ConstrainBind
+  OptBindWidgetDef
 >;
 
 export type AbstractFieldWidgetDef = WidgetDef<

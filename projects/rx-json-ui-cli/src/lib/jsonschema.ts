@@ -66,6 +66,14 @@ export function generateSchemas(
     'BaseWidgetDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef>',
     { $ref: `${outSchemaFile}#` }
   );
+  generator.setSchemaOverride(
+    'OptBindDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef>',
+    { $ref: `${outSchemaFile}#` }
+  );
+  generator.setSchemaOverride(
+    'BindDef<AbstractOptionsDef,AbstractSlotContentDef,AbstractEventsDef>',
+    { $ref: `${outSchemaFile}#` }
+  );
 
   widgets.forEach(({ type: tag, component: { name: symbolName } }, i) => {
     message(`Generating schemas ${i + 1}/${widgets.length}`);
