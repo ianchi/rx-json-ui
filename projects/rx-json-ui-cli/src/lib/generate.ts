@@ -14,7 +14,7 @@ interface GenerateOptions {
   base: string;
 }
 export function generate(outPath: string, opts: GenerateOptions): void {
-  const { program, config } = ngCompile(opts.project);
+  const { program } = ngCompile(opts.project);
   if (!program) return process.exit(1);
 
   const [file, module] = opts.module.split('#');

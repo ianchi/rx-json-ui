@@ -1,7 +1,7 @@
 {
   "name": "rx-json-ui-cli",
   "description": "rx-json-ui CLI for validations",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Adrian Panella <ianchi74@outlook.com>",
   "license": "MIT",
   "repository": "https://github.com/ianchi/rx-json-ui.git",
@@ -16,18 +16,18 @@
   "module": "./dist/esm/public-api.js",
   "types": "./dist/public-api.d.ts",
   "peerDependencies": {
-    "@angular/compiler": "^8.2.14",
-    "@angular/compiler-cli": "^8.2.14"
+    "@angular/compiler": "^9.0.0",
+    "@angular/compiler-cli": "^9.0.0"
   },
   "dependencies": {
-    "commander": "^4.0.1",
+    "commander": "^4.1.1",
     "espression": "^1.4.0",
     "espression-jsonpath": "^0.1.0",
     "glob": "^7.1.6",
     "read-pkg-up": "^7.0.1",
     "request-light": "^0.2.5",
     "resolve-from": "^5.0.0",
-    "typescript-json-schema": "^0.41.0",
+    "typescript-json-schema": "^0.42.0",
     "vscode-json-languageservice": "github:ianchi/vscode-json-languageservice#v3.4.9-mod",
     "vscode-uri": "^2.1.1"
   },
