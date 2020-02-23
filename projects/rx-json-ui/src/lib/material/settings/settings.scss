@@ -7,6 +7,7 @@
 
 .set-row {
   display: block;
+  flex: 1 1 auto;
 
   wdg-table {
     section.mat-elevation-z1 {
@@ -34,6 +35,35 @@
   padding-right: 20px;
 }
 
+.set-row-combined {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  align-content: center;
+
+  .set-row {
+    .set-row-flex {
+      padding-right: 0px;
+    }
+  }
+}
+.set-separator {
+  flex: 0 0 auto;
+  align-self: stretch;
+  border-left: 2px solid rgba(0, 0, 0, 0.06);
+  margin: 6px 0px 6px 4px;
+}
+.set-row-post {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  align-content: center;
+  align-self: stretch;
+
+  flex: 0 0 auto;
+  max-width: 150px;
+  color: grey;
+}
 .set-subrows .set-row-flex {
   padding-left: 4px;
 }

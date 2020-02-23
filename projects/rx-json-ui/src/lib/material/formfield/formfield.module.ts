@@ -15,7 +15,6 @@ import { ButtonWidgetComponent } from './button/button.component';
 import { CheckboxWidgetComponent } from './checkbox/checkbox.component';
 import { FileWidgetComponent } from './file/file.component';
 import { FormWidgetComponent } from './form/form.component';
-import { FormAccordionWidgetComponent } from './formAccordion/formAccordion.component';
 import { FormArrayWidgetComponent } from './formArray/formArray.component';
 import { FormExpansionWidgetComponent } from './formExpansion/formExpansion.component';
 import { InputWidgetComponent } from './input/input.component';
@@ -30,7 +29,6 @@ export { ButtonWidgetComponent } from './button/button.component';
 export { CheckboxWidgetComponent } from './checkbox/checkbox.component';
 export { FileWidgetComponent } from './file/file.component';
 export { FormWidgetComponent } from './form/form.component';
-export { FormAccordionWidgetComponent } from './formAccordion/formAccordion.component';
 export { FormArrayWidgetComponent } from './formArray/formArray.component';
 export { FormExpansionWidgetComponent } from './formExpansion/formExpansion.component';
 export { InputWidgetComponent } from './input/input.component';
@@ -53,7 +51,6 @@ export { ToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'button', component: ButtonWidgetComponent },
         { type: 'form', component: FormWidgetComponent },
         { type: 'form-array', component: FormArrayWidgetComponent },
-        { type: 'form-accordion', component: FormAccordionWidgetComponent },
         { type: 'form-expansion', component: FormExpansionWidgetComponent },
         { type: 'schema-form', component: SchemaWidgetComponent },
         { type: 'autocomplete', component: AutocompleteWidgetComponent },
@@ -71,7 +68,6 @@ export { ToggleWidgetComponent } from './toggle/toggle.component';
     ButtonWidgetComponent,
     FormWidgetComponent,
     FormArrayWidgetComponent,
-    FormAccordionWidgetComponent,
     FormExpansionWidgetComponent,
     SchemaWidgetComponent,
     AutocompleteWidgetComponent,

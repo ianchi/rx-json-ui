@@ -15,16 +15,10 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { combineMixed } from 'espression-rx';
-import { isObservable } from 'rxjs';
 
-import { BaseWidget, CommonEventsDef, parseDefObject } from '../../../core/index';
+import { BaseWidget, CommonEventsDef } from '../../../core/index';
 
-export interface TableWidgetOptions {
-  /**  Label to show on the control (fixed text) */
-  title: string;
-  /** Table's data. Each element's key maps to a column */
-  dataSource: object[];
+export interface BaseTableWidgetOptions {
   /** Order list of column keys (each maps to a property of the row element). */
   columns: string[];
   /**
@@ -35,16 +29,6 @@ export interface TableWidgetOptions {
   headers: { [column: string]: string };
   /** If set, the table has paging footer, with multiple options of page sizes */
   pageSizes: number[];
-  /**
-   * Adds a textbox to filter by the content of any column
-   */
-  filter: boolean;
-  /**
-   * Disable sorting for the listed columns (provided as array of keys)
-   * If not set or false, all columns allow sorting.
-   * If `true`, sorting is disabled for all columns.
-   */
-  disableSort: string[] | boolean;
 
   /**
    * Format to apply to each column's data for rendering
@@ -60,12 +44,27 @@ export interface TableWidgetOptions {
     /** Optional data to pass to the `onAction` event when this action is clicked */
     data?: any;
   }>;
-
   /** Label to show on the actions column */
   actionsHeader: string;
 }
+export interface TableWidgetOptions extends BaseTableWidgetOptions {
+  /**  Label to show on the control (fixed text) */
+  title: string;
+  /** Table's data. Each element's key maps to a column */
+  dataSource: object[];
+  /**
+   * Adds a textbox to filter by the content of any column
+   */
+  filter: boolean;
+  /**
+   * Disable sorting for the listed columns (provided as array of keys)
+   * If not set or false, all columns allow sorting.
+   * If `true`, sorting is disabled for all columns.
+   */
+  disableSort: string[] | boolean;
+}
 
-type TableWidgetEvents = CommonEventsDef & {
+interface TableWidgetEvents extends CommonEventsDef {
   /**
    * Expression to evaluate when an action is clicked.
    * It receives the following parameters in the context:
@@ -75,7 +74,7 @@ type TableWidgetEvents = CommonEventsDef & {
    * `$action.data` the additional data defined in the action
    */
   onAction: string;
-};
+}
 
 @Component({
   selector: 'wdg-table',
@@ -98,22 +97,6 @@ export class TableWidgetComponent
   disableSort: string[] | undefined;
 
   dynOnBeforeBind(): void {
-    const opt = this.widgetDef!.options;
-
-    // if the only source is a static array, lets check if it has 'property=' columns to evaluate
-    // and add the auto binding
-    if (opt && !(opt as any)['dataSource='] && Array.isArray(opt.dataSource)) {
-      const dataSource = combineMixed(
-        opt.dataSource.map(
-          row => combineMixed(parseDefObject(row, this.context, false, this.expr)),
-          false
-        ),
-        false
-      );
-      if (isObservable<object[]>(dataSource)) this.bindings.dataSource = dataSource;
-      else this.options.dataSource = <any[]>dataSource;
-    }
-
     this.map(
       'disableSort',
       sort => (this.disableSort = sort === true ? undefined : !Array.isArray(sort) ? [] : sort)

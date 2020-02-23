@@ -7,11 +7,8 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import {
-  AbstractArrayWidgetComponent,
-  EmptyOptionsDef,
-  MainSlotContentDef,
-} from '../../../core/index';
+import { AbstractArrayWidgetComponent, MainSlotContentDef } from '../../../core/index';
+import { SchemaArray } from '../../../schema';
 
 @Component({
   selector: 'wdg-form-array',
@@ -21,6 +18,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormArrayWidgetComponent extends AbstractArrayWidgetComponent<
-  EmptyOptionsDef,
+  SchemaArray,
   MainSlotContentDef
 > {}
