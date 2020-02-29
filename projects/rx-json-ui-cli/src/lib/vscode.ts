@@ -28,6 +28,7 @@ import {
 } from 'vscode-json-languageservice';
 import { URI } from 'vscode-uri';
 
+import { message } from './jsonschema';
 import { validateExpr } from './languageservice';
 
 export function validate(fileMatch: string[], { schema }: { schema: string }): void {
@@ -62,8 +63,7 @@ export function validate(fileMatch: string[], { schema }: { schema: string }): v
     )
   )
     .then(fileDiags => {
-      process.stdout.clearLine(0);
-      process.stdout.cursorTo(0);
+      message('');
       fileDiags.forEach(({ file, diagnostics }) => {
         diagnostics.forEach(diag => {
           console.log(
@@ -79,9 +79,7 @@ export function validate(fileMatch: string[], { schema }: { schema: string }): v
     .then(() => process.exit(error));
 }
 function validateFile(languageService: LanguageService, file: string): Thenable<Diagnostic[]> {
-  process.stdout.clearLine(0);
-  process.stdout.cursorTo(0);
-  process.stdout.write(file);
+  message(file);
 
   const content = fs.readFileSync(file);
   const textDocument = TextDocument.create(

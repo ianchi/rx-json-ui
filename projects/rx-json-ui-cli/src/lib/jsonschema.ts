@@ -178,9 +178,11 @@ export function generateSchemas(
     fs.writeFileSync(path.resolve(outPath, filename), JSON.stringify(schema, undefined, 2));
   }
 }
-function message(text: string): void {
-  process.stdout.clearLine(0);
-  process.stdout.cursorTo(0);
+export function message(text: string): void {
+  if (process.stdout.clearLine) {
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
+  } else process.stdout.write('\n');
   process.stdout.write(text);
 }
 
