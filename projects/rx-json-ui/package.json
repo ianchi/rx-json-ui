@@ -4,7 +4,7 @@
   "author": "Adrian Panella <ianchi74@outlook.com>",
   "license": "MIT",
   "repository": "https://github.com/ianchi/rx-json-ui.git",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "peerDependencies": {
     "@angular/cdk": "^9.0.0",
