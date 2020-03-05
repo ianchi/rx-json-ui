@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ES6Parser, es6Rules, Parser, StringRule, toRawPosition } from 'espression';
+import { ESnextParser, esNextRules, Parser, StringRule, toRawPosition } from 'espression';
 // tslint:disable-next-line: no-implicit-dependencies
 import {
   ArrayASTNode,
@@ -21,10 +21,10 @@ import {
   Thenable,
 } from 'vscode-json-languageservice';
 
-const esParser = new ES6Parser(true);
+const esParser = new ESnextParser(true);
 const rules = { string: [new StringRule({ LT: false, hex: true, raw: false, escapes: true })] };
 const stringParser = new Parser(rules, 'string');
-const lvalueParser = new Parser(es6Rules(), 'lvalue');
+const lvalueParser = new Parser(esNextRules(), 'lvalue');
 
 export function hoverData(
   languageservice: LanguageService,
