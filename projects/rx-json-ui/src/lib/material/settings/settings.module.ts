@@ -26,6 +26,7 @@ import { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.comp
 import { SetSelectWidgetComponent } from './select/select.component';
 import { SetSliderWidgetComponent } from './slider/slider.component';
 import { SetSubpageWidgetComponent } from './subpage/subpage.component';
+import { SetTextWidgetComponent } from './text/text.component';
 import { SetToggleWidgetComponent } from './toggle/toggle.component';
 
 export { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
@@ -44,6 +45,7 @@ export { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.comp
 export { SetSelectWidgetComponent } from './select/select.component';
 export { SetSliderWidgetComponent } from './slider/slider.component';
 export { SetSubpageWidgetComponent } from './subpage/subpage.component';
+export { SetTextWidgetComponent } from './text/text.component';
 export { SetToggleWidgetComponent } from './toggle/toggle.component';
 
 @NgModule({
@@ -69,6 +71,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'set-select', component: SetSelectWidgetComponent },
         { type: 'set-level', component: SetLevelWidgetComponent },
         { type: 'set-container', component: SetContainerWidgetComponent },
+        { type: 'set-text', component: SetTextWidgetComponent },
       ],
     }),
   ],
@@ -90,6 +93,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetSelectWidgetComponent,
     SetLevelWidgetComponent,
     SetContainerWidgetComponent,
+    SetTextWidgetComponent,
   ],
   exports: [],
 })
