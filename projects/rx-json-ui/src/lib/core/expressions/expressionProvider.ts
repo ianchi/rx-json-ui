@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ES6Parser, es6Rules, ILvalue, INode, Parser, StaticEval } from 'espression';
+import { ESnextParser, esNextRules, ILvalue, INode, Parser, StaticEval } from 'espression';
 import { ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
 
@@ -29,9 +29,9 @@ export class ESpression extends Expressions {
     super();
 
     // remove Program / Statements rules, and keep only expressions
-    this._parser = new ES6Parser(true);
+    this._parser = new ESnextParser(true);
 
-    this._keyParser = new Parser(es6Rules(), 'lvalue');
+    this._keyParser = new Parser(esNextRules(), 'lvalue');
 
     this._rxEval = new ReactiveEval();
   }
