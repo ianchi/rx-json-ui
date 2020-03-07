@@ -5,7 +5,7 @@
 
   <div class="set-row-label">
     <div class="set-row-title set-level-value">
-      <span>{{ options.value | format: options.format }}</span>
+      <span>{{ options.value || 0 | format: options.format }}</span>
       <span *ngIf="options.total">/{{ options.total | format: options.format }}</span>
       <span class="set-level-unit">{{ options.unit }}</span>
     </div>
@@ -13,7 +13,7 @@
       *ngIf="!options.noGraph"
       mode="determinate"
       color="primary"
-      [value]="(options.value / options.total) * 100"
+      [value]="((options.value || 0) / (options.total || 100)) * 100"
       class="stats-bar"
     ></mat-progress-bar>
     <div class="set-row-description set-level-title">
@@ -22,7 +22,11 @@
   </div>
   <div
     class="set-row-ctrl"
-    [ngClass]="{ expanded: expanded, collapsed: !expanded, hidden: !content?.main.length }"
+    [ngClass]="{
+      expanded: expanded,
+      collapsed: !expanded,
+      hidden: options.noExpand || !content?.main.length
+    }"
   >
     <mat-icon svgIcon="chevron-down" class="rotating-icon"></mat-icon>
   </div>

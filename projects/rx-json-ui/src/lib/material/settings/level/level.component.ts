@@ -19,6 +19,7 @@ export interface LevelWidgetOptions {
   format: string;
 
   expanded: boolean;
+  noExpand: boolean;
 }
 
 @Component({
