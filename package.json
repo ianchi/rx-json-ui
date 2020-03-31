@@ -43,8 +43,8 @@
     "@angular/platform-browser-dynamic": "^9.0.0",
     "@angular/router": "^9.0.0",
     "core-js": "^3.6.4",
-    "espression": "^1.5.0",
-    "espression-rx": "^0.3.2",
+    "espression": "^1.6.0",
+    "espression-rx": "^0.3.3",
     "rxjs": "^6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
