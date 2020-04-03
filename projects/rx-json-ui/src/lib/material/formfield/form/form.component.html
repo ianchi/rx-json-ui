@@ -1,8 +1,8 @@
-<div class="wdg-form-grid-container">
+<form class="wdg-form-grid-container" [formGroup]="formGroup" novalidate>
   <ng-container
     *ngFor="let element of content!.main"
     [wdgWidget]="element"
     [parentContext]="context"
   >
   </ng-container>
-</div>
+</form>

@@ -12,7 +12,10 @@ import { AbstractFormWidgetComponent } from '../../../core/forms/index';
 export interface SetExpansionWidgetOptions {
   title: string;
   description: string;
+  value: string;
   expanded: boolean;
+  noExpand: boolean;
+  icon: string;
 }
 
 @Component({

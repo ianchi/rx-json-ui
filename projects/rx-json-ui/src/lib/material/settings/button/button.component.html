@@ -8,7 +8,10 @@
   </div>
 </div>
 
-<div class="set-row-ctrl set-row-spin" *ngIf="options.spinner">
+<div
+  class="set-row-ctrl set-row-spin"
+  *ngIf="options.spinner === true || (options.spinner === 'auto' && running)"
+>
   <mat-spinner color="primary" diameter="32"></mat-spinner>
 </div>
 <button

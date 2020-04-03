@@ -25,11 +25,26 @@ export interface TitleDescOption {
 export type InputWidgetOptions = NumberInputOptions | StringInputOptions;
 
 interface NumberInputOptions extends SchemaOptions<SchemaNumber> {
-  inputType?: string;
+  inputType?: 'number';
+  autocomplete?: string;
 }
 
 interface StringInputOptions extends SchemaOptions<SchemaString> {
-  inputType?: string;
+  inputType?:
+    | 'email'
+    | 'search'
+    | 'text'
+    | 'url'
+    | 'password'
+    | 'date'
+    | 'datetime-local'
+    | 'color'
+    | 'month'
+    | 'tel'
+    | 'time'
+    | 'week'
+    | 'number';
+  autocomplete?: string;
 }
 // tslint:disable-next-line: interface-over-type-literal
 export type PopupSlotsDef = {

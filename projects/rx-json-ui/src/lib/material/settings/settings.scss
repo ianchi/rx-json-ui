@@ -94,6 +94,7 @@
 .set-row-value {
   flex: 0 1 auto;
   text-align: end;
+  color: rgb(95, 99, 104);
 }
 .set-subrows {
   padding-left: 36px;
@@ -148,13 +149,19 @@ set-page {
 
   min-width: 36px;
   min-height: 36px;
-  border-radius: 36px;
-  background-color: #aaa;
 
   .set-icon {
     width: 24px;
     height: 24px;
+    color: rgb(95, 99, 104);
+  }
+}
 
+set-level > .set-row-flex > .set-icon-container {
+  border-radius: 36px;
+  background-color: #aaa;
+
+  .set-icon {
     color: white;
   }
 }

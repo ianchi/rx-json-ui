@@ -14,7 +14,7 @@ export interface SetButtonWidgetOptions {
   description: string;
   buttonTitle: string;
 
-  spinner: boolean;
+  spinner: boolean | 'auto';
   disabled: boolean;
 }
 

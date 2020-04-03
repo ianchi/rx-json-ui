@@ -15,10 +15,11 @@
 <mat-form-field appearance="fill" class="set-row-ctrl">
   <input
     matInput
-    name="aaa"
+    [name]="'_' + lvalue?.m"
     [type]="options.inputType || (options.type === 'number' ? 'number' : 'text')"
     [formControl]="formControl"
     [required]="options.required"
     [readonly]="options.readonly"
+    [autocomplete]="options.autocomplete || ''"
   />
 </mat-form-field>

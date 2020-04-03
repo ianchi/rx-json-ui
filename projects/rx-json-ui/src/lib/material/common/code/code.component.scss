@@ -6,7 +6,11 @@
  */
 
 wdg-code {
+  display: block;
+
   code {
     white-space: pre;
+    overflow-x: auto;
+    display: block;
   }
 }

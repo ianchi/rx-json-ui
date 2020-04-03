@@ -46,6 +46,14 @@ export interface BaseTableWidgetOptions {
   }>;
   /** Label to show on the actions column */
   actionsHeader: string;
+
+  /**
+   * Column name or function to use to check the differences in data changes.
+   * Optimize row operations by identifying a row based on its data relative
+   * to the function to know if a row should be added/removed/moved.
+   * Accepts a function that takes two parameters, `index` and `item`.
+   */
+  trackBy: string;
 }
 export interface TableWidgetOptions extends BaseTableWidgetOptions {
   /**  Label to show on the control (fixed text) */
@@ -96,6 +104,8 @@ export class TableWidgetComponent
   matSort: MatSort | undefined;
   disableSort: string[] | undefined;
 
+  trackBy: ((index: number, item: any) => any) | undefined;
+
   dynOnBeforeBind(): void {
     this.map(
       'disableSort',
@@ -103,6 +113,17 @@ export class TableWidgetComponent
     );
 
     this.map('dataSource', (table: any[]) => (this.tableDataSource.data = table));
+
+    this.map(
+      'trackBy',
+      (func: any) =>
+        (this.trackBy =
+          typeof func === 'string' || typeof func === 'number'
+            ? (_index, item) => item[func]
+            : typeof func === 'function'
+            ? func
+            : undefined)
+    );
 
     this.map('pageSizes', value => {
       if (!Array.isArray(value) || !value.length) {
