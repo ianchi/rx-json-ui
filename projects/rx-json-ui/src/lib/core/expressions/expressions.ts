@@ -6,7 +6,8 @@
  */
 
 import { ILvalue, INode } from 'espression';
-import { Observable, of } from 'rxjs';
+import { isObservable, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Context } from './context';
 
@@ -25,7 +26,19 @@ export abstract class Expressions {
   eval(expression: string, context: Context, asObservable: true): Observable<any>;
   eval(expression: string, context: Context, asObservable?: boolean): Observable<any> | any {
     try {
-      return this.evaluate(this.parse(expression), context, asObservable);
+      let res = this.evaluate(this.parse(expression), context, asObservable);
+      if (isObservable(res))
+        res = res.pipe(
+          catchError((e: any) => {
+            console.warn(
+              `${e.message} evaluating expression ${
+                e.pos ? ` at position ${e.pos}` : ''
+              }: ${expression}`
+            );
+            return of(undefined);
+          })
+        );
+      return res;
     } catch (e) {
       console.warn(`${e.message} evaluating expression: ${expression}`);
       return asObservable ? of(undefined) : undefined;

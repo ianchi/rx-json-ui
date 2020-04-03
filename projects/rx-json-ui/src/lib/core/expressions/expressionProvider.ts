@@ -46,6 +46,7 @@ export class ESpression extends Expressions {
     if (!expression) return undefined;
     try {
       result = this._parser.parse(expression);
+      result.expr = expression;
     } catch (e) {
       console.warn('Parsing Error', e.message, '\n', expression);
       return undefined;
@@ -64,6 +65,7 @@ export class ESpression extends Expressions {
     if (!expression) return undefined;
     try {
       result = this._keyParser.parse(expression);
+      result.expr = expression;
     } catch (e) {
       console.warn('Parsing Error', e.message, '\n', expression);
       return undefined;
@@ -89,6 +91,10 @@ export class ESpression extends Expressions {
     try {
       result = this._rxEval.evaluate(ast, context);
     } catch (e) {
+      if (!e.ast) e.ast = ast;
+
+      console.warn(`${e.message} evaluating expression ${ast.expr || ''}:`);
+
       if (asObservable) return throwError(e);
 
       throw e;
