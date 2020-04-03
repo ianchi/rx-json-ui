@@ -22,8 +22,9 @@ import {
   TrackByFunction,
   ViewContainerRef,
 } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { RxObject } from 'espression-rx';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { Context, Expressions, ROOT_EXPR_CONTEXT } from '../expressions/index';
 import { WidgetRegistry } from '../widgetregistry.service';
@@ -53,7 +54,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
   private forDiffer: IterableDiffer<any> | undefined;
   private forTrackBy: TrackByFunction<any> | undefined;
-  private forArray: any[] | undefined;
+  private structural$: Observable<any> | undefined;
 
   constructor(
     private container: ViewContainerRef,
@@ -72,7 +73,6 @@ export class WidgetDirective implements OnChanges, OnDestroy {
    * It evaluates the `if` / `for` structural properties and creates the widgets accordingly
    */
   ngOnChanges(): void {
-    let structural$: Observable<any> | undefined;
     // if we already had created a widget, destroy it
     this.unsuscribeStructural();
     this.destroyWidgets();
@@ -80,7 +80,12 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     // make sure we have a valid widget definition
     if (!this.widgetDef) return;
     this.validateWidgetDef();
-    this.parentContext = this.parentContext || this.rootContext || new Context();
+
+    // if a specific context wasn't provided, create one parent context from the rootContext
+    // adding making '$' available as a RxObject to bind fields (in case no form widget is
+    // in the view tree)
+    this.parentContext =
+      this.parentContext || Context.create(this.rootContext, undefined, { $: RxObject({}) });
     this.structuralContext = Context.create(this.parentContext);
 
     // create the structural observable
@@ -88,11 +93,11 @@ export class WidgetDirective implements OnChanges, OnDestroy {
       const ifExpr = Array.isArray(this.widgetDef.if)
         ? this.widgetDef.if.join('\n')
         : this.widgetDef.if;
-      structural$ = this.expr.eval(ifExpr, this.structuralContext, true).pipe(
+      this.structural$ = this.expr.eval(ifExpr, this.structuralContext, true).pipe(
         map(v => !!v),
         distinctUntilChanged()
       );
-    } else structural$ = of(true);
+    } else this.structural$ = of(true);
 
     if (this.widgetDef.for) {
       // if we have an `if` and a `for` first evaluate the `if`
@@ -100,7 +105,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
       const forExpr = Array.isArray(this.widgetDef.for)
         ? this.widgetDef.for.join('\n')
         : this.widgetDef.for;
-      structural$ = structural$.pipe(
+      this.structural$ = this.structural$.pipe(
         switchMap(val => {
           return val
             ? this.expr
@@ -111,7 +116,9 @@ export class WidgetDirective implements OnChanges, OnDestroy {
       );
     }
 
-    this.subscriptions = structural$.subscribe(val => {
+    this.structural$ = this.structural$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    this.subscriptions = this.structural$.subscribe(val => {
       // check if the `if` was false
       if (val === false) this.destroyWidgets();
       else this.createWidgets(val);
@@ -125,10 +132,14 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (data === true) {
       this.widgetRef = [this.container.createComponent(this.componentFactory)];
 
-      this.widgetRef[0].instance.setup(
-        this.widgetDef,
-        Context.create(this.structuralContext, undefined, { $parent: this.parentContext })
-      );
+      const ctx = Context.create(this.structuralContext);
+
+      Context.defineReadonly(ctx, {
+        $self: ctx,
+        $parent: this.parentContext,
+      });
+
+      this.widgetRef[0].instance.setup(this.widgetDef, ctx);
     } else {
       this.setFor(data);
     }
@@ -138,10 +149,16 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     if (!this.componentFactory || !this.widgetDef || index === null)
       throw new Error('Invalid widget definition');
 
-    // expose a read-only `$for` reactive property with the `item` and the `index`
-    const context = Context.create(this.structuralContext, undefined, {
+    // expose a read-only `$for` reactive property with the item's `data` and `index`
+    const context = Context.create(this.structuralContext);
+    Context.defineReadonly(context, {
+      $self: context,
       $parent: this.parentContext,
-      $for: { data, index, array: this.forArray },
+      $for: {
+        data: new BehaviorSubject(data),
+        index: new BehaviorSubject(index),
+        array: this.structural$,
+      },
     });
 
     const widgetRef = this.container.createComponent(this.componentFactory, index);
@@ -215,7 +232,6 @@ export class WidgetDirective implements OnChanges, OnDestroy {
         throw new Error(`Cannot find a differ supporting object '${value}'`);
       }
     }
-    this.forArray = value;
     if (this.forDiffer) {
       const changes = this.forDiffer.diff(value);
       if (changes) this.applyForChanges(changes);
@@ -246,20 +262,18 @@ export class WidgetDirective implements OnChanges, OnDestroy {
           const component = this.widgetRef[adjustedPreviousIndex];
           this.widgetRef.splice(adjustedPreviousIndex, 1);
           this.widgetRef.splice(currentIndex, 0, component);
+
+          // emit updated index
+          this.widgetRef[currentIndex].instance.context.$for.index.next(currentIndex);
         }
       }
     );
 
     // the identity of the item changed (even if the trackBy returned the same ID, the objects have different references )
+    // emit updated data
     changes.forEachIdentityChange((record: IterableChangeRecord<any>) => {
-      if (record.currentIndex)
-        this.widgetRef[record.currentIndex].instance.context.$for.item = record.item;
-    });
-
-    // update index
-
-    this.widgetRef.forEach((element, i) => {
-      if (element.instance.context.$for.index !== i) element.instance.context.$for.index = i;
+      if (record.currentIndex !== null && record.previousIndex !== null)
+        this.widgetRef[record.currentIndex].instance.context.$for.data.next(record.item);
     });
   }
 }
