@@ -12,7 +12,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Context } from '../../core/expressions/index';
 import { PopupSlotsDef } from '../../core/index';
