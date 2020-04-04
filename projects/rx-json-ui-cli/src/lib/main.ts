@@ -10,6 +10,7 @@ import * as path from 'path';
 import { sync as readPkg } from 'read-pkg-up';
 
 import { generate } from './generate';
+import { svgGenerate } from './svg';
 import { validate } from './vscode';
 
 export function main(args: string[]): void {
@@ -43,6 +44,7 @@ function configure(): void {
       'Base URI to use for generating the schmas $ID',
       'http://ianchi.github.io/rx-json-ui'
     )
+    .option('-r, --remove', 'remove out dir before processing')
     .action(generate);
 
   program
@@ -53,6 +55,17 @@ function configure(): void {
     )
     .requiredOption('-s, --schema <file>', 'Schema to validate against')
     .action(validate);
+
+  program
+    .command('svg <outPath>')
+    .alias('s')
+    .description('Generates IconSet sprite file from individual svg icons from @mdi')
+    .requiredOption(
+      '-i, --icons <file>',
+      'Input file in yaml format with icons to include in sprite'
+    )
+    .option('-r, --remove', 'remove out dir before processing')
+    .action(svgGenerate);
   program.on('command:*', (cmd, _opts) => {
     console.error(
       `The specified command ("${cmd[0]}") is invalid. For a list of available options, run "rx-json-ui --help".`

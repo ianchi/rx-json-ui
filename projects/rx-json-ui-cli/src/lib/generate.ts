@@ -5,6 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
+import * as fs from 'fs';
+
 import { generateSchemas } from './jsonschema';
 import { getWidgets, ngCompile } from './metadata';
 
@@ -12,6 +14,7 @@ interface GenerateOptions {
   project: string;
   module: string;
   base: string;
+  remove: boolean;
 }
 export function generate(outPath: string, opts: GenerateOptions): void {
   const { program } = ngCompile(opts.project);
@@ -21,6 +24,7 @@ export function generate(outPath: string, opts: GenerateOptions): void {
   const widgets = getWidgets(program, file, module);
   if (!widgets.length) process.exit(1);
 
+  if (opts.remove) fs.rmdirSync(outPath, { recursive: true });
   generateSchemas(program.getTsProgram(), widgets, outPath, opts.base);
 
   process.exit(0);

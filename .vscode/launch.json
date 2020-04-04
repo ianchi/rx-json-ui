@@ -32,6 +32,19 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Generat svg",
+      "args": ["${workspaceRoot}/projects/rx-json-ui-cli/src/lib/svg.ts"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}/projects/rx-json-ui-cli",
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceRoot}/projects/rx-json-ui-cli/src/lib/tsconfig.debug.json"
+      },
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Generate Schemas",
       "args": [
         "${workspaceRoot}/projects/rx-json-ui-cli/bin/cli.js",
