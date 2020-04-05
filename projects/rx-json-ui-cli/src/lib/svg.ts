@@ -10,6 +10,7 @@ import * as yaml from 'js-yaml';
 import * as path from 'path';
 import * as svgSprite from 'svg-sprite';
 import * as vinyl from 'vinyl';
+import * as resolvepkg from 'resolve-package-path';
 
 interface SvgOptions {
   icons: string;
@@ -37,10 +38,17 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
   for (const def of icons) {
     const ns = def.namespace || 'default';
     const set = iconsets[ns] || (iconsets[ns] = []);
-    const source = def.source
-      ? path.resolve(def.source)
-      : path.resolve(__dirname, '../node_modules', '@mdi/svg/svg/');
+    let source: string;
 
+    if (def.source) source = path.resolve(def.source);
+    else {
+      const pkg = resolvepkg.default('@mdi/svg', __dirname);
+      if (pkg === null) {
+        console.error('Could not find @mdi/svg package');
+        process.exit(1);
+      }
+      source = `${path.dirname(pkg)}/svg`;
+    }
     if (Array.isArray(def.icons))
       for (const icon of def.icons) {
         try {
