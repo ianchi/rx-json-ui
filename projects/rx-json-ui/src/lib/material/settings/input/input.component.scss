@@ -4,25 +4,3 @@
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
-
-set-input {
-  .mat-form-field-wrapper {
-    padding: 0px;
-
-    .mat-form-field-flex {
-      padding: 0px;
-
-      .mat-form-field-infix {
-        padding: 0 0 6px 0;
-      }
-    }
-
-    .mat-form-field-underline {
-      bottom: 0px;
-    }
-
-    .mat-form-field-ripple {
-      background-color: rgba(0, 0, 0, 0);
-    }
-  }
-}
