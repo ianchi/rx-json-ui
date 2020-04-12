@@ -50,11 +50,12 @@ export class SelectWidgetMixin<
   }
 
   fldSetFormValue(val: any): void {
+    if (!this.formControl) return;
     let key: any;
     key = typeof val === 'undefined' ? this.options.default : val;
     let opt = this.getOption(key);
     if (typeof opt === 'undefined') opt = val;
-    if (this.formControl!.value !== opt) this.formControl!.setValue(opt);
+    if (this.formControl.value !== opt) this.formControl.setValue(opt);
   }
 
   fldSetBoundValue(opt: any): void {

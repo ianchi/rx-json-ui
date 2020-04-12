@@ -14,9 +14,9 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { ILvalue } from 'espression';
-import { GET_OBSERVABLE, isReactive } from 'espression-rx';
+import { combineMixed, GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
-import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { ERROR_MSG, SchemaPrimitiveValidations, schemaValidator, ValidatorFn } from '../../schema';
 import { ERR_CUSTOM } from '../../schema/validation/base';
@@ -32,6 +32,8 @@ import { Context } from '../expressions/index';
 
 export const FORM_CONTROL = '$form';
 
+let FIELD_ID = 0;
+
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export class AbstractFormFieldWidget<
@@ -45,7 +47,11 @@ export class AbstractFormFieldWidget<
 
   schemaValidator: ValidatorFn | undefined;
 
+  /** Resolved lvalue */
   lvalue: ILvalue | undefined;
+
+  /** Possibly observable lvalue */
+  lvalue$: ILvalue | undefined;
 
   default: any;
 
@@ -53,20 +59,53 @@ export class AbstractFormFieldWidget<
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
 
-    this.lvalue = this.expr.lvalue(def.bind, this.context);
+    this.lvalue$ = this.expr.lvalue(def.bind, this.context);
 
-    if (!this.lvalue)
+    if (!this.lvalue$)
       throw new Error(
         `Form field "bind" property must be an identifier or member expression (${def.bind})`
       );
 
-    if (!isReactive(this.lvalue.o))
-      throw new Error(`Bound Key must be of Reactive Type (${def.bind})`);
+    Context.defineReadonly(this.context, { $: this.lvalue$.o });
 
-    Context.defineReadonly(this.context, { $: this.lvalue.o });
+    // Setup control
+    this.formControl = new FormControl(
+      undefined,
+      (ctrl: AbstractControl) =>
+        this.schemaValidator ? this.schemaValidator(this.fldGetValue(ctrl)) : null,
+      this.validateFn
+    );
+
+    // TODO: this won't work for a dynamic default
+    if (def.options) this.default = def.options.default;
+
+    // listen to bound context value and update on changes
+    this.addSubscription = combineMixed([this.lvalue$.o, this.lvalue$.m], true)
+      .pipe(
+        tap(([o, m]) => {
+          if (!isReactive(o)) {
+            this.lvalue = undefined;
+            throw new Error(
+              `Bound Key (${def.bind}) must be of Reactive Type or Observable emiting reactive object`
+            );
+          }
+          if (m === null || typeof m === 'undefined') {
+            this.lvalue = undefined;
+            throw new Error(`Bound member can't be undefined (${def.bind})`);
+          }
+          this.lvalue = { o, m };
+        }),
+
+        // switch to stream of values
+        switchMap(([o, m]) => o[GET_OBSERVABLE](m)),
+        // if value of bound variable is observable, switch to it's resolved values
+        switchMap(val => (isObservable(val) ? val : of(val)))
+      )
+      .subscribe((val: any) => {
+        this.fldSetFormValue(val);
+      });
 
     // setup validation
-
     if (def.events && def.events['onValidate']) {
       this.validateFn = (ctrl: AbstractControl) => {
         return this.expr
@@ -88,29 +127,15 @@ export class AbstractFormFieldWidget<
           );
       };
     }
-    this.formControl = new FormControl(
-      this.lvalue.o[this.lvalue.m],
-      (ctrl: AbstractControl) =>
-        this.schemaValidator ? this.schemaValidator(this.fldGetValue(ctrl)) : null,
-      this.validateFn
-    );
 
+    // setup parent
     const parentForm: FormGroup | FormArray =
       this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
     if (parentForm) {
-      if (parentForm instanceof FormGroup) parentForm.addControl(this.lvalue.m, this.formControl);
+      if (parentForm instanceof FormGroup)
+        parentForm.addControl(`ctrl_${FIELD_ID++}_${this.lvalue?.m}`, this.formControl);
       else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
     }
-
-    if (def.options) this.default = def.options.default;
-
-    // listen to bound context value and update on changes
-    this.addSubscription = (<any>this.lvalue.o)
-      [GET_OBSERVABLE](this.lvalue.m)
-      .pipe(switchMap(val => (isObservable(val) ? val : of(val))))
-      .subscribe((val: any) => {
-        this.fldSetFormValue(val);
-      });
 
     // listen to control changes to update bound context value
     this.addSubscription = this.formControl.valueChanges.subscribe((value: any) => {
@@ -144,9 +169,10 @@ export class AbstractFormFieldWidget<
    * or when the value is `undefined` to the `default` value if it is present as an input option.
    */
   fldSetFormValue(value: any): void {
+    if (!this.formControl) return;
     if (typeof value === 'undefined') value = this.default;
-    if (value === this.formControl!.value) return;
-    this.formControl!.setValue(value);
+    if (value === this.formControl.value) return;
+    this.formControl.setValue(value);
   }
   /**
    * Called to update the bound value when the control changes.

@@ -52,7 +52,7 @@ export class AutocompleteWidgetMixin<
 
   fldSetFormValue(val: any): void {
     super.fldSetFormValue(val);
-    this.filter(this.formControl!.value);
+    if (this.formControl) this.filter(this.formControl.value);
   }
 
   /**

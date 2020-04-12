@@ -113,7 +113,7 @@ export class ESpression extends Expressions {
 
     if (!ast) return undefined;
     try {
-      result = this._rxEval.lvalue(ast, context);
+      result = this._rxEval.lvalue(ast, context, true);
     } catch (e) {
       console.warn(`${e.message} evaluating expression: ${expression}`);
       return undefined;
