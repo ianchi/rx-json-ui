@@ -5,7 +5,14 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { Directive } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Directive,
+  IterableChangeRecord,
+  IterableDiffer,
+  IterableDiffers,
+  TrackByFunction,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -14,7 +21,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 
 import { SchemaArray } from '../../schema';
@@ -28,12 +35,20 @@ import {
   multilineExpr,
   WidgetDef,
 } from '../base/public.interface';
-import { Context } from '../expressions/index';
+import { Context, Expressions } from '../expressions/index';
 
 import { FieldControl } from './fieldcontrol';
 import { FORM_CONTROL } from './formfieldwidget';
 
 export interface ArrayEventsDef extends FieldEventDef {
+  /**
+   * Expression that must return a function or a property to use to track changes
+   * and recreate the widget if necessary
+   *  + (index, item) => id
+   *  + <string|number>
+   *
+   */
+  onTrackFn?: multilineExpr;
   /**
    * Expression that must return the new object to add to the array.
    * If it is empty or returns undefined, no row is added
@@ -79,6 +94,13 @@ export class AbstractArrayWidgetComponent<
 
   rowContext: Context[] = [];
   schemaValidator: ValidatorFn | undefined;
+
+  private bindDiffer: IterableDiffer<any[]> | undefined;
+  bindTrackBy: TrackByFunction<any> | undefined;
+
+  constructor(cdr: ChangeDetectorRef, expr: Expressions, private differs: IterableDiffers) {
+    super(cdr, expr);
+  }
   dynOnSetup(def: WidgetDef<T, S, E, BindWidgetDef>): WidgetDef<T, S, E, BindWidgetDef> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
@@ -118,25 +140,28 @@ export class AbstractArrayWidgetComponent<
       [FORM_CONTROL]: new FieldControl(this.formControl),
     });
 
+    return def;
+  }
+
+  dynOnAfterSetup(): void {
+    // prepare the differ
+
+    this.emmit('onTrackFn', (fn: any) => {
+      if (typeof fn === 'function') this.bindTrackBy = fn;
+      else if (typeof fn === 'string' || typeof fn === 'number')
+        this.bindTrackBy = (_i, elem) => elem[fn];
+    });
+
+    try {
+      this.bindDiffer = this.differs.find([]).create(this.bindTrackBy);
+    } catch {
+      throw new Error(`Cannot find a differ supporting array`);
+    }
+
     // sync the row contexts if the data changed
     this.addSubscription = (<any>this.boundData)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
-      this.rowContext = arr.map((data: any, index: number) =>
-        // keep old Context if no change, so no DOM change is triggered
-        !this.rowContext[index] ||
-        this.rowContext[index].$row.data !== data ||
-        this.rowContext[index].$row.index !== index
-          ? Context.create(this.context, undefined, {
-              $row: {
-                data,
-                index,
-                array: this.boundData,
-              },
-            })
-          : this.rowContext[index]
-      );
-      this._cdr.markForCheck();
+      this.applyChanges(arr);
     });
-    return def;
   }
 
   validateFn(ctrl: AbstractControl): Observable<ValidationErrors | null> {
@@ -176,5 +201,53 @@ export class AbstractArrayWidgetComponent<
       { $idx: idx, $dir: dir },
       result => result && this.boundData!.splice(idx + dir, 0, this.boundData!.splice(idx, 1)[0])
     );
+  }
+
+  private applyChanges(value: any[]): void {
+    if (!this.bindDiffer) return;
+    const changes = this.bindDiffer.diff(value);
+    if (!changes) return;
+
+    changes.forEachOperation(
+      (
+        record: IterableChangeRecord<any>,
+        adjustedPreviousIndex: number | null,
+        currentIndex: number | null
+      ) => {
+        if (record.previousIndex == null && currentIndex !== null) {
+          // added elements
+          const context = Context.create(this.context, undefined, {
+            $row: {
+              data: new BehaviorSubject(record.item),
+              index: new BehaviorSubject(currentIndex),
+              array: this.boundData,
+            },
+          });
+
+          this.rowContext.splice(currentIndex, 0, context);
+        } else if (currentIndex == null && adjustedPreviousIndex !== null) {
+          // removed elements
+          this.rowContext.splice(adjustedPreviousIndex, 1);
+        } else if (adjustedPreviousIndex !== null && currentIndex !== null) {
+          // moved elements
+
+          const context = this.rowContext[adjustedPreviousIndex];
+          this.rowContext.splice(adjustedPreviousIndex, 1);
+          this.rowContext.splice(currentIndex, 0, context);
+
+          // emit updated index
+          this.rowContext[currentIndex].instance.context.$row.index.next(currentIndex);
+        }
+      }
+    );
+
+    // the identity of the item changed (even if the trackBy returned the same ID, the objects have different references )
+    // emit updated data
+    changes.forEachIdentityChange((record: IterableChangeRecord<any>) => {
+      if (record.currentIndex !== null && record.previousIndex !== null)
+        this.rowContext[record.currentIndex].$row.data.next(record.item);
+    });
+
+    this._cdr.markForCheck();
   }
 }

@@ -7,7 +7,12 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractArrayWidgetComponent } from '../../../core/index';
+import {
+  AbstractArrayWidgetComponent,
+  ArrayEventsDef,
+  BindWidgetDef,
+  WidgetDef,
+} from '../../../core/index';
 import { SchemaArray } from '../../../schema';
 
 @Component({
@@ -18,4 +23,21 @@ import { SchemaArray } from '../../../schema';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SchemaArray> {}
+export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SchemaArray> {
+  itemOptions = { widget: 'input', bind: '$row.array[$row.index]', options: {} };
+
+  dynOnSetup(
+    def: WidgetDef<SchemaArray, undefined, ArrayEventsDef, BindWidgetDef>
+  ): WidgetDef<SchemaArray, undefined, ArrayEventsDef, BindWidgetDef> {
+    this.bindTrackBy = i => i;
+    return super.dynOnSetup(def);
+  }
+
+  dynOnAfterBind(): void {
+    this.map('items', i => (this.itemOptions.options = i));
+  }
+  trackItems(i: number, val: any): number {
+    console.log(i, val);
+    return i;
+  }
+}

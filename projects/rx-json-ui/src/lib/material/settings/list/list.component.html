@@ -10,12 +10,12 @@
   </div>
 </div>
 <div class="set-subrows">
-  <div class="set-row set-row-flex" *ngFor="let row of boundData; index as idx">
+  <div
+    class="set-row set-row-flex"
+    *ngFor="let row of boundData; trackBy: bindTrackBy; index as idx"
+  >
     <div class="set-row-label">
-      <ng-container
-        [wdgWidget]="{ widget: 'input', bind: '$row.array[$row.index]', options: options.items }"
-        [parentContext]="rowContext[idx]"
-      ></ng-container>
+      <ng-container [wdgWidget]="itemOptions" [parentContext]="rowContext[idx]"></ng-container>
     </div>
     <div
       class="set-row-ctrl"

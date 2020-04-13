@@ -94,6 +94,7 @@ export class BaseWidget<
 
     if (widgetDef.events) this.parseEventsDef(widgetDef.events);
     this.emmit('onSetup');
+    this.dynOnAfterSetup();
 
     this.bindings = parseDefObject<O>(widgetDef.options, this.context, true, this.expr);
 
@@ -269,6 +270,9 @@ export class BaseWidget<
   dynOnSetup(def: WidgetDef<O, S, E, B>): WidgetDef<O, S, E, B> {
     return def;
   }
+
+  /** Hook to complete setup after parsing `events` and after onSetup */
+  dynOnAfterSetup(): void {}
 
   /**
    * Hook to customize the observable bindings *before* updating the bound value.
