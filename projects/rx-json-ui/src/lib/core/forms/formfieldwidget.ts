@@ -6,21 +6,13 @@
  */
 
 import { Directive } from '@angular/core';
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormArray,
-  FormControl,
-  FormGroup,
-} from '@angular/forms';
-import { ILvalue } from 'espression';
+import { AbstractControl, AsyncValidatorFn, FormControl } from '@angular/forms';
 import { combineMixed, GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { ERROR_MSG, SchemaPrimitiveValidations, schemaValidator, ValidatorFn } from '../../schema';
 import { ERR_CUSTOM } from '../../schema/validation/base';
-import { BaseWidget } from '../base/abstractwidget';
 import {
   BindWidgetDef,
   ConstrainEvents,
@@ -30,9 +22,7 @@ import {
 } from '../base/public.interface';
 import { Context } from '../expressions/index';
 
-export const FORM_CONTROL = '$form';
-
-let FIELD_ID = 0;
+import { AbstractBaseFormControlWidget } from './baseformcontrol';
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
@@ -40,18 +30,10 @@ export class AbstractFormFieldWidget<
   O extends SchemaPrimitiveValidations<any>,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & FieldEventDef = FieldEventDef
-> extends BaseWidget<O, S, E, BindWidgetDef> {
-  formControl: FormControl | undefined;
-
+> extends AbstractBaseFormControlWidget<O, S, E, BindWidgetDef> {
   validateFn: AsyncValidatorFn | undefined;
 
   schemaValidator: ValidatorFn | undefined;
-
-  /** Resolved lvalue */
-  lvalue: ILvalue | undefined;
-
-  /** Possibly observable lvalue */
-  lvalue$: ILvalue | undefined;
 
   default: any;
 
@@ -68,6 +50,28 @@ export class AbstractFormFieldWidget<
 
     Context.defineReadonly(this.context, { $: this.lvalue$.o });
 
+    // setup validation
+    if (def.events && def.events['onValidate']) {
+      this.validateFn = (ctrl: AbstractControl) => {
+        return this.expr
+          .evaluate(
+            this.events.onValidate,
+            Context.create(this.context, { $value: ctrl.value }),
+            true
+          )
+          .pipe(
+            take(1),
+            map(res => {
+              return !res
+                ? null
+                : { code: ERR_CUSTOM, message: typeof res === 'string' ? res : '' };
+            }),
+            catchError(_e =>
+              of({ code: ERR_CUSTOM, message: 'Error evaluating validation expression' })
+            )
+          );
+      };
+    }
     // Setup control
     this.formControl = new FormControl(
       undefined,
@@ -75,6 +79,8 @@ export class AbstractFormFieldWidget<
         this.schemaValidator ? this.schemaValidator(this.fldGetValue(ctrl)) : null,
       this.validateFn
     );
+
+    this.formSetParent();
 
     // TODO: this won't work for a dynamic default
     if (def.options) this.default = def.options.default;
@@ -105,38 +111,6 @@ export class AbstractFormFieldWidget<
         this.fldSetFormValue(val);
       });
 
-    // setup validation
-    if (def.events && def.events['onValidate']) {
-      this.validateFn = (ctrl: AbstractControl) => {
-        return this.expr
-          .evaluate(
-            this.events.onValidate,
-            Context.create(this.context, { $value: ctrl.value }),
-            true
-          )
-          .pipe(
-            take(1),
-            map(res => {
-              return !res
-                ? null
-                : { code: ERR_CUSTOM, message: typeof res === 'string' ? res : '' };
-            }),
-            catchError(_e =>
-              of({ code: ERR_CUSTOM, message: 'Error evaluating validation expression' })
-            )
-          );
-      };
-    }
-
-    // setup parent
-    const parentForm: FormGroup | FormArray =
-      this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
-    if (parentForm) {
-      if (parentForm instanceof FormGroup)
-        parentForm.addControl(`ctrl_${FIELD_ID++}_${this.lvalue?.m}`, this.formControl);
-      else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
-    }
-
     // listen to control changes to update bound context value
     this.addSubscription = this.formControl.valueChanges.subscribe((value: any) => {
       this.fldSetBoundValue(value);
@@ -151,6 +125,7 @@ export class AbstractFormFieldWidget<
       state ? this.formControl?.disable() : this.formControl?.enable()
     );
   }
+
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
     this.schemaValidator = schemaValidator(<any>this.options);

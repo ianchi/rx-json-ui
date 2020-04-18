@@ -13,20 +13,13 @@ import {
   IterableDiffers,
   TrackByFunction,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-} from '@angular/forms';
+import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 
 import { SchemaArray } from '../../schema';
 import { ERR_CUSTOM } from '../../schema/validation/base';
-import { BaseWidget } from '../base/abstractwidget';
 import {
   BindWidgetDef,
   ConstrainEvents,
@@ -37,8 +30,7 @@ import {
 } from '../base/public.interface';
 import { Context, Expressions } from '../expressions/index';
 
-import { FieldControl } from './fieldcontrol';
-import { FORM_CONTROL } from './formfieldwidget';
+import { AbstractBaseFormControlWidget } from './baseformcontrol';
 
 export interface ArrayEventsDef extends FieldEventDef {
   /**
@@ -88,8 +80,7 @@ export class AbstractArrayWidgetComponent<
   T extends SchemaArray,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & ArrayEventsDef = ArrayEventsDef
-> extends BaseWidget<T, S, E, BindWidgetDef> {
-  formControl: FormArray | undefined;
+> extends AbstractBaseFormControlWidget<T, S, E, BindWidgetDef> {
   boundData: any[] | undefined;
 
   rowContext: Context[] = [];
@@ -127,18 +118,8 @@ export class AbstractArrayWidgetComponent<
       def?.events?.['onValidate'] ? this.validateFn : null
     );
 
-    // register with parent form, if any
-    const parentForm: FormGroup | FormArray =
-      this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
-    if (parentForm) {
-      if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formControl);
-      else if (parentForm instanceof FormArray) parentForm.push(this.formControl);
-    }
-
-    // save this FormArray as parent form for the children
-    Context.defineHidden(this.context, {
-      [FORM_CONTROL]: new FieldControl(this.formControl),
-    });
+    this.formSetParent();
+    this.formSetContext();
 
     return def;
   }

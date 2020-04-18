@@ -6,10 +6,9 @@
  */
 
 import { Directive } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { isReactive, RxObject } from 'espression-rx';
 
-import { BaseWidget } from '../base/abstractwidget';
 import {
   CommonEventsDef,
   ConstrainEvents,
@@ -21,8 +20,7 @@ import {
 } from '../base/public.interface';
 import { Context } from '../expressions/index';
 
-import { FieldControl } from './fieldcontrol';
-import { FORM_CONTROL } from './formfieldwidget';
+import { AbstractBaseFormControlWidget } from './baseformcontrol';
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
@@ -31,25 +29,15 @@ export class AbstractFormWidgetComponent<
   S extends ConstrainSlots<S> = MainSlotContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef,
   B extends OptBindWidgetDef = OptBindWidgetDef
-> extends BaseWidget<O, S, E, B> {
-  formGroup: FormGroup | undefined;
+> extends AbstractBaseFormControlWidget<O, S, E, B> {
   boundData: object | undefined;
 
   dynOnSetup(def: WidgetDef<O, S, E, B>): WidgetDef<O, S, E, B> {
-    this.formGroup = new FormGroup({});
+    this.formControl = new FormGroup({});
 
-    // register with parent form, if any
-    const parentForm: FormGroup | FormArray =
-      this.context[FORM_CONTROL] && this.context[FORM_CONTROL]._control;
-    if (parentForm) {
-      if (parentForm instanceof FormGroup) parentForm.addControl('control', this.formGroup);
-      else if (parentForm instanceof FormArray) parentForm.push(this.formGroup);
-    }
+    this.formSetParent();
+    this.formSetContext();
 
-    // save this FormGroup as parent form for the children
-    Context.defineReadonly(this.context, {
-      [FORM_CONTROL]: new FieldControl(this.formGroup),
-    });
     // get bound model if it has one or create aux unbound model
     if (typeof def.bind === 'string') {
       // binding is always on the parent context directly, so it can't get shadowed in the child
