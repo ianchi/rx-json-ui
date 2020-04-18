@@ -3,8 +3,7 @@ wdg-popup {
 }
 
 .cdk-overlay-pane.wdg-popup-panel {
-  @media (min-width: 600px) {
-    height: 100%;
+  @media (max-width: 600px) {
     width: 100%;
 
     mat-dialog-container {

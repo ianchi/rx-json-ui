@@ -45,6 +45,10 @@ export class SetPopupWidgetComponent extends BaseWidget<PopupWidgetOptions, Popu
         title: this.options.popupTitle,
         context: this.context,
       },
+
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      panelClass: 'wdg-popup-panel',
     });
   }
 }

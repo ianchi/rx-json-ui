@@ -5,7 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 
 import { BaseWidget, MainSlotContentDef, TitleOption } from '../../../core/index';
 
@@ -17,8 +23,16 @@ import { BaseWidget, MainSlotContentDef, TitleOption } from '../../../core/index
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetSectionGroupWidgetComponent extends BaseWidget<TitleOption, MainSlotContentDef> {
+  @ViewChild('contentRef') contentRef: ElementRef | undefined;
   expanded = false;
   toggle(): void {
     this.expanded = !this.expanded;
+
+    if (this.expanded)
+      setTimeout(
+        () =>
+          this.contentRef?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' }),
+        250
+      );
   }
 }

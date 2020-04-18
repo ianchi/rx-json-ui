@@ -7,7 +7,7 @@
     <mat-icon svgIcon="chevron-down" class="rotating-icon"></mat-icon>
   </div>
 </div>
-<div *ngIf="content?.main.length && expanded" class="settings-sectiongroup-wrapper">
+<div *ngIf="expanded && content?.main.length" class="settings-sectiongroup-wrapper" #contentRef>
   <ng-container
     *ngFor="let element of content!.main"
     [wdgWidget]="element"
