@@ -10,16 +10,8 @@
 <div class="set-row-ctrl">
   <mat-slider
     [formControl]="formControl"
-    [min]="
-      options.multipleOf && options.minimum
-        ? (options.minimum! % options.multipleOf!) * options.multipleOf!
-        : options.minimum
-    "
-    [max]="
-      options.multipleOf && options.maximum
-        ? (options.maximum! % options.multipleOf!) * options.multipleOf!
-        : options.maximum
-    "
+    [min]="toStep(options.minimum)"
+    [max]="toStep(options.maximum)"
     [step]="options.multipleOf || (options.type === 'integer' && 1)"
   ></mat-slider>
 </div>

@@ -18,6 +18,10 @@ import { SchemaNumber, SchemaOptions } from '../../../schema';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetSliderWidgetComponent extends AbstractFormFieldWidget<
-  SchemaOptions<SchemaNumber>
-> {}
+export class SetSliderWidgetComponent extends AbstractFormFieldWidget<SchemaOptions<SchemaNumber>> {
+  toStep(val: number | undefined): number | undefined {
+    return this.options.multipleOf && val
+      ? Math.floor(val / this.options.multipleOf) * this.options.multipleOf
+      : val;
+  }
+}
