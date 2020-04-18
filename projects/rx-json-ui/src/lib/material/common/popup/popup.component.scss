@@ -1,0 +1,14 @@
+wdg-popup {
+  display: block;
+}
+
+.cdk-overlay-pane.wdg-popup-panel {
+  @media (min-width: 600px) {
+    height: 100%;
+    width: 100%;
+
+    mat-dialog-container {
+      border-radius: 0px;
+    }
+  }
+}

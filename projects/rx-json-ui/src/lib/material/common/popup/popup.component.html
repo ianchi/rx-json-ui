@@ -1,0 +1,17 @@
+<h2 mat-dialog-title *ngIf="title">{{ title }}</h2>
+<mat-dialog-content>
+  <ng-container
+    *ngFor="let element of content.main"
+    [wdgWidget]="element"
+    [parentContext]="parentContext"
+  >
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="content.actions">
+  <ng-container
+    *ngFor="let element of content.actions"
+    [wdgWidget]="element"
+    [parentContext]="parentContext"
+  >
+  </ng-container>
+</mat-dialog-actions>

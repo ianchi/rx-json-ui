@@ -12,32 +12,15 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Context } from '../../core/expressions/index';
-import { PopupSlotsDef } from '../../core/index';
+import { Context } from '../../../core/expressions/index';
+import { PopupSlotsDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-popup',
-  template: `
-    <h2 mat-dialog-title *ngIf="title">{{ title }}</h2>
-    <mat-dialog-content>
-      <ng-container
-        *ngFor="let element of content.main"
-        [wdgWidget]="element"
-        [parentContext]="parentContext"
-      >
-      </ng-container>
-    </mat-dialog-content>
-    <mat-dialog-actions *ngIf="content.actions">
-      <ng-container
-        *ngFor="let element of content.actions"
-        [wdgWidget]="element"
-        [parentContext]="parentContext"
-      >
-      </ng-container>
-    </mat-dialog-actions>
-  `,
+  templateUrl: './popup.component.html',
+  styleUrls: ['./popup.component.scss'],
 
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -14,7 +14,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 
 import { BaseWidget, Expressions, PopupSlotsDef } from '../../../core/index';
-import { PopupComponent } from '../../common/popup.component';
+import { PopupComponent } from '../../common/popup/popup.component';
 
 export interface PopupWidgetOptions {
   title: string;
