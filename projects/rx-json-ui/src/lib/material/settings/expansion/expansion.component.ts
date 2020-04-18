@@ -32,6 +32,7 @@ export class SetExpansionWidgetComponent extends AbstractFormWidgetComponent<
   expanded = false;
 
   dynOnAfterBind(): void {
+    super.dynOnAfterBind();
     this.map('expanded', e => (this.expanded = !!e));
   }
   toggle(): void {

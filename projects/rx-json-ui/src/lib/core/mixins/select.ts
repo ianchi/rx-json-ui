@@ -43,6 +43,7 @@ export class SelectWidgetMixin<
   }
 
   dynOnAfterBind(): void {
+    super.dynOnAfterBind();
     this.map('enum', val => {
       this.lvalue && this.fldSetFormValue(this.lvalue.o[this.lvalue.m]);
       return val;

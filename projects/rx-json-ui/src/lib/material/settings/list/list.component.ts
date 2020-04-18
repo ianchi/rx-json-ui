@@ -34,6 +34,7 @@ export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SchemaA
   }
 
   dynOnAfterBind(): void {
+    super.dynOnAfterBind();
     this.map('items', i => (this.itemOptions.options = i));
   }
   trackItems(i: number, val: any): number {

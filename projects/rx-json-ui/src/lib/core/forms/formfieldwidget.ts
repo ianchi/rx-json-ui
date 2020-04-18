@@ -146,6 +146,11 @@ export class AbstractFormFieldWidget<
     return def;
   }
 
+  dynOnAfterBind(): void {
+    this.map('readonly', (state: boolean) =>
+      state ? this.formControl?.disable() : this.formControl?.enable()
+    );
+  }
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
     this.schemaValidator = schemaValidator(<any>this.options);
