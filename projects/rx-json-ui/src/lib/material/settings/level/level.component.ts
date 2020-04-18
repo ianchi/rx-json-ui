@@ -5,9 +5,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+import { Router } from '@angular/router';
 
-import { BaseWidget, MainSlotContentDef } from '../../../core';
+import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core';
 
 export interface LevelWidgetOptions {
   value: number;
@@ -20,6 +26,7 @@ export interface LevelWidgetOptions {
 
   expanded: boolean;
   noExpand: boolean;
+  link: string;
 }
 
 @Component({
@@ -33,10 +40,18 @@ export interface LevelWidgetOptions {
 export class SetLevelWidgetComponent extends BaseWidget<LevelWidgetOptions, MainSlotContentDef> {
   expanded = false;
 
+  constructor(cdr: ChangeDetectorRef, expr: Expressions, public router: Router) {
+    super(cdr, expr);
+  }
+
   dynOnAfterBind(): void {
     this.map('expanded', e => (this.expanded = !!e));
   }
   toggle(): void {
-    this.expanded = !this.expanded;
+    if (!this.options.link) this.expanded = !this.expanded;
+    else
+      this.router.navigate([this.options.link], {
+        state: { widgetDef: this.content && this.content.main && this.content.main[0] },
+      });
   }
 }
