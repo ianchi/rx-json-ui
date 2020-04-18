@@ -36,9 +36,6 @@ const FORMATS_RULES: { [rule: string]: FormatRule | FormatRule[] } = {
   hostname: /^(?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*(?:[A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,
   wpakey: /^[a-zA-Z0-9]{8,63}|[a-fA-F0-9]{64}$/,
   wepkey: /^[a-zA-Z0-9]{5}|[a-zA-Z0-9]{13}|[a-fA-F0-9]{10}|[a-fA-F0-9]{26}$/,
-  uci_value: /^[\t\n\r\x20-\x7E]*$/,
-  uci_name: /^[\w_]*$/,
-  uci_type: /^[\x20-\x7E]*$/,
 };
 
 export function registerFormat(format: string, rule: FormatRule | FormatRule[]): void {
