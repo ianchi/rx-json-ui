@@ -33,7 +33,13 @@ export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidget
   }
 
   fldSetFormValue(value: any): void {
-    if (value === this.currentValue || (isNaN(value) && isNaN(this.currentValue))) return;
+    if (
+      value === this.currentValue ||
+      ((this.options.type === 'number' || this.options.type === 'integer') &&
+        isNaN(value) &&
+        isNaN(this.currentValue))
+    )
+      return;
     super.fldSetFormValue(value);
   }
 }
