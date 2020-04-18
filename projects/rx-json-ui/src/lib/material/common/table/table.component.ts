@@ -5,8 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { BreakpointObserver } from '@angular/cdk/layout';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   ViewChild,
@@ -16,11 +18,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { BaseWidget, CommonEventsDef } from '../../../core/index';
+import { BaseWidget, CommonEventsDef, Expressions } from '../../../core/index';
 
 export interface BaseTableWidgetOptions {
   /** Order list of column keys (each maps to a property of the row element). */
   columns: string[];
+
+  /** Optional order list of column keys to use on small screen */
+  columns_sm: string[];
   /**
    * Map of column keys to headers display names.
    * If a map is present and a column key is omitted that key is used as header.
@@ -106,6 +111,17 @@ export class TableWidgetComponent
 
   trackBy: ((index: number, item: any) => any) | undefined;
 
+  isMediaSmall = false;
+
+  constructor(cdr: ChangeDetectorRef, expr: Expressions, public media: BreakpointObserver) {
+    super(cdr, expr);
+
+    this.addSubscription = media.observe('(max-width: 599px)').subscribe(isMatched => {
+      this.isMediaSmall = isMatched.matches;
+      this.setColumns();
+      cdr.markForCheck();
+    });
+  }
   dynOnBeforeBind(): void {
     this.map(
       'disableSort',
@@ -125,6 +141,7 @@ export class TableWidgetComponent
             : undefined)
     );
 
+    this.map('columns', cols => (Array.isArray(cols) ? cols : []));
     this.map('pageSizes', value => {
       if (!Array.isArray(value) || !value.length) {
         this.tableDataSource.paginator = null;
@@ -134,20 +151,18 @@ export class TableWidgetComponent
       return value;
     });
 
-    this.map('columns', keys => {
-      this.showCols =
-        this.options.actions && this.options.actions.length ? keys.concat('__actions__') : keys;
-      return keys;
-    });
     this.map('actions', actions => {
       if (!Array.isArray(actions)) actions = [];
 
-      this.showCols = actions.length
-        ? this.options.columns.concat('__actions__')
-        : this.options.columns;
-
+      this.setColumns();
       return actions;
     });
+  }
+
+  dynOnAfterBind(): void {
+    super.dynOnAfterBind();
+    this.map('columns', () => this.setColumns());
+    this.map('columns_sm', () => this.setColumns());
   }
 
   ngOnInit(): void {
@@ -162,6 +177,10 @@ export class TableWidgetComponent
     }
   }
 
+  setColumns(): void {
+    const keys = (this.isMediaSmall && this.options.columns_sm) || this.options.columns;
+    this.showCols = this.options.actions?.length ? keys.concat('__actions__') : keys;
+  }
   actionClick(rowData: any, actionIndex: number): void {
     this.emmit('onAction', {
       $row: rowData,

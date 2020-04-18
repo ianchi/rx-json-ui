@@ -18,10 +18,7 @@
       [matSortDisabled]="!options.disableSort"
     >
       <!-- Dynamic Column definitions-->
-      <ng-container
-        [matColumnDef]="colKey"
-        *ngFor="let colKey of options.columns; index as colIndex"
-      >
+      <ng-container [matColumnDef]="colKey" *ngFor="let colKey of showCols; index as colIndex">
         <th
           mat-header-cell
           *matHeaderCellDef
