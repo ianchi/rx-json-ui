@@ -17,7 +17,7 @@
     "build-lib": "rm -rf dist/rx-json-ui/* && ng build rx-json-ui --prod && npm run bundle-styles",
     "watch-lib": "ng build rx-json-ui --watch",
     "lint-lib": "ng lint rx-json-ui",
-    "publish-lib": "npm run build-lib && cd dist/rx-json-ui && npm publish",
+    "publish-lib": "npm run build-lib && npm run lint-lib && cd dist/rx-json-ui && npm publish",
     "bundle-styles": "scss-bundle -p .",
     "build-doc": "rm -rf dist/doc && typedoc --ignoreCompilerErrors --exclude projects/rx-json-ui/src/lib/core/base/widget.directive.ts --tsconfig projects/rx-json-ui/tsconfig.json projects/rx-json-ui",
     "build-cli": "rm -rf  ./projects/rx-json-ui-cli/dist && cd projects/rx-json-ui-cli && rollup -c ",

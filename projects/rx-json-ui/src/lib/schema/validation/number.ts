@@ -5,7 +5,7 @@
 
 import { SchemaNumber, ValidatorFn } from '../interface';
 
-import { baseValidator, ERROR_MSG, ERR_TYPE } from './base';
+import { baseValidator, ERR_TYPE, ERROR_MSG } from './base';
 
 export const ENUM_MIN = 10,
   ENUM_MAX = 11,

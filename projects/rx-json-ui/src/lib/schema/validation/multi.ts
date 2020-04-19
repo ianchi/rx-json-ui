@@ -13,7 +13,7 @@ import {
   ValidatorFn,
 } from '../interface';
 
-import { ERROR_MSG, ERR_TYPE } from './base';
+import { ERR_TYPE, ERROR_MSG } from './base';
 import { booleanValidator } from './boolean';
 import { numberValidator } from './number';
 import { stringValidator } from './string';
