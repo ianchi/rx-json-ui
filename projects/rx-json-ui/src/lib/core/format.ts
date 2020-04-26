@@ -20,7 +20,8 @@ export class FormatPipe implements PipeTransform {
 }
 
 export function formatValue(value: any, format: string): any {
-  if (typeof format !== 'string' || value == null) return value;
+  if (value == null) return '';
+  if (typeof format !== 'string') return value;
   const re = /^\s*(\w+)\s*(:(["'])([^"']*)\3)?\s*(:(["'])([^"']*)\6)?$/;
 
   const match: RegExpExecArray | null = re.exec(format);
