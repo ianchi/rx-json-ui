@@ -19,11 +19,14 @@ set-page {
     flex: 0 1 680px;
 
     max-width: 680px;
+    width: 100%;
 
     display: block;
     flex-flow: column nowrap;
     justify-items: flex-start;
     align-items: center;
     margin-bottom: 5px;
+
+    overflow: visible;
   }
 }

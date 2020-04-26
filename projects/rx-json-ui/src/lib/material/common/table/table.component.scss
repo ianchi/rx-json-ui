@@ -25,11 +25,24 @@ wdg-table {
     padding-left: 6px;
     padding-right: 6px;
   }
+
+  .header-row th:first-of-type {
+    padding-left: 20px;
+    @media (max-width: 600px) {
+      padding-left: 10px;
+    }
+  }
+  .header-row th:last-of-type {
+    padding-right: 20px;
+    @media (max-width: 600px) {
+      padding-right: 10px;
+    }
+  }
   mat-paginator.hiddenPaginator {
     display: none;
   }
 
-  .table-title {
+  .wdg-table-title {
     display: flex;
     flex-flow: row;
     padding-top: 8px;
@@ -42,5 +55,9 @@ wdg-table {
     .spacer {
       flex: 1 1 auto;
     }
+  }
+
+  .wdg-table-body {
+    overflow: auto;
   }
 }

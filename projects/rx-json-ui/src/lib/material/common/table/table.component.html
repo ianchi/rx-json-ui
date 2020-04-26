@@ -1,5 +1,5 @@
 <div>
-  <section class="table-title" *ngIf="options.title || options.filter">
+  <section class="wdg-table-title" *ngIf="options.title || options.filter">
     <h6>{{ options.title }}</h6>
 
     <div class="spacer"></div>
@@ -9,7 +9,7 @@
     </mat-form-field>
   </section>
 
-  <section class="mat-elevation-z1">
+  <section class="wdg-table-body mat-elevation-z1">
     <table
       mat-table
       [dataSource]="tableDataSource"

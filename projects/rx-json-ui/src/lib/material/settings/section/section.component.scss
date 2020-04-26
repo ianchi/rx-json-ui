@@ -17,6 +17,7 @@ set-section {
 
   .settings-section-card {
     overflow: hidden;
+    max-width: 100%;
 
     // don't use elevation inside elevation
     .mat-elevation-z1 {

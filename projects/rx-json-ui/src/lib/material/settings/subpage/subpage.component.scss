@@ -21,11 +21,14 @@ set-subpage {
     flex: 1 1 auto;
 
     max-width: 680px;
+    width: 100%;
 
     display: block;
     flex-flow: column nowrap;
     justify-items: flex-start;
     align-items: center;
+
+    overflow: visible;
 
     margin-bottom: 5px;
   }
@@ -33,10 +36,10 @@ set-subpage {
   .settings-subpage {
     background-color: white;
 
-    font-size: 100%;
     color: rgb(32, 33, 36);
-
+    overflow: hidden;
     min-height: 100%;
+    max-width: 100%;
 
     .mat-elevation-z2,
     .mat-elevation-z1 {
