@@ -14,7 +14,7 @@
     "@angular/material": "^9.0.0",
     "@angular/router": "^9.0.0",
     "espression": "^1.7.0",
-    "espression-rx": "^0.3.8",
+    "espression-rx": "^0.3.10",
     "rxjs": "^6.5.4"
   },
   "keywords": [
