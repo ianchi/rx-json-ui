@@ -23,6 +23,7 @@ import { AbstractWidgetDef, Context } from '../../../core';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+// tslint:disable-next-line: component-class-suffix
 export class SetBaseComponent {
   @Input() icon: string | undefined;
   @Input() title: string | undefined;

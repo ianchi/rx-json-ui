@@ -63,12 +63,12 @@ export class AbstractFormFieldWidget<
           )
           .pipe(
             take(1),
-            map(res => {
+            map((res) => {
               return !res
                 ? null
                 : { code: ERR_CUSTOM, message: typeof res === 'string' ? res : '' };
             }),
-            catchError(_e =>
+            catchError((_e) =>
               of({ code: ERR_CUSTOM, message: 'Error evaluating validation expression' })
             )
           );
@@ -107,7 +107,7 @@ export class AbstractFormFieldWidget<
         // switch to stream of values
         switchMap(([o, m]) => o[GET_OBSERVABLE](m)),
         // if value of bound variable is observable, switch to it's resolved values
-        switchMap(val => (isObservable(val) ? val : of(val)))
+        switchMap((val) => (isObservable(val) ? val : of(val)))
       )
       .subscribe((val: any) => {
         this.fldSetFormValue(val);

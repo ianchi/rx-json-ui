@@ -127,7 +127,7 @@ export class BaseWidget<
 
     if (widgetDef.content)
       this.contentBind = this.parseContentDef(widgetDef.content).pipe(
-        tap(content => {
+        tap((content) => {
           this.content = content;
           this.emmit('onContentChange');
         })
@@ -156,7 +156,7 @@ export class BaseWidget<
     return combineLatest(
       slots.map((slot: keyof S) => this.parseSimpleContentDef(sloted![slot]))
     ).pipe(
-      map(simple =>
+      map((simple) =>
         slots.reduce(
           (cont, slot, idx) => {
             if (cont) cont[slot as keyof S] = simple[idx] as any;
@@ -185,7 +185,7 @@ export class BaseWidget<
     if (typeof content !== 'object') return of([]);
     if (!Array.isArray(content)) return of([content]);
 
-    const args = content.map(item => {
+    const args = content.map((item) => {
       // allow multiline expressions
       if (Array.isArray(item)) item = item.join('\n');
 
@@ -193,12 +193,12 @@ export class BaseWidget<
         ? item
         : this.expr
             .eval(item, this.context, true)
-            .pipe(switchMap(resItem => this.parseSimpleContentDef(resItem)));
+            .pipe(switchMap((resItem) => this.parseSimpleContentDef(resItem)));
     });
     return combineMixed(args, true).pipe(
-      map(items => [].concat(...items) as AbstractWidgetDef[]),
+      map((items) => [].concat(...items) as AbstractWidgetDef[]),
       map((items: any[]) =>
-        items.map(item =>
+        items.map((item) =>
           !item || typeof item !== 'object' || !item.widget ? { widget: 'none' } : item
         )
       )
@@ -222,7 +222,7 @@ export class BaseWidget<
     this.addSubscription = this.expr
       .evaluate(ast, Context.create(this.context, subContext), true)
       .pipe(take(1))
-      .subscribe(value => {
+      .subscribe((value) => {
         if (nextFn) {
           nextFn(value);
           // in case some internal state has changed in the callback
@@ -242,9 +242,9 @@ export class BaseWidget<
     this.dynOnBeforeBind();
 
     for (const prop in this.bindings) // tslint:disable-line:forin
-      this.bindings[prop] = this.bindings[prop].pipe(tap(res => (this.options[prop] = res)));
+      this.bindings[prop] = this.bindings[prop].pipe(tap((res) => (this.options[prop] = res)));
 
-    this.map('class', klass => (this.setClass(klass), klass));
+    this.map('class', (klass) => (this.setClass(klass), klass));
 
     // call hook after updating the bound value
     this.dynOnAfterBind();
@@ -360,9 +360,9 @@ export class BaseWidget<
   }
 
   private _applyKeyValueChanges(changes: KeyValueChanges<string, any>): void {
-    changes.forEachAddedItem(record => this._toggleClass(record.key, record.currentValue));
-    changes.forEachChangedItem(record => this._toggleClass(record.key, record.currentValue));
-    changes.forEachRemovedItem(record => {
+    changes.forEachAddedItem((record) => this._toggleClass(record.key, record.currentValue));
+    changes.forEachChangedItem((record) => this._toggleClass(record.key, record.currentValue));
+    changes.forEachRemovedItem((record) => {
       if (record.previousValue) {
         this._toggleClass(record.key, false);
       }
@@ -370,7 +370,7 @@ export class BaseWidget<
   }
 
   private _applyIterableChanges(changes: IterableChanges<string>): void {
-    changes.forEachAddedItem(record => {
+    changes.forEachAddedItem((record) => {
       if (typeof record.item === 'string') {
         this._toggleClass(record.item, true);
       } else {
@@ -380,7 +380,7 @@ export class BaseWidget<
       }
     });
 
-    changes.forEachRemovedItem(record => this._toggleClass(record.item, false));
+    changes.forEachRemovedItem((record) => this._toggleClass(record.item, false));
   }
 
   /**
@@ -391,7 +391,7 @@ export class BaseWidget<
       if (Array.isArray(rawClassVal) || rawClassVal instanceof Set) {
         (<any>rawClassVal).forEach((klass: string) => this._toggleClass(klass, false));
       } else {
-        Object.keys(rawClassVal).forEach(klass => this._toggleClass(klass, false));
+        Object.keys(rawClassVal).forEach((klass) => this._toggleClass(klass, false));
       }
     }
   }
@@ -399,7 +399,7 @@ export class BaseWidget<
   private _toggleClass(klass: string, enabled: boolean): void {
     klass = klass.trim();
     if (klass) {
-      klass.split(/\s+/g).forEach(kls => {
+      klass.split(/\s+/g).forEach((kls) => {
         if (enabled) {
           this.renderer.addClass(this.ngElement.nativeElement, kls);
         } else {

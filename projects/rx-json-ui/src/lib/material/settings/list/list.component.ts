@@ -29,13 +29,13 @@ export class SetListWidgetComponent extends AbstractArrayWidgetComponent<ArrayOp
   dynOnSetup(
     def: WidgetDef<ArrayOptionsDef, undefined, ArrayEventsDef, BindWidgetDef>
   ): WidgetDef<ArrayOptionsDef, undefined, ArrayEventsDef, BindWidgetDef> {
-    this.bindTrackBy = i => i;
+    this.bindTrackBy = (i) => i;
     return super.dynOnSetup(def);
   }
 
   dynOnAfterBind(): void {
     super.dynOnAfterBind();
-    this.map('items', i => (this.itemOptions.options = i));
+    this.map('items', (i) => (this.itemOptions.options = i));
   }
   trackItems(i: number, val: any): number {
     console.log(i, val);

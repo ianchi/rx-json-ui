@@ -43,16 +43,16 @@ export function registerFormat(format: string, rule: FormatRule | FormatRule[]):
 }
 export function formatValidator(format: string): ValidatorFn {
   const validator = toCheckFn(FORMATS_RULES[format]);
-  return val => (validator(val) ? null : { code: ESTR_FMT, format });
+  return (val) => (validator(val) ? null : { code: ESTR_FMT, format });
 }
 
 function toCheckFn(rule: FormatRule | FormatRule[]): CheckFormatFn {
   if (typeof rule === 'string') return toCheckFn(FORMATS_RULES[rule]);
   if (typeof rule === 'function') return rule;
-  if (rule instanceof RegExp) return val => rule.test(val);
+  if (rule instanceof RegExp) return (val) => rule.test(val);
   if (Array.isArray(rule)) {
-    const rules = rule.map(r => toCheckFn(r));
-    return val => rules.some(fn => fn(val));
+    const rules = rule.map((r) => toCheckFn(r));
+    return (val) => rules.some((fn) => fn(val));
   }
 
   return (_val: any) => true;

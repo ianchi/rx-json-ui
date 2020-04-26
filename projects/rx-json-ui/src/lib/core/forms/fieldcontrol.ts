@@ -18,7 +18,7 @@ export class FieldControl {
     const validSubject = new BehaviorSubject(_control.valid);
     const disabledSubject = new BehaviorSubject(_control.valid);
 
-    this._subscription = _control.statusChanges.subscribe(status => {
+    this._subscription = _control.statusChanges.subscribe((status) => {
       validSubject.next(status === 'VALID');
       disabledSubject.next(status === 'DISABLED');
     });

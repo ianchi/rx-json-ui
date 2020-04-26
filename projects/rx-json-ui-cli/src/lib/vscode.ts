@@ -58,14 +58,17 @@ export function validate(fileMatch: string[], { schema }: { schema: string }): v
   const files = fileMatch.reduce((acc, pattern) => acc.concat(glob.sync(pattern)), [] as string[]);
 
   Promise.all(
-    files.map(file =>
-      validateFile(languageService, path.resolve(file)).then(diagnostics => ({ file, diagnostics }))
+    files.map((file) =>
+      validateFile(languageService, path.resolve(file)).then((diagnostics) => ({
+        file,
+        diagnostics,
+      }))
     )
   )
-    .then(fileDiags => {
+    .then((fileDiags) => {
       message('');
       fileDiags.forEach(({ file, diagnostics }) => {
-        diagnostics.forEach(diag => {
+        diagnostics.forEach((diag) => {
           console.log(
             `${file} (${diag.range.start.line + 1}, ${diag.range.start.character + 1}) ${
               diag.source
@@ -103,7 +106,7 @@ export function validateSchema(
   const documentSettings: DocumentLanguageSettings = { comments: 'error', trailingCommas: 'error' };
   return languageService
     .doValidation(textDocument, jsonDocument, documentSettings)
-    .then(diags => diags.map(d => ((d.source = 'schema'), d)));
+    .then((diags) => diags.map((d) => ((d.source = 'schema'), d)));
 }
 
 function getSchemaRequestService(
@@ -140,7 +143,7 @@ function fileRequestService(uri: string): Promise<string> {
 function httpRequestService(uri: string): Promise<string> {
   const headers = { 'Accept-Encoding': 'gzip, deflate' };
   return xhr({ url: uri, followRedirects: 5, headers }).then(
-    response => {
+    (response) => {
       return response.responseText;
     },
     (error: XHRResponse) => {

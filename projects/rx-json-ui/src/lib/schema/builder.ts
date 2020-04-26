@@ -87,7 +87,7 @@ function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
   if (Array.isArray(schema.items)) {
     // TODO: express tuple case
 
-    widget.content = schema.items.map(sch => buildUI(sch, `$row.array[$row.index]`));
+    widget.content = schema.items.map((sch) => buildUI(sch, `$row.array[$row.index]`));
     if (typeof schema.additionalItems === 'object') {
       additionalItems = schema.additionalItems;
       widget.content.push(buildUI(schema.additionalItems, `$row.array[$row.index]`));
@@ -158,14 +158,16 @@ function buildObject(schema: SchemaObject, bind: string, ui?: SchemaUI): Abstrac
     // calculate rest properties
     const restKeys = !hasRest
       ? []
-      : allKeys.filter(key => !includedKeys.includes(key)).filter(key => !exclude.includes(key));
+      : allKeys
+          .filter((key) => !includedKeys.includes(key))
+          .filter((key) => !exclude.includes(key));
 
     function addProp(key: string, content: AbstractWidgetDef[]): void {
       if (allKeys.includes(key)) {
         content.push(buildUI(schema.properties![key], `${bind}['${key}']`));
       } else if (key === '*')
         content.push(
-          ...restKeys.map(rest => buildUI(schema.properties![rest], `${bind}['${rest}']`))
+          ...restKeys.map((rest) => buildUI(schema.properties![rest], `${bind}['${rest}']`))
         );
     }
 

@@ -30,7 +30,7 @@ export class WidgetRegistry {
   private _default: Type<AbstractWidget>;
 
   constructor(@Inject(AF_CONFIG_TOKEN) configs: AutoFormConfig[] = []) {
-    configs.forEach(conf => conf.widgets && this.register(conf.widgets));
+    configs.forEach((conf) => conf.widgets && this.register(conf.widgets));
 
     this._default = this._registry.get('default') || DefaultWidgetComponent;
   }
@@ -39,7 +39,7 @@ export class WidgetRegistry {
     if (!widgets) return;
     if (!Array.isArray(widgets)) widgets = [widgets];
 
-    widgets.forEach(widget => {
+    widgets.forEach((widget) => {
       if (widget.type && widget.component) this._registry.set(widget.type, widget.component);
     });
   }

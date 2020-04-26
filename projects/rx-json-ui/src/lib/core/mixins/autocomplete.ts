@@ -35,7 +35,7 @@ export class AutocompleteWidgetMixin<
 
     // We need to update filtered options both when text or enum changes
     // so emit on `enum` to later merge with value changes
-    this.map('enum', val => (this.enumSubject.next(undefined), val));
+    this.map('enum', (val) => (this.enumSubject.next(undefined), val));
   }
 
   dynOnSetup(def: WidgetDef<O, S, E, BindWidgetDef>): WidgetDef<O, S, E, BindWidgetDef> {
@@ -44,7 +44,7 @@ export class AutocompleteWidgetMixin<
 
     // We need to update filtered options both when text or enum changes
     this.filteredOptions$ = merge(this.enumSubject, this.formControl.valueChanges).pipe(
-      map(value => this.filter(value))
+      map((value) => this.filter(value))
     );
 
     return result;
@@ -65,10 +65,8 @@ export class AutocompleteWidgetMixin<
     const filterValue = (typeof value === 'string' && value.toLowerCase()) || value;
 
     return this.options.enum
-      ? this.options.enum.filter(option =>
-          this.getLabel(option)
-            .toLowerCase()
-            .includes(filterValue)
+      ? this.options.enum.filter((option) =>
+          this.getLabel(option).toLowerCase().includes(filterValue)
         )
       : [];
   }

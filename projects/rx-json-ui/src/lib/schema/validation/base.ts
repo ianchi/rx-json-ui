@@ -24,7 +24,7 @@ ERROR_MSG[ERR_CUSTOM] = '`${$err.message || "Invalid entry"}`';
 export function baseValidator<T>(schema: SchemaPrimitiveValidations<T>): ValidatorFn {
   const enumVal = Array.isArray(schema.enum) ? schema.enum.concat() : null,
     constVal = typeof schema.const !== 'undefined' ? schema.const : null,
-    complex = !!enumVal && enumVal.some(e => typeof e === 'object'),
+    complex = !!enumVal && enumVal.some((e) => typeof e === 'object'),
     required = schema.required === true;
 
   return (value: any) => {

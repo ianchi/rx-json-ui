@@ -94,7 +94,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
         ? this.widgetDef.if.join('\n')
         : this.widgetDef.if;
       this.structural$ = this.expr.eval(ifExpr, this.structuralContext, true).pipe(
-        map(v => !!v),
+        map((v) => !!v),
         distinctUntilChanged()
       );
     } else this.structural$ = of(true);
@@ -106,11 +106,11 @@ export class WidgetDirective implements OnChanges, OnDestroy {
         ? this.widgetDef.for.join('\n')
         : this.widgetDef.for;
       this.structural$ = this.structural$.pipe(
-        switchMap(val => {
+        switchMap((val) => {
           return val
             ? this.expr
                 .eval(forExpr, this.structuralContext!, true)
-                .pipe(map(a => (Array.isArray(a) ? a : [])))
+                .pipe(map((a) => (Array.isArray(a) ? a : [])))
             : of([]);
         })
       );
@@ -118,7 +118,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
 
     this.structural$ = this.structural$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-    this.subscriptions = this.structural$.subscribe(val => {
+    this.subscriptions = this.structural$.subscribe((val) => {
       // check if the `if` was false
       if (val === false) this.destroyWidgets();
       else this.createWidgets(val);
@@ -182,7 +182,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
   destroyWidgets(): void {
     if (!this.widgetRef) return;
 
-    this.widgetRef.map(ref => ref.destroy());
+    this.widgetRef.map((ref) => ref.destroy());
     this.widgetRef = [];
   }
 

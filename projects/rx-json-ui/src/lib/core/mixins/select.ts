@@ -39,12 +39,12 @@ export class SelectWidgetMixin<
 > extends AbstractFormFieldWidget<O, S, E> {
   dynOnBeforeBind(): void {
     // make sure that enum is an array
-    this.map('enum', val => (Array.isArray(val) ? val : []));
+    this.map('enum', (val) => (Array.isArray(val) ? val : []));
   }
 
   dynOnAfterBind(): void {
     super.dynOnAfterBind();
-    this.map('enum', val => {
+    this.map('enum', (val) => {
       this.lvalue && this.fldSetFormValue(this.lvalue.o[this.lvalue.m]);
       return val;
     });
@@ -76,7 +76,7 @@ export class SelectWidgetMixin<
    * Finds first option with the given key, or return undefined
    */
   getOption(key: any): any {
-    return this.options.enum && this.options.enum.find(opt => key === this.getKey(opt));
+    return this.options.enum && this.options.enum.find((opt) => key === this.getKey(opt));
   }
 
   /**

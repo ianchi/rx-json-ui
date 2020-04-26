@@ -143,10 +143,10 @@ export class AbstractArrayWidgetComponent<
       .evaluate(this.events.onValidate, Context.create(this.context, { $value: ctrl.value }), true)
       .pipe(
         take(1),
-        map(res => {
+        map((res) => {
           return !res ? null : { code: ERR_CUSTOM, message: typeof res === 'string' ? res : '' };
         }),
-        catchError(_e =>
+        catchError((_e) =>
           of({ code: ERR_CUSTOM, message: 'Error evaluating validation expression' })
         )
       );
@@ -157,14 +157,14 @@ export class AbstractArrayWidgetComponent<
   }
 
   addRow(): void {
-    this.emmit('onNewRow', undefined, newRow => {
+    this.emmit('onNewRow', undefined, (newRow) => {
       if (typeof newRow === 'object' && !isReactive(newRow)) newRow = RxObject(newRow);
       if (typeof newRow !== 'undefined') this.boundData!.push(newRow);
     });
   }
 
   deleteRow(idx: number): void {
-    this.emmit('onDeleteRow', { $idx: idx }, result => result && this.boundData!.splice(idx, 1));
+    this.emmit('onDeleteRow', { $idx: idx }, (result) => result && this.boundData!.splice(idx, 1));
   }
 
   moveRow(idx: number, dir: number): void {
@@ -173,7 +173,7 @@ export class AbstractArrayWidgetComponent<
     this.emmit(
       'onMoveRow',
       { $idx: idx, $dir: dir },
-      result => result && this.boundData!.splice(idx + dir, 0, this.boundData!.splice(idx, 1)[0])
+      (result) => result && this.boundData!.splice(idx + dir, 0, this.boundData!.splice(idx, 1)[0])
     );
   }
 

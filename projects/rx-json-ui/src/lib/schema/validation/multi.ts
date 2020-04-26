@@ -13,7 +13,7 @@ import {
   ValidatorFn,
 } from '../interface';
 
-import { ERR_TYPE, ERROR_MSG } from './base';
+import { ERROR_MSG, ERR_TYPE } from './base';
 import { booleanValidator } from './boolean';
 import { numberValidator } from './number';
 import { stringValidator } from './string';
@@ -64,7 +64,7 @@ export function schemaValidator(schema: Schema): ValidatorFn {
         return objectValidator(schema);
       default:
         // invalid type in input json schema
-        return _val => ({ code: ERR_TYPE, type: (<any>schema).type });
+        return (_val) => ({ code: ERR_TYPE, type: (<any>schema).type });
     }
 
   // case or multiple types or any type
@@ -77,7 +77,7 @@ export function schemaValidator(schema: Schema): ValidatorFn {
   };
   const types = Array.isArray((<any>schema).type) ? (<any>schema).type : null;
 
-  return val => {
+  return (val) => {
     const type = Array.isArray(val) ? 'array' : typeof val;
     if (types && types.indexOf(type) < 0) return { code: ERR_TYPE, type };
     if (type in validators) return validators[type](val);
@@ -95,7 +95,9 @@ export function arrayValidator(schema: SchemaArray): ValidatorFn {
     uniqueItems = !!schema.uniqueItems,
     itemsValidator =
       Array.isArray(schema.items) || !schema.items ? null : schemaValidator(schema.items),
-    tupleValidator = Array.isArray(schema.items) ? schema.items.map(e => schemaValidator(e)) : null,
+    tupleValidator = Array.isArray(schema.items)
+      ? schema.items.map((e) => schemaValidator(e))
+      : null,
     additionalItems = typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null,
     additionalValidator =
       typeof schema.additionalItems === 'object' ? schemaValidator(schema.additionalItems) : null;
@@ -113,7 +115,7 @@ export function arrayValidator(schema: SchemaArray): ValidatorFn {
       if (unique.size !== value.length) return { code: EARR_UNQ, unique: true };
     }
     if (itemsValidator) {
-      if (value.some(e => !!itemsValidator(e))) return { code: EARR_ITM, items: true };
+      if (value.some((e) => !!itemsValidator(e))) return { code: EARR_ITM, items: true };
     } else if (tupleValidator) {
       if (value.some((e, i) => i < tupleValidator.length && !!tupleValidator[i](e)))
         return { code: EARR_ITM, items: true };
@@ -122,7 +124,7 @@ export function arrayValidator(schema: SchemaArray): ValidatorFn {
         return { code: EARR_ADD, additionalItems: true };
 
       if (additionalValidator && value.length > tupleValidator.length) {
-        if (value.slice(tupleValidator.length).some(e => !!additionalValidator(e)))
+        if (value.slice(tupleValidator.length).some((e) => !!additionalValidator(e)))
           return { code: EARR_ADD, additionalItems: true };
       }
     }
@@ -172,24 +174,24 @@ export function objectValidator(schema: SchemaObject): ValidatorFn {
     if (maxProperties !== null && keys.length > maxProperties)
       return { code: EOBJ_MAX, maxProperties };
 
-    if (propertyNames && keys.some(k => !!propertyNames(k)))
+    if (propertyNames && keys.some((k) => !!propertyNames(k)))
       return { code: EOBJ_PROP, propertyNames: true };
 
     if (patternProperties)
-      keys.forEach(k => {
+      keys.forEach((k) => {
         if (k in properties) return;
         const matched = patternProperties.filter(([re, _fn]) => re.test(k));
         if (!matched.length) extraKeys.push(k);
       });
-    else extraKeys = keys.filter(k => !(k in properties));
+    else extraKeys = keys.filter((k) => !(k in properties));
 
     if (additional === false && extraKeys.length)
       return { code: EOBJ_ADD, additionalProperties: true };
 
-    if (additionalFn && extraKeys.some(k => !!additionalFn(value[k])))
+    if (additionalFn && extraKeys.some((k) => !!additionalFn(value[k])))
       return { code: EOBJ_ADD, additionalProperties: true };
 
-    if (keys.some(k => k in properties && !!properties[k](value[k])))
+    if (keys.some((k) => k in properties && !!properties[k](value[k])))
       return { code: EOBJ_PROP, properties: true };
     return null;
   };

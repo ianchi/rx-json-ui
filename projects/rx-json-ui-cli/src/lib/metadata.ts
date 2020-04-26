@@ -66,7 +66,7 @@ export function getWidgets(program: ng.Program, file: string, module: string): W
       console.error(e.message);
       return [];
     }
-    meta = meta.filter(m => m.type.reference === entryToken);
+    meta = meta.filter((m) => m.type.reference === entryToken);
   }
 
   if (!meta || !meta.length) {
@@ -78,7 +78,7 @@ export function getWidgets(program: ng.Program, file: string, module: string): W
   }
 
   const providers = meta[0].transitiveModule.providers.filter(
-    p => ngc.tokenReference(p.provider.token) === configToken
+    (p) => ngc.tokenReference(p.provider.token) === configToken
   );
   const widgets = providers.reduce((acum, mod) => acum.concat(mod.provider.useValue.widgets), []);
   console.log(`Found ${widgets.length} widgets from ${providers.length} transitive modules`);

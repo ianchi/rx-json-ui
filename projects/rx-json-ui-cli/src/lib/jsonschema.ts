@@ -201,7 +201,7 @@ function exprOptions(
 
   optionsSchema = options.anyOf || options.oneOf || [options];
 
-  optionsSchema.forEach(opt => exprAddOptions(opt, schema, exclude));
+  optionsSchema.forEach((opt) => exprAddOptions(opt, schema, exclude));
 }
 function exprAddOptions(
   optionsSchema: TJS.DefinitionOrBoolean,
@@ -222,8 +222,8 @@ function exprAddOptions(
   if (!optionsSchema.allOf) optionsSchema.allOf = [];
 
   Object.keys(optionsSchema.properties)
-    .filter(key => !key.endsWith('=') && !exclude.includes(key))
-    .forEach(key => {
+    .filter((key) => !key.endsWith('=') && !exclude.includes(key))
+    .forEach((key) => {
       const expKey = `${key}=`;
       if (typeof optionsSchema !== 'object') return;
       extendedProp[expKey] = { $ref: '#/definitions/multilineExpr' };
@@ -245,7 +245,7 @@ function exprAddOptions(
 
 function findRefs(schema: TJS.Definition): string[] {
   return JP.query(schema, `$..$ref`)
-    .values.filter(ref => typeof ref === 'string' && ref.startsWith('#/definitions/'))
+    .values.filter((ref) => typeof ref === 'string' && ref.startsWith('#/definitions/'))
     .map((ref: string) => ref.substring(14));
 }
 
@@ -259,7 +259,7 @@ function walkRefs(
   const append = !definitions;
   if (!definitions) definitions = {};
 
-  findRefs(schema).forEach(ref => {
+  findRefs(schema).forEach((ref) => {
     if (definitions![ref]) return;
 
     if (typeof reffedDefinitions[ref] !== 'boolean')

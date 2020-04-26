@@ -31,6 +31,6 @@ export class GridContainerWidgetComponent extends BaseWidget<
   MainSlotContentDef
 > {
   dynOnBeforeBind(): void {
-    this.map('direction', dir => dir || 'row');
+    this.map('direction', (dir) => dir || 'row');
   }
 }

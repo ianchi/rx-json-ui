@@ -32,7 +32,7 @@ export function hoverData(
   jsonDocument: JSONDocument,
   position: Position
 ): Thenable<Hover | null> {
-  return languageservice.getMatchingSchemas(textDocument, jsonDocument).then(matchingSchemas => {
+  return languageservice.getMatchingSchemas(textDocument, jsonDocument).then((matchingSchemas) => {
     if (!matchingSchemas.length) return null;
 
     const offset = textDocument.offsetAt(position);
@@ -76,7 +76,7 @@ export function validateExpr(
   textDocument: TextDocument,
   jsonDocument: JSONDocument
 ): Thenable<Diagnostic[]> {
-  return languageservice.getMatchingSchemas(textDocument, jsonDocument).then(matchingSchemas => {
+  return languageservice.getMatchingSchemas(textDocument, jsonDocument).then((matchingSchemas) => {
     const toValidate = matchingSchemas.filter((n: any) => n.schema.parser);
     const diagnostics: Diagnostic[] = [];
 
@@ -156,7 +156,7 @@ function getRawExpr(textDocument: TextDocument, node: ASTNode): string {
     raw = textDocument.getText().substring(node.offset, node.offset + node.length);
   else if (node.type === 'array' && node.items) {
     raw = `"${(node as ArrayASTNode).items
-      .map(i => textDocument.getText().substring(i.offset + 1, i.offset + i.length - 1))
+      .map((i) => textDocument.getText().substring(i.offset + 1, i.offset + i.length - 1))
       .join('')}"`;
   }
 
@@ -169,7 +169,7 @@ function getCookedExpr(node: ASTNode): string {
   if (node.type === 'string') {
     expr = node.value;
   } else if (node.type === 'array' && node.items) {
-    expr = (node as ArrayASTNode).items.map(i => (i.type === 'string' ? i.value : '')).join('\n');
+    expr = (node as ArrayASTNode).items.map((i) => (i.type === 'string' ? i.value : '')).join('\n');
   }
   return expr;
 }

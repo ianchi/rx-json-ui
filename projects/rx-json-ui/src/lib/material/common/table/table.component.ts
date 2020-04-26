@@ -136,7 +136,7 @@ export class TableWidgetComponent
   ) {
     super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
 
-    this.addSubscription = media.observe('(max-width: 599px)').subscribe(isMatched => {
+    this.addSubscription = media.observe('(max-width: 599px)').subscribe((isMatched) => {
       this.isMediaSmall = isMatched.matches;
       this.setColumns();
       cdr.markForCheck();
@@ -145,7 +145,7 @@ export class TableWidgetComponent
   dynOnBeforeBind(): void {
     this.map(
       'disableSort',
-      sort => (this.disableSort = sort === true ? undefined : !Array.isArray(sort) ? [] : sort)
+      (sort) => (this.disableSort = sort === true ? undefined : !Array.isArray(sort) ? [] : sort)
     );
 
     this.map('dataSource', (table: any[]) => (this.tableDataSource.data = table));
@@ -161,8 +161,8 @@ export class TableWidgetComponent
             : undefined)
     );
 
-    this.map('columns', cols => (Array.isArray(cols) ? cols : []));
-    this.map('pageSizes', value => {
+    this.map('columns', (cols) => (Array.isArray(cols) ? cols : []));
+    this.map('pageSizes', (value) => {
       if (!Array.isArray(value) || !value.length) {
         this.tableDataSource.paginator = null;
         return null;
@@ -171,7 +171,7 @@ export class TableWidgetComponent
       return value;
     });
 
-    this.map('actions', actions => (Array.isArray(actions) ? actions : []));
+    this.map('actions', (actions) => (Array.isArray(actions) ? actions : []));
   }
 
   dynOnAfterBind(): void {

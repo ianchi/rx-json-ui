@@ -8,9 +8,9 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as path from 'path';
+import * as resolvepkg from 'resolve-package-path';
 import * as svgSprite from 'svg-sprite';
 import * as vinyl from 'vinyl';
-import * as resolvepkg from 'resolve-package-path';
 
 interface SvgOptions {
   icons: string;

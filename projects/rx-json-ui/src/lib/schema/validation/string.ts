@@ -7,7 +7,7 @@
 
 import { SchemaString, ValidatorFn } from '../interface';
 
-import { baseValidator, ERR_TYPE, ERROR_MSG } from './base';
+import { baseValidator, ERROR_MSG, ERR_TYPE } from './base';
 import { formatValidator } from './format';
 
 export const ESTR_MIN = 20,
