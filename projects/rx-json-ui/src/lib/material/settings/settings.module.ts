@@ -11,6 +11,7 @@ import { WidgetsCoreModule } from '../../core/index';
 import { MaterialModule } from '../material.module';
 
 import { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.component';
+import { BaseSettingsModule } from './base.module';
 import { SetButtonWidgetComponent } from './button/button.component';
 import { SetContainerWidgetComponent } from './container/container.component';
 import { SetExpansionWidgetComponent } from './expansion/expansion.component';
@@ -51,6 +52,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
 @NgModule({
   imports: [
     MaterialModule,
+    BaseSettingsModule,
 
     WidgetsCoreModule.forRoot({
       widgets: [
@@ -95,6 +97,5 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetContainerWidgetComponent,
     SetTextWidgetComponent,
   ],
-  exports: [],
 })
 export class SettingsWidgetsModule {}

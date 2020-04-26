@@ -15,6 +15,6 @@ import { AutocompleteWidgetMixin, SelectWidgetOptions } from '../../../core/inde
   styleUrls: ['./autocomplete.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex' },
+  host: { class: 'set-row' },
 })
 export class SetAutocompleteWidgetComponent extends AutocompleteWidgetMixin<SelectWidgetOptions> {}

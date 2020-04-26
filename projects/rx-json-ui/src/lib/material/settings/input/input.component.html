@@ -1,25 +1,19 @@
-<div class="set-row-label">
-  <div class="set-row-title">
-    {{ options.title }}
-  </div>
-
-  <div *ngIf="!formControl?.invalid" class="set-row-description">
-    {{ options.description }}
-  </div>
-
-  <div *ngIf="formControl?.invalid" class="set-row-error">
-    {{ getError() }}
-  </div>
-</div>
-
-<mat-form-field appearance="fill" class="set-row-ctrl">
-  <input
-    matInput
-    [name]="ctrlID"
-    [type]="options.inputType || (options.type === 'number' ? 'number' : 'text')"
-    [formControl]="formControl"
-    [required]="options.required"
-    [readonly]="options.readonly"
-    [autocomplete]="options.autocomplete || ''"
-  />
-</mat-form-field>
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [error]="getError()"
+>
+  <mat-form-field appearance="fill" class="set-row-ctrl">
+    <input
+      matInput
+      [name]="ctrlID"
+      [type]="options.inputType || (options.type === 'number' ? 'number' : 'text')"
+      [formControl]="formControl"
+      [required]="options.required"
+      [readonly]="options.readonly"
+      [autocomplete]="options.autocomplete || ''"
+    />
+  </mat-form-field>
+</set-base>

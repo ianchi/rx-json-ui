@@ -15,6 +15,6 @@ import { SelectWidgetMixin, SelectWidgetOptions } from '../../../core/index';
   styleUrls: ['./select.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex' },
+  host: { class: 'set-row' },
 })
 export class SetSelectWidgetComponent extends SelectWidgetMixin<SelectWidgetOptions> {}

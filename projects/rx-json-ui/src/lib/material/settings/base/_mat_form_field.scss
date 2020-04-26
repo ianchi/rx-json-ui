@@ -1,0 +1,32 @@
+// reduce padding and remove underline to input boxes
+.set-row {
+  mat-form-field .mat-form-field-wrapper {
+    padding: 0px;
+  }
+  .mat-form-field-wrapper {
+    padding: 0px;
+    .mat-form-field-flex {
+      padding: 4px 6px 0 6px;
+      background-color: rgba(0, 0, 0, 0.04);
+
+      .mat-form-field-infix {
+        padding: 0 0 8px 0;
+        border-top: 8px solid transparent;
+      }
+    }
+
+    .mat-form-field-underline {
+      bottom: 0px;
+    }
+
+    .mat-form-field-ripple {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    // remove underline of input box
+    .mat-form-field-underline,
+    .mat-form-field-underline::before {
+      background-color: initial;
+    }
+  }
+}

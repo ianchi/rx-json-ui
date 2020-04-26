@@ -1,4 +1,4 @@
-<div class="set-row-flex">
+<div class="set-row-main">
   <div class="set-row-label">
     <div class="set-row-title">
       {{ options.title }}
@@ -9,23 +9,25 @@
     </div>
   </div>
 </div>
-<div class="set-subrows">
+<div class="set-row-content">
   <div
-    class="set-row set-row-flex"
+    class="set-row set-row-main"
     *ngFor="let row of boundData; trackBy: bindTrackBy; index as idx"
   >
     <div class="set-row-label">
       <ng-container [wdgWidget]="itemOptions" [parentContext]="rowContext[idx]"></ng-container>
     </div>
     <div
-      class="set-row-ctrl"
+      class="set-row-ctrl-container"
       (click)="deleteRow(idx)"
       *ngIf="events.onDeleteRow && (!options?.minItems || boundData?.length > options.minItems!)"
     >
-      <mat-icon svgIcon="close"></mat-icon>
+      <button mat-icon-button>
+        <mat-icon svgIcon="close"></mat-icon>
+      </button>
     </div>
   </div>
-  <div class="set-row set-row-flex" *ngIf="events.onNewRow">
+  <div class="set-row set-row-main" *ngIf="events.onNewRow">
     <div class="set-row-label add-button">
       <button mat-button (click)="addRow()" color="primary">Add</button>
     </div>

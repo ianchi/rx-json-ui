@@ -15,7 +15,7 @@ import { AbstractFormFieldWidget, InputWidgetOptions } from '../../../core/index
   styleUrls: ['./input.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex' },
+  host: { class: 'set-row' },
 })
 export class SetInputWidgetComponent extends AbstractFormFieldWidget<InputWidgetOptions> {
   currentValue: any;

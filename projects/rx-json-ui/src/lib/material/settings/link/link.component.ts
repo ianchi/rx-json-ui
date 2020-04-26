@@ -18,16 +18,14 @@ import {
 import { Router } from '@angular/router';
 
 import {
+  BaseSetOption,
   BaseWidget,
   ButtonWidgetEvents,
-  CommonOptionsDef,
   Expressions,
   MainSlotContentDef,
 } from '../../../core/index';
 
-export interface SetLinkWidgetOptions extends CommonOptionsDef {
-  title: string;
-  description: string;
+export interface SetLinkWidgetOptions extends BaseSetOption {
   link: string;
 }
 
@@ -37,7 +35,7 @@ export interface SetLinkWidgetOptions extends CommonOptionsDef {
   styleUrls: ['./link.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
+  host: { class: 'set-row' },
 })
 export class SetLinkWidgetComponent extends BaseWidget<
   SetLinkWidgetOptions,
@@ -55,10 +53,10 @@ export class SetLinkWidgetComponent extends BaseWidget<
   ) {
     super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
   }
-  clickEvent(): void {
+  navigate(): void {
     this.emmit('onClick');
     this.router.navigate([this.options.link], {
-      state: { widgetDef: this.content && this.content.main && this.content.main[0] },
+      state: { widgetDef: this?.content?.main[0] },
     });
   }
 }

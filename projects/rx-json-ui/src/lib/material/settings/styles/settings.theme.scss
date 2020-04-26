@@ -1,0 +1,48 @@
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+
+@mixin settings-widget-theme($theme) {
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  /** Border between consecutive rows*/
+  .set-row + .set-row {
+    border-top: 1px solid mat-color($foreground, divider);
+  }
+  .set-row-nav-container,
+  .set-row-actions {
+    color: mat-color($foreground, icon);
+  }
+  .set-row-icon {
+    color: mat-color($primary, 300);
+  }
+
+  .set-row-description {
+    color: mat-color($foreground, secondary-text);
+  }
+
+  .set-row-error {
+    color: mat-color($warn);
+  }
+
+  .set-row-label-1,
+  .set-row-value {
+    color: mat-color($foreground, text);
+  }
+
+  .settings-header {
+    color: mat-color($foreground, text);
+  }
+  .settings-section-card {
+    background-color: mat-color($background, card);
+  }
+
+  .set-row-actions {
+    border-left: 1px solid mat-color($foreground, divider);
+  }
+}

@@ -1,27 +1,13 @@
-<div class="set-row-flex">
-  <div class="set-row-label">
-    <div class="set-row-title">
-      {{ options.title }}
-    </div>
-
-    <div class="set-row-description">
-      {{ options.description }}
-    </div>
-  </div>
-
-  <mat-slide-toggle [formControl]="formControl" class="set-row-ctrl"> </mat-slide-toggle>
-</div>
-
-<div
-  class="set-expansion-content"
-  [ngClass]="{ expanded: formControl?.value, collapsed: !formControl?.value }"
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [error]="getError()"
+  [expanded]="formControl?.value"
+  noExpand="true"
+  [content]="content?.main"
+  [context]="context"
 >
-  <div *ngIf="content?.main.length && formControl?.value" class="set-subrows">
-    <ng-container
-      *ngFor="let element of content!.main"
-      [wdgWidget]="element"
-      [parentContext]="context"
-    >
-    </ng-container>
-  </div>
-</div>
+  <mat-slide-toggle [formControl]="formControl" class="set-row-ctrl"> </mat-slide-toggle>
+</set-base>

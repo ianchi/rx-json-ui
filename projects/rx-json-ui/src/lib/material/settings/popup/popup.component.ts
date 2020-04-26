@@ -17,15 +17,12 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { BaseWidget, CommonOptionsDef, Expressions, PopupSlotsDef } from '../../../core/index';
+import { BaseSetOption, BaseWidget, Expressions, PopupSlotsDef } from '../../../core/index';
 import { PopupComponent } from '../../common/popup/popup.component';
 
-export interface PopupWidgetOptions extends CommonOptionsDef {
-  title: string;
-  description: string;
+export interface PopupWidgetOptions extends BaseSetOption {
   popupTitle: string;
 
-  click: string;
   disabled: boolean;
 }
 
@@ -35,7 +32,7 @@ export interface PopupWidgetOptions extends CommonOptionsDef {
   styleUrls: ['./popup.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex', '(click)': 'clickEvent()' },
+  host: { class: 'set-row' },
 })
 export class SetPopupWidgetComponent extends BaseWidget<PopupWidgetOptions, PopupSlotsDef> {
   constructor(
@@ -50,7 +47,7 @@ export class SetPopupWidgetComponent extends BaseWidget<PopupWidgetOptions, Popu
     super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
   }
 
-  clickEvent(): void {
+  openPopup(): void {
     this.dialog.open(PopupComponent, {
       data: {
         content: this.content,

@@ -1,17 +1,15 @@
-<div class="set-row-label">
-  <div class="set-row-title">
-    {{ options.title }}
-  </div>
-
-  <div class="set-row-description">
-    {{ options.description }}
-  </div>
-</div>
-<div class="set-row-ctrl">
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [error]="getError()"
+>
   <mat-slider
+    class="set-row-ctrl"
     [formControl]="formControl"
     [min]="toStep(options.minimum)"
     [max]="toStep(options.maximum)"
     [step]="options.multipleOf || (options.type === 'integer' && 1)"
   ></mat-slider>
-</div>
+</set-base>

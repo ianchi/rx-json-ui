@@ -1,0 +1,58 @@
+<div
+  class="set-row-main"
+  [ngClass]="{ 'cursor-pointer': content && !noExpand }"
+  (click)="toggleState()"
+>
+  <div class="set-row-icon-container" *ngIf="icon">
+    <mat-icon [svgIcon]="icon" class="set-row-icon"></mat-icon>
+  </div>
+
+  <div class="set-row-label">
+    <div class="set-row-label-1">
+      <span class="set-row-title">{{ title }}</span>
+      <span class="set-row-subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+    </div>
+
+    <ng-content select="[set-row-label]"></ng-content>
+
+    <div class="set-row-label-2">
+      <div class="set-row-description" *ngIf="!error">
+        {{ description }}
+      </div>
+      <div class="set-row-error" *ngIf="error">
+        {{ error }}
+      </div>
+    </div>
+  </div>
+
+  <div class="set-row-value">
+    {{ value }}
+  </div>
+
+  <div class="set-row-ctrl-container">
+    <ng-content></ng-content>
+  </div>
+
+  <div
+    class="set-row-nav-container"
+    *ngIf="content"
+    [ngClass]="{
+      expanded: expanded,
+      collapsed: !expanded,
+      hidden: noExpand || !content!.length
+    }"
+  >
+    <mat-icon svgIcon="chevron-down" class="rotating-icon"></mat-icon>
+  </div>
+</div>
+
+<div
+  class="set-row-content"
+  *ngIf="content"
+  [ngClass]="{ expanded: expanded, collapsed: !expanded }"
+>
+  <div *ngIf="expanded" class="set-subrows">
+    <ng-container *ngFor="let element of content" [wdgWidget]="element" [parentContext]="context">
+    </ng-container>
+  </div>
+</div>

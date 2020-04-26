@@ -1,0 +1,20 @@
+@import '~@angular/material/theming';
+
+@mixin settings-widget-typography($config, $level1: body-1, $level2: caption) {
+  .set-row-ctrl-container,
+  .set-row-value,
+  .set-row-label-1 {
+    @include mat-typography-level-to-styles($config, $level1);
+  }
+
+  .set-row-label-2 {
+    @include mat-typography-level-to-styles($config, $level2);
+  }
+
+  .settings-sections-title {
+    @include mat-typography-level-to-styles($config, title);
+  }
+  .settings-sectiongroup-title {
+    @include mat-typography-level-to-styles($config, $level1);
+  }
+}

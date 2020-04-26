@@ -1,0 +1,172 @@
+/**
+ * Copyright (c) 2018 Adrian Panella <ianchi74@outlook.com>
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
+@import './constants';
+@import './mat_form_field';
+
+set-base {
+  display: block;
+}
+
+/** Widgets element level (should be used in host elements) */
+.set-row {
+  display: block;
+  flex: 1 0 auto;
+}
+
+/*** Main area of the widget ***/
+.set-row.set-row-main,
+.set-row-main {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  min-height: $row-height;
+  padding-left: $outter-row-padding;
+  padding-right: $outter-row-padding;
+
+  @media (max-width: 600px) {
+    padding-left: $outter-row-padding-sm;
+    padding-right: $outter-row-padding-sm;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+// first content must generate the left padding of the row-main and the additional indentation
+.set-row-content {
+  padding-left: $outter-row-padding + $indentation;
+  @media (max-width: 600px) {
+    padding-left: $outter-row-padding-sm + $indentation-sm;
+  }
+
+  // inner sub content uses a reduced padding in the row-main to save space, as it is outside
+  .set-row-main {
+    padding-left: $inner-row-padding;
+  }
+  .set-row-content {
+    padding-left: $inner-row-padding + $indentation;
+    @media (max-width: 600px) {
+      padding-left: $inner-row-padding-sm + $indentation-sm;
+    }
+  }
+}
+
+/*** Styles for icon section ***/
+.set-row-icon-container {
+  flex: 0 0 auto;
+  margin-right: $outter-row-padding * 0.75;
+  @media (max-width: 600px) {
+    margin-right: $outter-row-padding-sm * 0.75;
+  }
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.set-row-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/*** Styles for label section ***/
+.set-row-label {
+  flex: 1 1 auto;
+  display: block;
+  text-align: start;
+  margin-right: 6px;
+}
+
+.set-row-title {
+}
+
+.set-row-subtitle {
+  margin-left: 2px;
+}
+.set-row-description {
+}
+
+.set-row-error {
+}
+
+/*** Style for the value section ***/
+.set-row-value {
+  flex: 0 0 auto;
+  text-align: end;
+}
+
+/*** Style for the control section ***/
+.set-row-ctrl {
+  flex: 0 0 auto;
+  max-width: 150px;
+}
+
+/*** Style for the nav section ***/
+
+.set-row-nav-container.expanded > .rotating-icon {
+  transform: rotate(-180deg);
+  transition: transform 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+.set-row-nav-container.collapsed > .rotating-icon {
+  transform: rotate(0deg);
+  transition: transform 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+/*** Style for the content section ***/
+.set-row-content.expanded {
+  visibility: visible;
+  opacity: 1;
+  max-height: 4000px; // Arbitrary max-height. Can increase if needed. Must have measurement to transition height.
+  transition: visibility 500ms, opacity 500ms, max-height 500ms;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+.set-row-content.collapsed {
+  visibility: hidden;
+  opacity: 0;
+  max-height: 1px; // Must have measurement to transition height.
+  transition: visibility 500ms, opacity 500ms, max-height 500ms;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+
+/*** combined row (row-main + action menu) ***/
+.set-row.set-row-combined,
+.set-row-combined {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+
+  .set-row {
+    .set-row-main {
+      padding-right: 0px;
+    }
+  }
+}
+
+.set-row-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+
+  margin: 6px 0px 6px 4px;
+  flex: 0 0 auto;
+
+  max-width: 150px;
+}

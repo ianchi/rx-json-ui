@@ -2,6 +2,7 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/rx-json-ui",
   "deleteDestPath": true,
+  "assets": ["src/lib/material/settings/styles/*"],
   "lib": {
     "entryFile": "src/public_api.ts",
     "umdModuleIds": { "espression": "espression", "espression-rx": "espressionRx" }

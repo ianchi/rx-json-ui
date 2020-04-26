@@ -1,0 +1,9 @@
+$row-height: 48px;
+
+$outter-row-padding: 20px;
+$inner-row-padding: 4px;
+$indentation: $outter-row-padding - $inner-row-padding;
+
+$outter-row-padding-sm: $outter-row-padding/2;
+$inner-row-padding-sm: 4px;
+$indentation-sm: $outter-row-padding-sm - $inner-row-padding-sm;

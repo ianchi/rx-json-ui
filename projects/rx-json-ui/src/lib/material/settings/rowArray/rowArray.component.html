@@ -6,8 +6,7 @@
   >
   </ng-container>
 
-  <div class="set-row-post">
-    <div class="set-separator"></div>
+  <div class="set-row-actions">
     <button mat-icon-button [matMenuTriggerFor]="actionMenu">
       <mat-icon svgIcon="dots-vertical"></mat-icon>
     </button>
@@ -47,7 +46,7 @@
   </div>
 </div>
 
-<div class="set-row set-row-flex" *ngIf="events.onNewRow">
+<div class="set-row set-row-main" *ngIf="events.onNewRow">
   <div class="set-row-label add-button">
     <button mat-button (click)="addRow()" color="primary">Add</button>
   </div>

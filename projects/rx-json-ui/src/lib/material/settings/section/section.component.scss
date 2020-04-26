@@ -9,21 +9,18 @@ set-section {
   display: block;
 
   .settings-sections-title {
-    color: #666666;
-
-    font-weight: 500;
-    font-size: 120%;
-    letter-spacing: 0.25px;
     margin-top: 21px;
     padding-top: 8px;
     margin-left: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 0px;
   }
 
   .settings-section-card {
-    background-color: white;
-    font-size: 100%;
-    color: rgb(32, 33, 36);
     overflow: hidden;
+
+    // don't use elevation inside elevation
+    .mat-elevation-z1 {
+      box-shadow: none;
+    }
   }
 }

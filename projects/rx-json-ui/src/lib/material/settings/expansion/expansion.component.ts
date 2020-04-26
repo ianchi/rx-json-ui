@@ -8,12 +8,9 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
-import { CommonOptionsDef } from '../../../core/index';
+import { BaseSetOption } from '../../../core/index';
 
-export interface SetExpansionWidgetOptions extends CommonOptionsDef {
-  title: string;
-  description: string;
-  value: string;
+export interface SetExpansionWidgetOptions extends BaseSetOption {
   expanded: boolean;
   noExpand: boolean;
   icon: string;
@@ -29,14 +26,4 @@ export interface SetExpansionWidgetOptions extends CommonOptionsDef {
 })
 export class SetExpansionWidgetComponent extends AbstractFormWidgetComponent<
   SetExpansionWidgetOptions
-> {
-  expanded = false;
-
-  dynOnAfterBind(): void {
-    super.dynOnAfterBind();
-    this.map('expanded', e => (this.expanded = !!e));
-  }
-  toggle(): void {
-    this.expanded = !this.expanded;
-  }
-}
+> {}

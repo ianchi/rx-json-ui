@@ -1,25 +1,22 @@
-<div class="set-row-label">
-  <div class="set-row-title">
-    {{ options.title }}
-  </div>
-
-  <div class="set-row-description">
-    {{ options.description }}
-  </div>
-</div>
-
-<div
-  class="set-row-ctrl set-row-spin"
-  *ngIf="options.spinner === true || (options.spinner === 'auto' && running)"
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
 >
-  <mat-spinner color="primary" diameter="32"></mat-spinner>
-</div>
-<button
-  mat-stroked-button
-  color="primary"
-  class="set-row-ctrl"
-  (click)="clickEvent()"
-  [disabled]="options.disabled"
->
-  {{ options.buttonTitle }}
-</button>
+  <div
+    class="set-row-ctrl set-row-spin"
+    *ngIf="options.spinner === true || (options.spinner === 'auto' && running)"
+  >
+    <mat-spinner color="primary" diameter="32"></mat-spinner>
+  </div>
+  <button
+    mat-stroked-button
+    color="primary"
+    class="set-row-ctrl"
+    (click)="clickEvent()"
+    [disabled]="options.disabled"
+  >
+    {{ options.buttonTitle }}
+  </button>
+</set-base>

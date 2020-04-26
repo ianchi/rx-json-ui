@@ -1,45 +1,18 @@
-<div class="set-row-flex" (click)="toggle()">
-  <div class="set-icon-container" *ngIf="options.icon">
-    <mat-icon [svgIcon]="options.icon" class="set-icon"></mat-icon>
-  </div>
-
-  <div class="set-row-label">
-    <div class="set-row-title set-level-value">
-      <span>{{ options.value || 0 | format: options.format }}</span>
-      <span *ngIf="options.total">/{{ options.total | format: options.format }}</span>
-      <span class="set-level-unit">{{ options.unit }}</span>
-    </div>
-    <mat-progress-bar
-      *ngIf="!options.noGraph"
-      mode="determinate"
-      color="primary"
-      [value]="((options.value || 0) / (options.total || 100)) * 100"
-      class="stats-bar"
-    ></mat-progress-bar>
-    <div class="set-row-description set-level-title">
-      <h5>{{ options.title }}</h5>
-    </div>
-  </div>
-  <div
-    class="set-row-ctrl"
-    [ngClass]="{
-      expanded: expanded,
-      collapsed: !expanded,
-      hidden: (options.noExpand || !content?.main.length) && !this.options.link
-    }"
-  >
-    <mat-icon svgIcon="chevron-down" class="rotating-icon" *ngIf="!this.options.link"></mat-icon>
-    <mat-icon svgIcon="menu-right" *ngIf="this.options.link"></mat-icon>
-  </div>
-</div>
-
-<div class="set-expansion-content" [ngClass]="{ expanded: expanded, collapsed: !expanded }">
-  <div *ngIf="!this.options.link && content?.main.length && expanded" class="set-subrows">
-    <ng-container
-      *ngFor="let element of content!.main"
-      [wdgWidget]="element"
-      [parentContext]="context"
-    >
-    </ng-container>
-  </div>
-</div>
+<set-base
+  [icon]="options.icon"
+  [title]="getTitle()"
+  [subtitle]="options.unit"
+  [description]="options.title"
+  [expanded]="options.expanded"
+  [noExpand]="options.noExpand"
+  [content]="content?.main"
+  [context]="context"
+>
+  <mat-progress-bar
+    set-row-label
+    mode="determinate"
+    color="primary"
+    [value]="((options.value || 0) / (options.total || 100)) * 100"
+    class="stats-bar"
+  ></mat-progress-bar>
+</set-base>

@@ -1,13 +1,7 @@
-<div class="set-row-label">
-  <div class="set-row-title">
-    {{ options.title }}
-  </div>
-
-  <div class="set-row-description">
-    {{ options.description }}
-  </div>
-</div>
-
-<div class="set-row-value">
-  {{ options.value }}
-</div>
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [value]="options.value"
+></set-base>

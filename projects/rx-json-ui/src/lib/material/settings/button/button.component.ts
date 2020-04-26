@@ -7,14 +7,12 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, ButtonWidgetEvents, CommonOptionsDef } from '../../../core/index';
+import { BaseWidget, ButtonWidgetEvents, IconOption, TitleDescOption } from '../../../core/index';
 
-export interface SetButtonWidgetOptions extends CommonOptionsDef {
-  title: string;
-  description: string;
+export interface SetButtonWidgetOptions extends TitleDescOption, IconOption {
   buttonTitle: string;
 
-  spinner: boolean | 'auto';
+  spinner: 'auto' | boolean;
   disabled: boolean;
 }
 
@@ -24,7 +22,7 @@ export interface SetButtonWidgetOptions extends CommonOptionsDef {
   styleUrls: ['./button.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex' },
+  host: { class: 'set-row' },
 })
 export class SetButtonWidgetComponent extends BaseWidget<
   SetButtonWidgetOptions,

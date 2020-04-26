@@ -22,24 +22,32 @@ export interface TitleOption extends CommonOptionsDef {
   title?: string;
 }
 
+export interface SubtitleOption extends CommonOptionsDef {
+  subtitle?: string;
+}
 export interface TextOption extends CommonOptionsDef {
   text?: string;
 }
+
+export interface IconOption extends CommonOptionsDef {
+  icon?: string;
+}
 export interface TitleDescOption extends TitleOption, CommonOptionsDef {
+  subtitle?: string;
   description?: string;
 }
 
-export interface TitleDescValueOption extends TitleDescOption, CommonOptionsDef {
+export interface BaseSetOption extends TitleDescOption, IconOption {
   value?: string;
 }
 export type InputWidgetOptions = NumberInputOptions | StringInputOptions;
 
-interface NumberInputOptions extends SchemaOptions<SchemaNumber>, CommonOptionsDef {
+interface NumberInputOptions extends SchemaOptions<SchemaNumber>, SubtitleOption {
   inputType?: 'number';
   autocomplete?: string;
 }
 
-interface StringInputOptions extends SchemaOptions<SchemaString>, CommonOptionsDef {
+interface StringInputOptions extends SchemaOptions<SchemaString>, SubtitleOption {
   inputType?:
     | 'email'
     | 'search'

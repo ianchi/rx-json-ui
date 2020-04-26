@@ -16,7 +16,7 @@ import { SchemaNumber, SchemaOptions } from '../../../schema';
   styleUrls: ['./slider.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'set-row set-row-flex' },
+  host: { class: 'set-row' },
 })
 export class SetSliderWidgetComponent extends AbstractFormFieldWidget<SchemaOptions<SchemaNumber>> {
   toStep(val: number | undefined): number | undefined {

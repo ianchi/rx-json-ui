@@ -5,32 +5,24 @@
  * https://opensource.org/licenses/MIT
  */
 
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  IterableDiffers,
-  KeyValueDiffers,
-  Renderer2,
-  ViewEncapsulation,
-} from '@angular/core';
-import { Router } from '@angular/router';
+  BaseWidget,
+  formatValue,
+  IconOption,
+  MainSlotContentDef,
+  TitleOption,
+} from '../../../core';
 
-import { BaseWidget, CommonOptionsDef, Expressions, MainSlotContentDef } from '../../../core';
-
-export interface LevelWidgetOptions extends CommonOptionsDef {
+export interface LevelWidgetOptions extends IconOption, TitleOption {
   value: number;
   total: number;
-  icon: string;
   unit: string;
-  title: string;
-  noGraph: boolean;
   format: string;
 
   expanded: boolean;
   noExpand: boolean;
-  link: string;
 }
 
 @Component({
@@ -42,27 +34,9 @@ export interface LevelWidgetOptions extends CommonOptionsDef {
   host: { class: 'set-row' },
 })
 export class SetLevelWidgetComponent extends BaseWidget<LevelWidgetOptions, MainSlotContentDef> {
-  expanded = false;
-
-  constructor(
-    cdr: ChangeDetectorRef,
-    expr: Expressions,
-    iterableDiffers: IterableDiffers,
-    keyValueDiffers: KeyValueDiffers,
-    ngElement: ElementRef,
-    renderer: Renderer2,
-    public router: Router
-  ) {
-    super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
-  }
-  dynOnAfterBind(): void {
-    this.map('expanded', e => (this.expanded = !!e));
-  }
-  toggle(): void {
-    if (!this.options.link) this.expanded = !this.expanded;
-    else
-      this.router.navigate([this.options.link], {
-        state: { widgetDef: this.content && this.content.main && this.content.main[0] },
-      });
+  getTitle(): string {
+    return `${formatValue(this.options.value, this.options.format)}${
+      this.options.total ? `/${formatValue(this.options.total, this.options.format)}` : ''
+    }`;
   }
 }

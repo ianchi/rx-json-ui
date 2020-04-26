@@ -4,3 +4,7 @@
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
  */
+
+set-toggle > set-base > .set-row-main .set-row-nav-container.hidden {
+  display: none;
+}
