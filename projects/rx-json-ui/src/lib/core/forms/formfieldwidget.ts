@@ -167,12 +167,12 @@ export class AbstractFormFieldWidget<
 
   //
   getError(): string {
-    if (!this.formControl!.errors || !this.formControl!.errors.code) return '';
+    if (!this.formControl?.errors || !this.formControl?.errors.code) return '';
 
     return (
       this.expr.eval(
-        ERROR_MSG[this.formControl!.errors!.code],
-        { $err: this.formControl!.errors },
+        ERROR_MSG[this.formControl.errors.code],
+        { $err: this.formControl.errors },
         false
       ) || ''
     );
