@@ -12,10 +12,13 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { RxObject } from 'espression-rx';
 
 import { Context } from '../../../core/expressions/index';
-import { PopupSlotsDef } from '../../../core/index';
+import { FORM_CONTROL } from '../../../core/forms/baseformcontrol';
+import { FieldControl, PopupSlotsDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-popup',
@@ -43,6 +46,9 @@ export class PopupComponent implements OnInit {
           return true;
         },
       },
+      // create a base form to be able to bind
+      $: RxObject({}, true),
+      [FORM_CONTROL]: new FieldControl(new FormGroup({})),
     });
     this.title = this._data.title;
   }
