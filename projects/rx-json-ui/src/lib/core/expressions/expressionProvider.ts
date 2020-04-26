@@ -7,7 +7,7 @@
 
 import { Injectable } from '@angular/core';
 import { ESnextParser, esNextRules, ILvalue, INode, Parser, StaticEval } from 'espression';
-import { ReactiveEval } from 'espression-rx';
+import { AS_OBSERVABLE, isReactive, ReactiveEval } from 'espression-rx';
 import { EMPTY, isObservable, Observable, of, throwError } from 'rxjs';
 
 import { Context } from './context';
@@ -99,7 +99,11 @@ export class ESpression extends Expressions {
 
       throw e;
     }
-    return asObservable && !isObservable(result) ? of(result) : result;
+    return asObservable && !isObservable(result)
+      ? isReactive(result)
+        ? result[AS_OBSERVABLE]()
+        : of(result)
+      : result;
   }
 
   /**

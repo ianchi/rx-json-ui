@@ -6,6 +6,7 @@
  */
 
 import { ILvalue, INode } from 'espression';
+import { AS_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -27,7 +28,8 @@ export abstract class Expressions {
   eval(expression: string, context: Context, asObservable?: boolean): Observable<any> | any {
     try {
       let res = this.evaluate(this.parse(expression), context, asObservable);
-      if (isObservable(res))
+      if (asObservable && isReactive(res)) res = res[AS_OBSERVABLE]();
+      else if (isObservable(res))
         res = res.pipe(
           catchError((e: any) => {
             console.warn(
