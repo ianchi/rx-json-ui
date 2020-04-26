@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, EmptyOptionsDef, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-container',
@@ -16,4 +16,4 @@ import { BaseWidget, EmptyOptionsDef, MainSlotContentDef } from '../../../core/i
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContainerWidgetComponent extends BaseWidget<EmptyOptionsDef, MainSlotContentDef> {}
+export class ContainerWidgetComponent extends BaseWidget<CommonOptionsDef, MainSlotContentDef> {}

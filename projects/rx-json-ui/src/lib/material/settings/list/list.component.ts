@@ -10,10 +10,10 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import {
   AbstractArrayWidgetComponent,
   ArrayEventsDef,
+  ArrayOptionsDef,
   BindWidgetDef,
   WidgetDef,
 } from '../../../core/index';
-import { SchemaArray } from '../../../schema';
 
 @Component({
   selector: 'set-list',
@@ -23,12 +23,12 @@ import { SchemaArray } from '../../../schema';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetListWidgetComponent extends AbstractArrayWidgetComponent<SchemaArray> {
+export class SetListWidgetComponent extends AbstractArrayWidgetComponent<ArrayOptionsDef> {
   itemOptions = { widget: 'input', bind: '$row.array[$row.index]', options: {} };
 
   dynOnSetup(
-    def: WidgetDef<SchemaArray, undefined, ArrayEventsDef, BindWidgetDef>
-  ): WidgetDef<SchemaArray, undefined, ArrayEventsDef, BindWidgetDef> {
+    def: WidgetDef<ArrayOptionsDef, undefined, ArrayEventsDef, BindWidgetDef>
+  ): WidgetDef<ArrayOptionsDef, undefined, ArrayEventsDef, BindWidgetDef> {
     this.bindTrackBy = i => i;
     return super.dynOnSetup(def);
   }

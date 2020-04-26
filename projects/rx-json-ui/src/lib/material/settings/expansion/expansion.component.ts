@@ -8,8 +8,9 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
+import { CommonOptionsDef } from '../../../core/index';
 
-export interface SetExpansionWidgetOptions {
+export interface SetExpansionWidgetOptions extends CommonOptionsDef {
   title: string;
   description: string;
   value: string;

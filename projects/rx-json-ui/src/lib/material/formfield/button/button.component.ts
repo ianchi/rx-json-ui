@@ -7,9 +7,9 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, ButtonWidgetEvents } from '../../../core/index';
+import { BaseWidget, ButtonWidgetEvents, CommonOptionsDef } from '../../../core/index';
 
-export interface ButtonWidgetOptions {
+export interface ButtonWidgetOptions extends CommonOptionsDef {
   title: string;
   disabled: boolean;
 }

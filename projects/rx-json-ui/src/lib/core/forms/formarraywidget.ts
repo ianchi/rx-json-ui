@@ -5,14 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import {
-  ChangeDetectorRef,
-  Directive,
-  IterableChangeRecord,
-  IterableDiffer,
-  IterableDiffers,
-  TrackByFunction,
-} from '@angular/core';
+import { Directive, IterableChangeRecord, IterableDiffer, TrackByFunction } from '@angular/core';
 import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -22,15 +15,18 @@ import { SchemaArray } from '../../schema';
 import { ERR_CUSTOM } from '../../schema/validation/base';
 import {
   BindWidgetDef,
+  CommonOptionsDef,
   ConstrainEvents,
   ConstrainSlots,
   FieldEventDef,
   multilineExpr,
   WidgetDef,
 } from '../base/public.interface';
-import { Context, Expressions } from '../expressions/index';
+import { Context } from '../expressions/index';
 
 import { AbstractBaseFormControlWidget } from './baseformcontrol';
+
+export interface ArrayOptionsDef extends SchemaArray, CommonOptionsDef {}
 
 export interface ArrayEventsDef extends FieldEventDef {
   /**
@@ -77,7 +73,7 @@ export interface ArrayEventsDef extends FieldEventDef {
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export class AbstractArrayWidgetComponent<
-  T extends SchemaArray,
+  T extends ArrayOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & ArrayEventsDef = ArrayEventsDef
 > extends AbstractBaseFormControlWidget<T, S, E, BindWidgetDef> {
@@ -89,9 +85,6 @@ export class AbstractArrayWidgetComponent<
   private bindDiffer: IterableDiffer<any[]> | undefined;
   bindTrackBy: TrackByFunction<any> | undefined;
 
-  constructor(cdr: ChangeDetectorRef, expr: Expressions, private differs: IterableDiffers) {
-    super(cdr, expr);
-  }
   dynOnSetup(def: WidgetDef<T, S, E, BindWidgetDef>): WidgetDef<T, S, E, BindWidgetDef> {
     // get bound model
     if (!def.bind) throw new Error('Form field widgets must have a "bind" property defined');
@@ -134,7 +127,7 @@ export class AbstractArrayWidgetComponent<
     });
 
     try {
-      this.bindDiffer = this.differs.find([]).create(this.bindTrackBy);
+      this.bindDiffer = this.iterableDiffers.find([]).create(this.bindTrackBy);
     } catch {
       throw new Error(`Cannot find a differ supporting array`);
     }

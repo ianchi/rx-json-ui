@@ -8,6 +8,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 import { AbstractFormWidgetComponent } from '../../../core/forms/index';
+import { CommonOptionsDef } from '../../../core/index';
 
 @Component({
   selector: 'wdg-form',
@@ -16,4 +17,4 @@ import { AbstractFormWidgetComponent } from '../../../core/forms/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormWidgetComponent extends AbstractFormWidgetComponent<{}> {}
+export class FormWidgetComponent extends AbstractFormWidgetComponent<CommonOptionsDef> {}

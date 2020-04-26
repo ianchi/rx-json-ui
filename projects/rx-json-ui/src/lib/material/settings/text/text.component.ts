@@ -7,13 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget } from '../../../core';
-
-export interface SetTextWidgetOptions {
-  title: string;
-  description: string;
-  value: string;
-}
+import { BaseWidget, TitleDescValueOption } from '../../../core';
 
 @Component({
   selector: 'set-text',
@@ -23,4 +17,4 @@ export interface SetTextWidgetOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row set-row-flex' },
 })
-export class SetTextWidgetComponent extends BaseWidget<SetTextWidgetOptions> {}
+export class SetTextWidgetComponent extends BaseWidget<TitleDescValueOption> {}

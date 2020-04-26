@@ -11,9 +11,9 @@ import { isReactive, RxObject } from 'espression-rx';
 
 import {
   CommonEventsDef,
+  CommonOptionsDef,
   ConstrainEvents,
   ConstrainSlots,
-  EmptyOptionsDef,
   MainSlotContentDef,
   OptBindWidgetDef,
   WidgetDef,
@@ -25,7 +25,7 @@ import { AbstractBaseFormControlWidget } from './baseformcontrol';
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export class AbstractFormWidgetComponent<
-  O extends EmptyOptionsDef = {},
+  O extends CommonOptionsDef = CommonOptionsDef,
   S extends ConstrainSlots<S> = MainSlotContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef,
   B extends OptBindWidgetDef = OptBindWidgetDef

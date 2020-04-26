@@ -15,6 +15,7 @@ import { ERROR_MSG, SchemaPrimitiveValidations, schemaValidator, ValidatorFn } f
 import { ERR_CUSTOM } from '../../schema/validation/base';
 import {
   BindWidgetDef,
+  CommonOptionsDef,
   ConstrainEvents,
   ConstrainSlots,
   FieldEventDef,
@@ -24,10 +25,11 @@ import { Context } from '../expressions/index';
 
 import { AbstractBaseFormControlWidget } from './baseformcontrol';
 
+export interface FormFieldOptionsDef extends SchemaPrimitiveValidations<any>, CommonOptionsDef {}
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export class AbstractFormFieldWidget<
-  O extends SchemaPrimitiveValidations<any>,
+  O extends FormFieldOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> & FieldEventDef = FieldEventDef
 > extends AbstractBaseFormControlWidget<O, S, E, BindWidgetDef> {

@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { AbstractFormWidgetComponent, EmptyOptionsDef } from '../../../core/index';
+import { AbstractFormWidgetComponent, CommonOptionsDef } from '../../../core/index';
 
 @Component({
   selector: 'set-page',
@@ -17,4 +17,4 @@ import { AbstractFormWidgetComponent, EmptyOptionsDef } from '../../../core/inde
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetPageWidgetComponent extends AbstractFormWidgetComponent<EmptyOptionsDef> {}
+export class SetPageWidgetComponent extends AbstractFormWidgetComponent<CommonOptionsDef> {}

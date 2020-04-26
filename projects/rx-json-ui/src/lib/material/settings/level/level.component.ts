@@ -9,13 +9,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  IterableDiffers,
+  KeyValueDiffers,
+  Renderer2,
   ViewEncapsulation,
 } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BaseWidget, Expressions, MainSlotContentDef } from '../../../core';
+import { BaseWidget, CommonOptionsDef, Expressions, MainSlotContentDef } from '../../../core';
 
-export interface LevelWidgetOptions {
+export interface LevelWidgetOptions extends CommonOptionsDef {
   value: number;
   total: number;
   icon: string;
@@ -40,10 +44,17 @@ export interface LevelWidgetOptions {
 export class SetLevelWidgetComponent extends BaseWidget<LevelWidgetOptions, MainSlotContentDef> {
   expanded = false;
 
-  constructor(cdr: ChangeDetectorRef, expr: Expressions, public router: Router) {
-    super(cdr, expr);
+  constructor(
+    cdr: ChangeDetectorRef,
+    expr: Expressions,
+    iterableDiffers: IterableDiffers,
+    keyValueDiffers: KeyValueDiffers,
+    ngElement: ElementRef,
+    renderer: Renderer2,
+    public router: Router
+  ) {
+    super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
   }
-
   dynOnAfterBind(): void {
     this.map('expanded', e => (this.expanded = !!e));
   }

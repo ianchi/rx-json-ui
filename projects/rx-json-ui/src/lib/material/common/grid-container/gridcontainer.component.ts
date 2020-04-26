@@ -7,9 +7,9 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core/index';
 
-export interface GridContainerWidgetOptions {
+export interface GridContainerWidgetOptions extends CommonOptionsDef {
   direction: string;
 }
 

@@ -7,9 +7,9 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core/index';
 
-export interface TabsWidgetOptions {
+export interface TabsWidgetOptions extends CommonOptionsDef {
   /** Text to show as tabs labels */
   tabLabels: string[];
 }

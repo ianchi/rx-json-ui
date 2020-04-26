@@ -9,6 +9,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  IterableDiffers,
+  KeyValueDiffers,
+  Renderer2,
   ViewEncapsulation,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -16,11 +20,12 @@ import { Router } from '@angular/router';
 import {
   BaseWidget,
   ButtonWidgetEvents,
+  CommonOptionsDef,
   Expressions,
   MainSlotContentDef,
 } from '../../../core/index';
 
-export interface SetLinkWidgetOptions {
+export interface SetLinkWidgetOptions extends CommonOptionsDef {
   title: string;
   description: string;
   link: string;
@@ -39,10 +44,17 @@ export class SetLinkWidgetComponent extends BaseWidget<
   MainSlotContentDef,
   ButtonWidgetEvents
 > {
-  constructor(cdr: ChangeDetectorRef, expr: Expressions, public router: Router) {
-    super(cdr, expr);
+  constructor(
+    cdr: ChangeDetectorRef,
+    expr: Expressions,
+    iterableDiffers: IterableDiffers,
+    keyValueDiffers: KeyValueDiffers,
+    ngElement: ElementRef,
+    renderer: Renderer2,
+    public router: Router
+  ) {
+    super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
   }
-
   clickEvent(): void {
     this.emmit('onClick');
     this.router.navigate([this.options.link], {

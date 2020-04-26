@@ -10,7 +10,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  IterableDiffers,
+  KeyValueDiffers,
   OnInit,
+  Renderer2,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -18,9 +22,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { BaseWidget, CommonEventsDef, Expressions } from '../../../core/index';
+import { BaseWidget, CommonEventsDef, CommonOptionsDef, Expressions } from '../../../core/index';
 
-export interface BaseTableWidgetOptions {
+export interface BaseTableWidgetOptions extends CommonOptionsDef {
   /** Order list of column keys (each maps to a property of the row element). */
   columns: string[];
 
@@ -113,8 +117,16 @@ export class TableWidgetComponent
 
   isMediaSmall = false;
 
-  constructor(cdr: ChangeDetectorRef, expr: Expressions, public media: BreakpointObserver) {
-    super(cdr, expr);
+  constructor(
+    cdr: ChangeDetectorRef,
+    expr: Expressions,
+    iterableDiffers: IterableDiffers,
+    keyValueDiffers: KeyValueDiffers,
+    ngElement: ElementRef,
+    renderer: Renderer2,
+    public media: BreakpointObserver
+  ) {
+    super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
 
     this.addSubscription = media.observe('(max-width: 599px)').subscribe(isMatched => {
       this.isMediaSmall = isMatched.matches;

@@ -10,9 +10,9 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import {
   AbstractArrayWidgetComponent,
   ArrayEventsDef,
+  ArrayOptionsDef,
   MainSlotContentDef,
 } from '../../../core/index';
-import { SchemaArray } from '../../../schema';
 
 export interface ActionDef {
   /** SVG icon name to show */
@@ -23,7 +23,7 @@ export interface ActionDef {
   data?: any;
 }
 
-export interface RowArrayWidgetOptions extends SchemaArray {
+export interface RowArrayWidgetOptions extends ArrayOptionsDef {
   actions?: ActionDef[];
 }
 
@@ -36,7 +36,7 @@ export interface RowWidgetEvents extends ArrayEventsDef {
    * `$action.index` the index of the current action in the actions array
    * `$action.data` the additional data defined in the action
    */
-  onAction: string;
+  onAction?: string;
 }
 @Component({
   selector: 'set-row-array',

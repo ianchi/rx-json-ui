@@ -13,7 +13,7 @@ export type ConstrainBind = boolean | undefined;
 
 /** Auxiliary type to generate json schema definitions */
 export type JsonWidgetDef<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S>,
   E extends ConstrainEvents<E>,
   B extends ConstrainBind
@@ -25,7 +25,7 @@ export type JsonWidgetDef<
 export type JsonContentDef = SimpleContentDef | AbstractWidgetDef;
 
 export type WidgetDef<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S> = NoContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef,
   B extends ConstrainBind = NoBindWidgetDef
@@ -39,7 +39,7 @@ export type WidgetDef<
  * Specific Widgets can further restrict the available options
  */
 export interface BaseWidgetDef<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S> = NoContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef
 > {
@@ -114,7 +114,7 @@ export type OptBindWidgetDef = false;
 export type NoBindWidgetDef = undefined;
 
 interface BindDef<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S> = NoContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef
 > extends BaseWidgetDef<O, S, E> {
@@ -126,7 +126,7 @@ interface BindDef<
   bind: lvalueExpr;
 }
 interface OptBindDef<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S> = NoContentDef,
   E extends ConstrainEvents<E> = CommonEventsDef
 > extends BaseWidgetDef<O, S, E> {
@@ -150,10 +150,20 @@ export type AbstractFieldWidgetDef = WidgetDef<
   AbstractEventsDef,
   BindWidgetDef
 >;
-export interface AbstractOptionsDef {
+
+export type ClassDef = string | string[] | { [klass: string]: any };
+
+export interface AbstractOptionsDef extends CommonOptionsDef {
   [option: string]: any;
 }
-export interface EmptyOptionsDef {} // tslint:disable-line: no-empty-interface
+
+/**
+ * Options available to all widgets
+ * They are handled directly by the AbstractBaseWidget
+ */
+export interface CommonOptionsDef {
+  class: ClassDef;
+}
 
 /**
  * Definition of the content of the widget.
@@ -183,15 +193,6 @@ export type ContentDef<S> = S extends undefined ? undefined : S | SimpleContentD
 export interface AbstractSlotContentDef extends MainSlotContentDef {
   /** Optional content for additional slots defined by each widget */
   [extraSlots: string]: SimpleContentDef;
-}
-
-/**
- * Input Options common to ALL widgets.
- * They are handled directly by the AbstractBaseWidget
- */
-export interface CommonOptionsDef {
-  /** class or classes to apply to the widget */
-  class: string | string[];
 }
 
 /**

@@ -11,7 +11,7 @@ import { ILvalue } from 'espression';
 import { isObservable } from 'rxjs';
 
 import { BaseWidget } from '../base/abstractwidget';
-import { ConstrainEvents, ConstrainSlots, EmptyOptionsDef } from '../base/public.interface';
+import { CommonOptionsDef, ConstrainEvents, ConstrainSlots } from '../base/public.interface';
 import { Context } from '../expressions/index';
 
 import { FieldControl } from './fieldcontrol';
@@ -21,7 +21,7 @@ export const FORM_CONTROL = '$form';
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export abstract class AbstractBaseFormControlWidget<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S>,
   E extends ConstrainEvents<E>,
   B extends boolean

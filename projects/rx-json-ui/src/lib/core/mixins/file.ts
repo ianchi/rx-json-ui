@@ -12,12 +12,13 @@ import { isReactive } from 'espression-rx';
 import { BaseWidget } from '../base/abstractwidget';
 import {
   CommonEventsDef,
+  CommonOptionsDef,
   multilineExpr,
   OptBindWidgetDef,
   WidgetDef,
 } from '../base/public.interface';
 
-export interface FileWidgetOptions {
+export interface FileWidgetOptions extends CommonOptionsDef {
   title: string;
   multiple: boolean;
   disabled: boolean;

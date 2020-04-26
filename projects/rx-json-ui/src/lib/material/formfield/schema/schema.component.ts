@@ -7,10 +7,10 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, MainSlotContentDef } from '../../../core/index';
+import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core/index';
 import { buildUI, Schema } from '../../../schema';
 
-export interface SchemaWidgetOptions {
+export interface SchemaWidgetOptions extends CommonOptionsDef {
   schema: Schema;
   bind: string;
 }

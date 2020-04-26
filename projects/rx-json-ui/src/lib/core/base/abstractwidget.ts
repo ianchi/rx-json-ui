@@ -5,7 +5,21 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { ChangeDetectorRef, Directive, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  IterableChanges,
+  IterableDiffer,
+  IterableDiffers,
+  KeyValueChanges,
+  KeyValueDiffer,
+  KeyValueDiffers,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
 import { INode } from 'espression';
 import { combineMixed } from 'espression-rx';
 import { combineLatest, isObservable, Observable, of, Subscription } from 'rxjs';
@@ -15,12 +29,13 @@ import { Context, Expressions } from '../expressions/index';
 
 import {
   AbstractWidgetDef,
+  ClassDef,
   CommonEventsDef,
+  CommonOptionsDef,
   ConstrainBind,
   ConstrainEvents,
   ConstrainSlots,
   ContentDef,
-  EmptyOptionsDef,
   JsonWidgetDef,
   MainSlotContentDef,
   multilineExpr,
@@ -34,7 +49,7 @@ export type Bindings<T> = { [P in keyof T]-?: Observable<T[P]> };
 export type ParsedObject<T> = { [P in keyof T]: T[P] | Observable<T[P]> };
 
 export type AbstractWidget = BaseWidget<
-  EmptyOptionsDef,
+  CommonOptionsDef,
   MainSlotContentDef | undefined,
   CommonEventsDef,
   ConstrainBind
@@ -45,7 +60,7 @@ export type AbstractWidget = BaseWidget<
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export class BaseWidget<
-  O extends EmptyOptionsDef,
+  O extends CommonOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
   E extends ConstrainEvents<E> = CommonEventsDef,
   B extends ConstrainBind = NoBindWidgetDef
@@ -83,7 +98,19 @@ export class BaseWidget<
   }
   private subscriptions: Subscription[] = [];
 
-  constructor(protected _cdr: ChangeDetectorRef, protected expr: Expressions) {}
+  // class internal state
+  private _iterableDiffer: IterableDiffer<string> | undefined;
+  private _keyValueDiffer: KeyValueDiffer<string, any> | undefined;
+  private _rawClass: ClassDef | undefined;
+
+  constructor(
+    protected _cdr: ChangeDetectorRef,
+    protected expr: Expressions,
+    protected iterableDiffers: IterableDiffers,
+    protected keyValueDiffers: KeyValueDiffers,
+    protected ngElement: ElementRef,
+    protected renderer: Renderer2
+  ) {}
 
   /** Initializes the widget from a json definition */
   setup(widgetDef: WidgetDef<O, S, E, B>, context?: Context): void {
@@ -217,6 +244,8 @@ export class BaseWidget<
     for (const prop in this.bindings) // tslint:disable-line:forin
       this.bindings[prop] = this.bindings[prop].pipe(tap(res => (this.options[prop] = res)));
 
+    this.map('class', klass => (this.setClass(klass), klass));
+
     // call hook after updating the bound value
     this.dynOnAfterBind();
 
@@ -290,6 +319,95 @@ export class BaseWidget<
 
   /** Hook called once all bound values are updated and each time that a bound value changes */
   dynOnChange(): void {}
+
+  // following code is based on code from Angular ngStyle directive
+  setClass(value: ClassDef): void {
+    value = typeof value === 'string' ? value.split(/\s+/) : value;
+
+    // test for new value or change of type
+    if (
+      !value ||
+      (!this._iterableDiffer && !this._keyValueDiffer) ||
+      (this._iterableDiffer && !Array.isArray(value)) ||
+      (this._keyValueDiffer && typeof value !== 'object')
+    ) {
+      this._removeClasses(this._rawClass);
+
+      this._iterableDiffer = undefined;
+      this._keyValueDiffer = undefined;
+
+      this._rawClass = value;
+      if (value) {
+        if (Array.isArray(value)) {
+          this._iterableDiffer = this.iterableDiffers.find(value).create();
+        } else {
+          this._keyValueDiffer = this.keyValueDiffers.find(value).create();
+        }
+      }
+    }
+    // update class according to value
+    if (this._iterableDiffer) {
+      const iterableChanges = this._iterableDiffer.diff(this._rawClass as string[]);
+      if (iterableChanges) {
+        this._applyIterableChanges(iterableChanges);
+      }
+    } else if (this._keyValueDiffer) {
+      const keyValueChanges = this._keyValueDiffer.diff(this._rawClass as { [k: string]: any });
+      if (keyValueChanges) {
+        this._applyKeyValueChanges(keyValueChanges);
+      }
+    }
+  }
+
+  private _applyKeyValueChanges(changes: KeyValueChanges<string, any>): void {
+    changes.forEachAddedItem(record => this._toggleClass(record.key, record.currentValue));
+    changes.forEachChangedItem(record => this._toggleClass(record.key, record.currentValue));
+    changes.forEachRemovedItem(record => {
+      if (record.previousValue) {
+        this._toggleClass(record.key, false);
+      }
+    });
+  }
+
+  private _applyIterableChanges(changes: IterableChanges<string>): void {
+    changes.forEachAddedItem(record => {
+      if (typeof record.item === 'string') {
+        this._toggleClass(record.item, true);
+      } else {
+        throw new Error(
+          `class can only be expressed as strings, got ${JSON.stringify(record.item)}`
+        );
+      }
+    });
+
+    changes.forEachRemovedItem(record => this._toggleClass(record.item, false));
+  }
+
+  /**
+   * Removes a collection of CSS classes from the DOM element.
+   */
+  private _removeClasses(rawClassVal?: ClassDef): void {
+    if (rawClassVal) {
+      if (Array.isArray(rawClassVal) || rawClassVal instanceof Set) {
+        (<any>rawClassVal).forEach((klass: string) => this._toggleClass(klass, false));
+      } else {
+        Object.keys(rawClassVal).forEach(klass => this._toggleClass(klass, false));
+      }
+    }
+  }
+
+  private _toggleClass(klass: string, enabled: boolean): void {
+    klass = klass.trim();
+    if (klass) {
+      klass.split(/\s+/g).forEach(kls => {
+        if (enabled) {
+          this.renderer.addClass(this.ngElement.nativeElement, kls);
+        } else {
+          this.renderer.removeClass(this.ngElement.nativeElement, kls);
+        }
+      });
+    }
+  }
 }
 
 export function parseDefObject<T extends object>(

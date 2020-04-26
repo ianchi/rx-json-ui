@@ -26,7 +26,7 @@ export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWi
   let widget: AbstractWidgetDef = {
     widget: BUILDER_WIDGETS.default,
     bind,
-    options: {},
+    options: { class: '' },
     events: {},
   };
 
@@ -70,7 +70,7 @@ export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWi
   }
   if (schema['depends=']) widget.if = schema['depends='];
 
-  widget.options = { ...schema, ...widget.options, ...ui.options };
+  widget.options = { class: '', ...schema, ...widget.options, ...ui.options };
   delete widget.options!.ui;
   delete widget.options!.properties;
   delete widget.options!['depends='];
@@ -175,7 +175,7 @@ function buildObject(schema: SchemaObject, bind: string, ui?: SchemaUI): Abstrac
       if (Array.isArray(fieldOrSet)) {
         const setWidget: AbstractWidgetDef = { widget: BUILDER_WIDGETS.object, bind: `${bind}` };
         setWidget.content = [];
-        if (ui.titles && ui.titles[i]) setWidget.options = { title: ui.titles[i] };
+        if (ui.titles && ui.titles[i]) setWidget.options = { title: ui.titles[i], class: '' };
 
         for (const key of fieldOrSet) addProp(key, setWidget.content as AbstractWidgetDef[]);
         widget.content.push(setWidget);
@@ -186,7 +186,7 @@ function buildObject(schema: SchemaObject, bind: string, ui?: SchemaUI): Abstrac
 
     if (hasSets) {
       widget.widget = BUILDER_WIDGETS.set;
-      widget.options = { titles: ui.titles };
+      widget.options = { titles: ui.titles, class: '' };
     }
   }
   return widget;

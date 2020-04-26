@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { AbstractEventsDef, AbstractOptionsDef } from '../core/index';
+import { AbstractEventsDef, AbstractOptionsDef, CommonOptionsDef } from '../core/index';
 
 export type Schema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
 
@@ -173,7 +173,7 @@ export interface SchemaError {
 export type ValidatorFn = (value: any) => SchemaError | null;
 
 /** Converts Schema type to OptionsWidgetDef type */
-export type SchemaOptions<T> = Omit<T, 'ui' | 'depends='>;
+export type SchemaOptions<T> = Omit<T & CommonOptionsDef, 'ui' | 'depends='>;
 export interface SchemaUI {
   titles?: string[];
   include?: string[] | string[][];

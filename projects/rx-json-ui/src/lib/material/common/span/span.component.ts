@@ -7,11 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget } from '../../../core/index';
-
-export interface SpanWidgetOptions {
-  text: string;
-}
+import { BaseWidget, TextOption } from '../../../core/index';
 
 @Component({
   selector: 'wdg-span',
@@ -21,4 +17,4 @@ export interface SpanWidgetOptions {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpanWidgetComponent extends BaseWidget<SpanWidgetOptions> {}
+export class SpanWidgetComponent extends BaseWidget<TextOption> {}

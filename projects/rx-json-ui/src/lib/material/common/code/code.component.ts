@@ -7,9 +7,9 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget } from '../../../core/index';
+import { BaseWidget, CommonOptionsDef } from '../../../core/index';
 
-export interface CodeWidgetOptions {
+export interface CodeWidgetOptions extends CommonOptionsDef {
   text: string;
 }
 
