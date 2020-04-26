@@ -93,6 +93,7 @@ interface TableWidgetEvents extends CommonEventsDef {
    * It receives the following parameters in the context:
    *
    * `$row` the row's data
+   * `$index` the row's index in the data source
    * `$action.index` the index of the current action in the actions array
    * `$action.data` the additional data defined in the action
    */
@@ -198,9 +199,10 @@ export class TableWidgetComponent
       ? this.keyCols.concat('__actions__')
       : this.keyCols;
   }
-  actionClick(rowData: any, actionIndex: number): void {
+  actionClick(rowData: any, rowIndex: number, actionIndex: number): void {
     this.emmit('onAction', {
       $row: rowData,
+      $index: rowIndex,
       $action: { data: this.options.actions[actionIndex].data, index: actionIndex },
     });
   }
