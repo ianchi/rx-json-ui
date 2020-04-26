@@ -7,7 +7,6 @@
 
 set-page {
   width: 100%;
-  height: 100%;
   margin: 0px;
   padding: 0px;
 
@@ -16,14 +15,10 @@ set-page {
   justify-content: center;
   align-items: flex-start;
 
-  overflow-y: auto;
-  overflow-x: hidden;
-
   .settings-page-column {
-    flex: 1 1 auto;
+    flex: 0 1 680px;
 
-    max-width: min(680px, 100%);
-    overflow: visible;
+    max-width: 680px;
 
     display: block;
     flex-flow: column nowrap;
