@@ -15,15 +15,15 @@
       [dataSource]="tableDataSource"
       [trackBy]="trackBy"
       matSort
-      [matSortDisabled]="!options.disableSort"
+      [matSortDisabled]="!disableSort"
     >
       <!-- Dynamic Column definitions-->
-      <ng-container [matColumnDef]="colKey" *ngFor="let colKey of showCols; index as colIndex">
+      <ng-container [matColumnDef]="colKey" *ngFor="let colKey of keyCols; index as colIndex">
         <th
           mat-header-cell
           *matHeaderCellDef
           mat-sort-header
-          [disabled]="!disableSort || disableSort!.indexOf(colKey) >= 0"
+          [disabled]="!disableSort || disableSort.indexOf(colKey) >= 0"
         >
           {{ options.headers[colKey] || colKey }}
         </th>

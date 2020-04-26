@@ -22,7 +22,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { BaseWidget, CommonEventsDef, CommonOptionsDef, Expressions } from '../../../core/index';
+import {
+  BaseWidget,
+  CommonEventsDef,
+  CommonOptionsDef,
+  Expressions,
+  multilineExpr,
+} from '../../../core/index';
 
 export interface BaseTableWidgetOptions extends CommonOptionsDef {
   /** Order list of column keys (each maps to a property of the row element). */
@@ -90,7 +96,7 @@ interface TableWidgetEvents extends CommonEventsDef {
    * `$action.index` the index of the current action in the actions array
    * `$action.data` the additional data defined in the action
    */
-  onAction: string;
+  onAction?: multilineExpr;
 }
 
 @Component({
@@ -106,12 +112,13 @@ export class TableWidgetComponent
   tableDataSource: MatTableDataSource<object[]> = new MatTableDataSource();
 
   showCols: string[] = [];
+  keyCols: string[] = [];
 
   @ViewChild(MatPaginator, { static: true })
   matPaginator: MatPaginator | undefined;
   @ViewChild(MatSort, { static: true })
   matSort: MatSort | undefined;
-  disableSort: string[] | undefined;
+  disableSort: string[] | undefined = [];
 
   trackBy: ((index: number, item: any) => any) | undefined;
 
@@ -163,18 +170,14 @@ export class TableWidgetComponent
       return value;
     });
 
-    this.map('actions', actions => {
-      if (!Array.isArray(actions)) actions = [];
-
-      this.setColumns();
-      return actions;
-    });
+    this.map('actions', actions => (Array.isArray(actions) ? actions : []));
   }
 
   dynOnAfterBind(): void {
     super.dynOnAfterBind();
     this.map('columns', () => this.setColumns());
     this.map('columns_sm', () => this.setColumns());
+    this.map('actions', () => this.setColumns());
   }
 
   ngOnInit(): void {
@@ -190,8 +193,10 @@ export class TableWidgetComponent
   }
 
   setColumns(): void {
-    const keys = (this.isMediaSmall && this.options.columns_sm) || this.options.columns;
-    this.showCols = this.options.actions?.length ? keys.concat('__actions__') : keys;
+    this.keyCols = (this.isMediaSmall && this.options.columns_sm) || this.options.columns;
+    this.showCols = this.options.actions?.length
+      ? this.keyCols.concat('__actions__')
+      : this.keyCols;
   }
   actionClick(rowData: any, actionIndex: number): void {
     this.emmit('onAction', {

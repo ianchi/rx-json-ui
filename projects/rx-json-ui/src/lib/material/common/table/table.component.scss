@@ -26,12 +26,14 @@ wdg-table {
     padding-right: 6px;
   }
 
+  .data-row td:first-of-type,
   .header-row th:first-of-type {
     padding-left: 20px;
     @media (max-width: 600px) {
       padding-left: 10px;
     }
   }
+  .data-row td:last-of-type,
   .header-row th:last-of-type {
     padding-right: 20px;
     @media (max-width: 600px) {
