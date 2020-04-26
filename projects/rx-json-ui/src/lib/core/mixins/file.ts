@@ -84,6 +84,6 @@ export class FileWidgetMixin extends BaseWidget<
     // emit selection
     if (this.lvalue) this.lvalue!.o[this.lvalue!.m] = this.files;
 
-    this.emmit('onAdded', { $files: this.files });
+    this.emit('onAdded', { $files: this.files });
   }
 }

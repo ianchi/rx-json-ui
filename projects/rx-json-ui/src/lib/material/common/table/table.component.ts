@@ -200,7 +200,7 @@ export class TableWidgetComponent
       : this.keyCols;
   }
   actionClick(rowData: any, rowIndex: number, actionIndex: number): void {
-    this.emmit('onAction', {
+    this.emit('onAction', {
       $row: rowData,
       $index: rowIndex,
       $action: { data: this.options.actions[actionIndex].data, index: actionIndex },

@@ -120,7 +120,7 @@ export class BaseWidget<
     this.widgetDef = widgetDef = this.dynOnSetup(widgetDef);
 
     if (widgetDef.events) this.parseEventsDef(widgetDef.events);
-    this.emmit('onSetup');
+    this.emit('onSetup');
     this.dynOnAfterSetup();
 
     this.bindings = parseDefObject<O>(widgetDef.options, this.context, true, this.expr);
@@ -129,7 +129,7 @@ export class BaseWidget<
       this.contentBind = this.parseContentDef(widgetDef.content).pipe(
         tap((content) => {
           this.content = content;
-          this.emmit('onContentChange');
+          this.emit('onContentChange');
         })
       );
 
@@ -215,7 +215,7 @@ export class BaseWidget<
     if (opt) this.bindings[option] = opt.pipe(map(callback));
   }
 
-  emmit(event: keyof E, subContext?: object, nextFn?: (value: any) => void): void {
+  emit(event: keyof E, subContext?: object, nextFn?: (value: any) => void): void {
     const ast = this.events[event];
     if (!ast) return;
 
@@ -256,10 +256,10 @@ export class BaseWidget<
       this.addSubscription = combineLatest(observables).subscribe(() => {
         this.dynOnChange();
 
-        if (!this.isInitialized) this.emmit('onInit');
+        if (!this.isInitialized) this.emit('onInit');
         this.isInitialized = true;
 
-        this.emmit('onChange', { $options: this.options });
+        this.emit('onChange', { $options: this.options });
         this._cdr.markForCheck();
       });
     else {
@@ -277,7 +277,7 @@ export class BaseWidget<
   // -----------------------
 
   ngOnDestroy(): void {
-    this.emmit('onDestroy');
+    this.emit('onDestroy');
     this.unsubscribe();
   }
 

@@ -54,7 +54,7 @@ export class SetLinkWidgetComponent extends BaseWidget<
     super(cdr, expr, iterableDiffers, keyValueDiffers, ngElement, renderer);
   }
   navigate(): void {
-    this.emmit('onClick');
+    this.emit('onClick');
     this.router.navigate([this.options.link], {
       state: { widgetDef: this?.content?.main[0] },
     });

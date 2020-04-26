@@ -116,7 +116,7 @@ export class AbstractFormFieldWidget<
     // listen to control changes to update bound context value
     this.addSubscription = this.formControl.valueChanges.subscribe((value: any) => {
       this.fldSetBoundValue(value);
-      this.emmit('onValueChange', { $value: value });
+      this.emit('onValueChange', { $value: value });
     });
 
     return def;

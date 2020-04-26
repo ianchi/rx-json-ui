@@ -120,7 +120,7 @@ export class AbstractArrayWidgetComponent<
   dynOnAfterSetup(): void {
     // prepare the differ
 
-    this.emmit('onTrackFn', (fn: any) => {
+    this.emit('onTrackFn', (fn: any) => {
       if (typeof fn === 'function') this.bindTrackBy = fn;
       else if (typeof fn === 'string' || typeof fn === 'number')
         this.bindTrackBy = (_i, elem) => elem[fn];
@@ -157,20 +157,20 @@ export class AbstractArrayWidgetComponent<
   }
 
   addRow(): void {
-    this.emmit('onNewRow', undefined, (newRow) => {
+    this.emit('onNewRow', undefined, (newRow) => {
       if (typeof newRow === 'object' && !isReactive(newRow)) newRow = RxObject(newRow);
       if (typeof newRow !== 'undefined') this.boundData!.push(newRow);
     });
   }
 
   deleteRow(idx: number): void {
-    this.emmit('onDeleteRow', { $idx: idx }, (result) => result && this.boundData!.splice(idx, 1));
+    this.emit('onDeleteRow', { $idx: idx }, (result) => result && this.boundData!.splice(idx, 1));
   }
 
   moveRow(idx: number, dir: number): void {
     if (!dir) return;
     dir = dir < 0 ? -1 : 1;
-    this.emmit(
+    this.emit(
       'onMoveRow',
       { $idx: idx, $dir: dir },
       (result) => result && this.boundData!.splice(idx + dir, 0, this.boundData!.splice(idx, 1)[0])

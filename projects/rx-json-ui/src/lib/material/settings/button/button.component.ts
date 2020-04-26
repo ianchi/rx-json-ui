@@ -32,6 +32,6 @@ export class SetButtonWidgetComponent extends BaseWidget<
   running = false;
   clickEvent(): void {
     this.running = true;
-    this.emmit('onClick', {}, () => (this.running = false));
+    this.emit('onClick', {}, () => (this.running = false));
   }
 }

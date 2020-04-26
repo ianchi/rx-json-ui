@@ -52,7 +52,7 @@ export class SetRowArrayWidgetComponent extends AbstractArrayWidgetComponent<
   RowWidgetEvents
 > {
   actionClick(rowData: any, index: number): void {
-    this.emmit('onAction', {
+    this.emit('onAction', {
       $row: rowData,
       $action: { data: this!.options!.actions![index].data, index },
     });
