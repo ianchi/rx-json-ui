@@ -52,7 +52,7 @@ export class AbstractFormWidgetComponent<
       }
 
       this.boundData = lvalue.o[lvalue.m];
-    } else this.boundData = RxObject({});
+    } else this.boundData = RxObject({}, true);
 
     Context.defineReadonly(this.context, { $: this.boundData });
 

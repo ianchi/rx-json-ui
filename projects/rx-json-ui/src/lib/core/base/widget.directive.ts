@@ -85,7 +85,7 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     // adding making '$' available as a RxObject to bind fields (in case no form widget is
     // in the view tree)
     this.parentContext =
-      this.parentContext || Context.create(this.rootContext, undefined, { $: RxObject({}) });
+      this.parentContext || Context.create(this.rootContext, undefined, { $: RxObject({}, true) });
     this.structuralContext = Context.create(this.parentContext);
 
     // create the structural observable
