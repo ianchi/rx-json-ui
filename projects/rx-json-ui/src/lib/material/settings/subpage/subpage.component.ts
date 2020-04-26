@@ -17,7 +17,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { BaseWidget, Expressions, MainSlotContentDef, TitleOption } from '../../../core/index';
+import { AbstractFormWidgetComponent, Expressions, TitleOption } from '../../../core/index';
 
 @Component({
   selector: 'set-subpage',
@@ -27,7 +27,7 @@ import { BaseWidget, Expressions, MainSlotContentDef, TitleOption } from '../../
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SetSubpageWidgetComponent extends BaseWidget<TitleOption, MainSlotContentDef> {
+export class SetSubpageWidgetComponent extends AbstractFormWidgetComponent<TitleOption> {
   constructor(
     cdr: ChangeDetectorRef,
     expr: Expressions,
