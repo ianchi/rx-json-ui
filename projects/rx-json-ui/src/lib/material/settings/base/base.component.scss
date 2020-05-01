@@ -113,6 +113,10 @@ set-base {
   max-width: 150px;
 }
 
+.set-row-ctrl-container {
+  display: flex;
+  align-items: center;
+}
 /*** Style for the nav section ***/
 
 .set-row-nav-container.expanded > .rotating-icon {
