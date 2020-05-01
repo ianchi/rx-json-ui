@@ -11,6 +11,7 @@
     [required]="options.required"
     [readonly]="options.readonly"
     [autocomplete]="options.autocomplete || ''"
+    [placeholder]="options.default"
   />
 
   <mat-error [id]="null" *ngIf="formControl?.invalid">
