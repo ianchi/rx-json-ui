@@ -3,6 +3,18 @@ wdg-popup {
 }
 
 .cdk-overlay-pane.wdg-popup-panel {
+  flex: 0 1 600px;
+  .mat-dialog-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-form-field {
+    display: block;
+  }
+  .mat-dialog-actions {
+    justify-content: flex-end;
+  }
   @media (max-width: 600px) {
     width: 100%;
 
