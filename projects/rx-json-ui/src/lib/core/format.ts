@@ -22,21 +22,33 @@ export class FormatPipe implements PipeTransform {
 export function formatValue(value: any, format: string): any {
   if (value == null) return '';
   if (typeof format !== 'string') return value;
-  const re = /^\s*(\w+)\s*(:(["'])([^"']*)\3)?\s*(:(["'])([^"']*)\6)?$/;
+  let re = /^\s*(\w+)\s*(:\s*(["'])([^"']*)\3)?\s*(:\s*(["'])([^"']*)\6)?$/;
 
-  const match: RegExpExecArray | null = re.exec(format);
+  let match: RegExpExecArray | null = re.exec(format);
+  const num = parseFloat(value);
 
   if (!match) return value;
 
   switch (match[1].toUpperCase()) {
     case 'NUMBER':
-      let num;
-      num = parseFloat(value);
       return isNaN(num) ? value : formatNumber(num, 'en-US', match[4]);
     case 'DATE':
       return formatDate(value, match[4], 'en-US', match[7]);
     case 'DURATION':
       return formatDuration(value, match[4]);
+    case 'HUMAN':
+      re = /^\s*(\w+)\s*(:\s*(["'])\s*([^"']*)\s*\3\s*(:\s*(["'])\s*([0-9]*)\s*\6(?::(\s*\[\s*(["'])(?:[^"']*)\9\s*(?:,\s*\9(?:[^"']*)\9\s*)*\]))?)?)?$/;
+      match = re.exec(format);
+      if (!match) return value;
+      return isNaN(num)
+        ? value
+        : formatHuman(
+            num,
+            match[4],
+            match[7] ? parseFloat(match[7]) : undefined,
+            // tslint:disable-next-line: no-eval
+            match[8] ? eval(match[8]) : undefined
+          );
     default:
       return value;
   }
@@ -125,4 +137,26 @@ export function formatDuration(value: string | number, format: string): string {
   }
 
   return result;
+}
+
+export function toHumanReadable(
+  value: number,
+  base: number = 1024,
+  units: string[] = ['B', 'Kb', 'Mb', 'Gb', 'Tb']
+): { value: number; factor: number; unit: string } {
+  if (!base || !Array.isArray(units)) return { value, unit: '', factor: 1 };
+
+  const power = Math.min(units.length - 1, Math.floor(Math.log(value) / Math.log(base)));
+  const factor = base ** power;
+  return { value: value / factor, unit: units[power], factor };
+}
+
+export function formatHuman(
+  value: number,
+  digits?: string,
+  base: number = 1024,
+  units: string[] = ['B', 'Kb', 'Mb', 'Gb', 'Tb']
+): string {
+  const hr = toHumanReadable(value, base, units);
+  return `${formatNumber(hr.value, 'en-us', digits)} ${hr.unit}`;
 }
