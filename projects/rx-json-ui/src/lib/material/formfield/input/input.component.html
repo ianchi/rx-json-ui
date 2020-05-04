@@ -12,6 +12,7 @@
     [readonly]="options.readonly"
     [autocomplete]="options.autocomplete || ''"
     [placeholder]="options.default"
+    spellcheck="false"
   />
 
   <mat-error [id]="null" *ngIf="formControl?.invalid">
