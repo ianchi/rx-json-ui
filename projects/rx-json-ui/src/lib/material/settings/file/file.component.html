@@ -1,0 +1,31 @@
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [value]="options.value"
+>
+  <div
+    class="set-row-ctrl set-row-spin"
+    *ngIf="options.spinner === true || (running && options.spinner === 'auto')"
+  >
+    <mat-spinner color="primary" diameter="32"></mat-spinner>
+  </div>
+  <button
+    mat-stroked-button
+    color="primary"
+    class="set-row-ctrl"
+    (click)="selectFiles()"
+    [disabled]="options.disabled"
+  >
+    {{ options.buttonTitle }}
+  </button>
+</set-base>
+
+<input
+  type="file"
+  #fileInput
+  style="display: none;"
+  (change)="onFilesAdded()"
+  [multiple]="options.multiple"
+/>

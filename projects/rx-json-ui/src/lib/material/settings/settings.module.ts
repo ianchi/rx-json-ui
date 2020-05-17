@@ -15,6 +15,7 @@ import { BaseSettingsModule } from './base.module';
 import { SetButtonWidgetComponent } from './button/button.component';
 import { SetContainerWidgetComponent } from './container/container.component';
 import { SetExpansionWidgetComponent } from './expansion/expansion.component';
+import { SetFileWidgetComponent } from './file/file.component';
 import { SetInputWidgetComponent } from './input/input.component';
 import { SetLevelWidgetComponent } from './level/level.component';
 import { SetLinkWidgetComponent } from './link/link.component';
@@ -34,6 +35,7 @@ export { SetAutocompleteWidgetComponent } from './autocomplete/autocomplete.comp
 export { SetButtonWidgetComponent } from './button/button.component';
 export { SetContainerWidgetComponent } from './container/container.component';
 export { SetExpansionWidgetComponent } from './expansion/expansion.component';
+export { SetFileWidgetComponent } from './file/file.component';
 export { SetInputWidgetComponent } from './input/input.component';
 export { SetLevelWidgetComponent } from './level/level.component';
 export { SetLinkWidgetComponent } from './link/link.component';
@@ -74,6 +76,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'set-level', component: SetLevelWidgetComponent },
         { type: 'set-container', component: SetContainerWidgetComponent },
         { type: 'set-text', component: SetTextWidgetComponent },
+        { type: 'set-file', component: SetFileWidgetComponent },
       ],
     }),
   ],
@@ -96,6 +99,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetLevelWidgetComponent,
     SetContainerWidgetComponent,
     SetTextWidgetComponent,
+    SetFileWidgetComponent,
   ],
 })
 export class SettingsWidgetsModule {}

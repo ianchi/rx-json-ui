@@ -19,9 +19,10 @@ import {
 } from '../base/public.interface';
 
 export interface FileWidgetOptions extends CommonOptionsDef {
-  title: string;
-  multiple: boolean;
-  disabled: boolean;
+  title?: string;
+  multiple?: boolean;
+  disabled?: boolean;
+  spinner: 'auto' | boolean;
 }
 
 export interface FileWidgetEvents extends CommonEventsDef {
@@ -34,8 +35,8 @@ export interface FileWidgetEvents extends CommonEventsDef {
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
-export class FileWidgetMixin extends BaseWidget<
-  FileWidgetOptions,
+export class FileWidgetMixin<O extends FileWidgetOptions = FileWidgetOptions> extends BaseWidget<
+  O,
   undefined,
   FileWidgetEvents,
   OptBindWidgetDef
@@ -51,10 +52,11 @@ export class FileWidgetMixin extends BaseWidget<
    */
   fileInput: any;
   files: File[] = [];
+  running = false;
 
   dynOnSetup(
-    def: WidgetDef<FileWidgetOptions, undefined, FileWidgetEvents, OptBindWidgetDef>
-  ): WidgetDef<FileWidgetOptions, undefined, FileWidgetEvents, OptBindWidgetDef> {
+    def: WidgetDef<O, undefined, FileWidgetEvents, OptBindWidgetDef>
+  ): WidgetDef<O, undefined, FileWidgetEvents, OptBindWidgetDef> {
     if (typeof def.bind === 'string') {
       const lvalue = this.expr.lvalue(def.bind, this.context);
 
@@ -74,6 +76,7 @@ export class FileWidgetMixin extends BaseWidget<
   }
 
   onFilesAdded(): void {
+    this.running = true;
     const files: FileList = this.fileInput.nativeElement.files;
 
     this.files = [];
@@ -84,6 +87,6 @@ export class FileWidgetMixin extends BaseWidget<
     // emit selection
     if (this.lvalue) this.lvalue!.o[this.lvalue!.m] = this.files;
 
-    this.emit('onAdded', { $files: this.files });
+    this.emit('onAdded', { $files: this.files }, () => (this.running = false));
   }
 }
