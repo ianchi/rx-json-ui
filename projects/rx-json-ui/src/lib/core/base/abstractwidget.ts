@@ -256,8 +256,10 @@ export class BaseWidget<
       this.addSubscription = combineLatest(observables).subscribe(() => {
         this.dynOnChange();
 
-        if (!this.isInitialized) this.emit('onInit');
-        this.isInitialized = true;
+        if (!this.isInitialized) {
+          this.isInitialized = true;
+          this.emit('onInit');
+        }
 
         this.emit('onChange', { $options: this.options });
         this._cdr.markForCheck();
