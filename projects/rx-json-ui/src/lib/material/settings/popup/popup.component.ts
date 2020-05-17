@@ -16,14 +16,31 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { tap } from 'rxjs/operators';
 
-import { BaseSetOption, BaseWidget, Expressions, PopupSlotsDef } from '../../../core/index';
+import {
+  BaseSetOption,
+  BaseWidget,
+  CommonEventsDef,
+  Expressions,
+  PopupSlotsDef,
+} from '../../../core/index';
 import { PopupComponent } from '../../common/popup/popup.component';
 
 export interface PopupWidgetOptions extends BaseSetOption {
   popupTitle: string;
 
   disabled: boolean;
+}
+
+export interface PopupWidgetEventsDef extends CommonEventsDef {
+  onOpen?: string;
+
+  /**
+   * Fired after the popup has been closed.
+   * Receives `$result` in the context with the exit result passed to `$dlg.close(result)`
+   */
+  onClose?: string;
 }
 
 @Component({
@@ -34,7 +51,11 @@ export interface PopupWidgetOptions extends BaseSetOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetPopupWidgetComponent extends BaseWidget<PopupWidgetOptions, PopupSlotsDef> {
+export class SetPopupWidgetComponent extends BaseWidget<
+  PopupWidgetOptions,
+  PopupSlotsDef,
+  PopupWidgetEventsDef
+> {
   constructor(
     cdr: ChangeDetectorRef,
     expr: Expressions,
@@ -48,7 +69,8 @@ export class SetPopupWidgetComponent extends BaseWidget<PopupWidgetOptions, Popu
   }
 
   openPopup(): void {
-    this.dialog.open(PopupComponent, {
+    this.emit('onOpen');
+    const dialogRef = this.dialog.open(PopupComponent, {
       data: {
         content: this.content,
         title: this.options.popupTitle,
@@ -59,5 +81,10 @@ export class SetPopupWidgetComponent extends BaseWidget<PopupWidgetOptions, Popu
       maxWidth: '100vw',
       panelClass: 'wdg-popup-panel',
     });
+    dialogRef.afterClosed().pipe(
+      tap(($result: any) => {
+        this.emit('onClose', { $result });
+      })
+    );
   }
 }
