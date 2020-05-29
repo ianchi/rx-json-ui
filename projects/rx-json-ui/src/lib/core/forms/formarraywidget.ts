@@ -164,7 +164,11 @@ export class AbstractArrayWidgetComponent<
   }
 
   deleteRow(idx: number): void {
-    this.emit('onDeleteRow', { $idx: idx }, (result) => result && this.boundData!.splice(idx, 1));
+    this.emit(
+      'onDeleteRow',
+      { $idx: idx, $row: this.boundData![idx] },
+      (result) => result && this.boundData!.splice(idx, 1)
+    );
   }
 
   moveRow(idx: number, dir: number): void {
