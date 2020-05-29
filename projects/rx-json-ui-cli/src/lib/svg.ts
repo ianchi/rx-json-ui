@@ -19,11 +19,14 @@ interface SvgOptions {
 
 interface IconsYaml {
   namespace?: string;
+  keepClassName?: boolean;
   source?: string;
   icons?: string[];
 }
 export function svgGenerate(outPath: string, opts: SvgOptions): void {
-  const iconsets: { [namespace: string]: vinyl.BufferFile[] } = {};
+  const iconsets: {
+    [namespace: string]: { icons: vinyl.BufferFile[]; keepClassName?: boolean };
+  } = {};
   let icons: IconsYaml[];
 
   try {
@@ -37,7 +40,8 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
   // consolidate namespace info
   for (const def of icons) {
     const ns = def.namespace || 'default';
-    const set = iconsets[ns] || (iconsets[ns] = []);
+    const set = iconsets[ns] || (iconsets[ns] = { icons: [] });
+    set.keepClassName = def.keepClassName;
     let source: string;
 
     if (def.source) source = path.resolve(def.source);
@@ -59,7 +63,7 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
               path.resolve(source, path.extname(icon) ? icon : `${icon}.svg`)
             ),
           });
-          if (file) set.push(file);
+          if (file) set.icons.push(file);
         } catch (e) {
           console.error(e.message);
           process.exit(1);
@@ -84,11 +88,15 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
           },
         ],
       },
-      svg: { xmlDeclaration: false, doctypeDeclaration: false },
+      svg: {
+        xmlDeclaration: false,
+        doctypeDeclaration: false,
+        namespaceClassnames: !set.keepClassName,
+      },
       mode: { defs: true },
     });
 
-    for (const icon of set) spriter.add(icon);
+    for (const icon of set.icons) spriter.add(icon);
 
     if (opts.remove) fs.rmdirSync(outPath, { recursive: true });
     if (!fs.existsSync(outPath)) fs.mkdirSync(outPath, { recursive: true });
