@@ -9,7 +9,7 @@ import { Directive } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl } from '@angular/forms';
 import { combineMixed, GET_OBSERVABLE, isReactive } from 'espression-rx';
 import { isObservable, of } from 'rxjs';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
 import { ERROR_MSG, SchemaPrimitiveValidations, schemaValidator, ValidatorFn } from '../../schema';
 import { ERR_CUSTOM } from '../../schema/validation/base';
@@ -24,6 +24,7 @@ import {
 import { Context } from '../expressions/index';
 
 import { AbstractBaseFormControlWidget } from './baseformcontrol';
+import { ILvalue } from 'espression';
 
 export interface FormFieldOptionsDef extends SchemaPrimitiveValidations<any>, CommonOptionsDef {}
 @Directive()
@@ -50,7 +51,14 @@ export class AbstractFormFieldWidget<
         `Form field "bind" property must be an identifier or member expression (${def.bind})`
       );
 
-    Context.defineReadonly(this.context, { $: this.lvalue$.o });
+    Context.defineReadonly(this.context, {
+      $: isObservable<ILvalue>(this.lvalue$)
+        ? this.lvalue$.pipe(
+            map((l) => l.o),
+            shareReplay({ bufferSize: 1, refCount: true })
+          )
+        : this.lvalue$.o,
+    });
 
     // setup validation
     if (def.events && def.events['onValidate']) {
@@ -88,24 +96,24 @@ export class AbstractFormFieldWidget<
     if (def.options) this.default = def.options.default;
 
     // listen to bound context value and update on changes
-    this.addSubscription = combineMixed([this.lvalue$.o, this.lvalue$.m], true)
+    this.addSubscription = combineMixed([this.lvalue$], true)
       .pipe(
-        tap(([o, m]) => {
-          if (!isReactive(o)) {
+        tap(([l]) => {
+          if (!isReactive(l.o)) {
             this.lvalue = undefined;
             throw new Error(
               `Bound Key (${def.bind}) must be of Reactive Type or Observable emiting reactive object`
             );
           }
-          if (m === null || typeof m === 'undefined') {
+          if (l.m === null || typeof l.m === 'undefined') {
             this.lvalue = undefined;
             throw new Error(`Bound member can't be undefined (${def.bind})`);
           }
-          this.lvalue = { o, m };
+          this.lvalue = l;
         }),
 
         // switch to stream of values
-        switchMap(([o, m]) => o[GET_OBSERVABLE](m)),
+        switchMap(([l]) => l.o[GET_OBSERVABLE](l.m)),
         // if value of bound variable is observable, switch to it's resolved values
         switchMap((val) => (isObservable(val) ? val : of(val)))
       )

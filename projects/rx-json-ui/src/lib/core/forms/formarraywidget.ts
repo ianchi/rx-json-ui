@@ -92,7 +92,7 @@ export class AbstractArrayWidgetComponent<
     // create a Store for the variables
     // binding is always on the parent context directly, so it can't get shadowed in the child
     // and if the variable is created, it can still be accessed after child's destruction
-    const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext);
+    const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext, false);
 
     if (!lvalue)
       throw new Error('Form field "bind" property must be an identifier or member expression');

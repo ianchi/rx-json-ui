@@ -110,14 +110,14 @@ export class ESpression extends Expressions {
    * Evaluates an expression using *key* parsing rules and returns and lvalue object:
    * {o: evaluated_object, m: member}
    */
-  lvalue(expression: string, context: Context): ILvalue | undefined {
+  lvalue(expression: string, context: Context, unresolved: boolean = true): ILvalue | undefined {
     let result;
 
     const ast = this.parseKey(expression);
 
     if (!ast) return undefined;
     try {
-      result = this._rxEval.lvalue(ast, context, true);
+      result = this._rxEval.lvalue(ast, context, unresolved);
     } catch (e) {
       console.warn(`${e.message} evaluating expression: ${expression}`);
       return undefined;

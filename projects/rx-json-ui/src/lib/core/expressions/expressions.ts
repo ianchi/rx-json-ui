@@ -55,5 +55,5 @@ export abstract class Expressions {
     asObservable?: boolean
   ): Observable<any> | any;
 
-  abstract lvalue(expression: string, context: Context): ILvalue | undefined;
+  abstract lvalue(expression: string, context: Context, unresolved?: boolean): ILvalue | undefined;
 }

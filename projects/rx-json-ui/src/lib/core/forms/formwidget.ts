@@ -41,7 +41,7 @@ export class AbstractFormWidgetComponent<
     // get bound model if it has one or create aux unbound model
     if (typeof def.bind === 'string') {
       // binding is always on the parent context directly, so it can't get shadowed in the child
-      const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext);
+      const lvalue = this.expr.lvalue(def.bind, this.context.$parentContext, false);
 
       if (!lvalue)
         throw new Error('Form field "bind" property must be an identifier or member expression');
