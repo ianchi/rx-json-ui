@@ -9,7 +9,7 @@
 </div>
 <div *ngIf="expanded && content?.main.length" class="settings-sectiongroup-wrapper" #contentRef>
   <ng-container
-    *ngFor="let element of content!.main"
+    *ngFor="let element of content?.main"
     [wdgWidget]="element"
     [parentContext]="context"
   >

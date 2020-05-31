@@ -2,7 +2,7 @@
   <button mat-button *ngIf="events.onNewRow" (click)="addRow()">New row</button>
   <div *ngFor="let row of boundData; index as idx">
     <ng-container
-      *ngFor="let element of content!.main"
+      *ngFor="let element of content?.main"
       [wdgWidget]="element"
       [parentContext]="rowContext[idx]"
     >

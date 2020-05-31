@@ -1,6 +1,6 @@
 <div class="set-row set-row-combined" *ngFor="let row of boundData; index as rowIndex">
   <ng-container
-    *ngFor="let element of content!.main"
+    *ngFor="let element of content?.main"
     [wdgWidget]="element"
     [parentContext]="rowContext[rowIndex]"
   >

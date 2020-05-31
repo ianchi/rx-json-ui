@@ -7,7 +7,7 @@
 
 <mat-accordion>
   <ng-container
-    *ngFor="let element of content!.main; index as idx"
+    *ngFor="let element of content?.main; index as idx"
     [wdgWidget]="element"
     [parentContext]="context"
   ></ng-container>
