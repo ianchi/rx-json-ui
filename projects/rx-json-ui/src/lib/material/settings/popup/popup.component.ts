@@ -16,7 +16,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { tap } from 'rxjs/operators';
 
 import {
   BaseSetOption,
@@ -70,21 +69,21 @@ export class SetPopupWidgetComponent extends BaseWidget<
 
   openPopup(): void {
     this.emit('onOpen');
-    const dialogRef = this.dialog.open(PopupComponent, {
-      data: {
-        content: this.content,
-        title: this.options.popupTitle,
-        context: this.context,
-      },
+    this.dialog
+      .open(PopupComponent, {
+        data: {
+          content: this.content,
+          title: this.options.popupTitle,
+          context: this.context,
+        },
 
-      maxHeight: '100vh',
-      maxWidth: '100vw',
-      panelClass: 'wdg-popup-panel',
-    });
-    dialogRef.afterClosed().pipe(
-      tap(($result: any) => {
-        this.emit('onClose', { $result });
+        maxHeight: '100vh',
+        maxWidth: '100vw',
+        panelClass: 'wdg-popup-panel',
       })
-    );
+      .afterClosed()
+      .subscribe(($result: any) => {
+        this.emit('onClose', { $result });
+      });
   }
 }

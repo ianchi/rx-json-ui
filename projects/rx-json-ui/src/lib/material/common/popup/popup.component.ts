@@ -46,6 +46,7 @@ export class PopupComponent implements OnInit {
           return true;
         },
       },
+      $parent: this._data.context,
       // create a base form to be able to bind
       $: RxObject({}, true),
       [FORM_CONTROL]: new FieldControl(new FormGroup({})),
