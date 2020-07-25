@@ -280,4 +280,10 @@ export interface SchemaUI {
    * Overrides computed ones
    */
   options?: AbstractOptionsDef;
+
+  /**
+   * Schema is only data validation description.
+   * Should be omitted when building UI
+   */
+  hidden?: boolean;
 }

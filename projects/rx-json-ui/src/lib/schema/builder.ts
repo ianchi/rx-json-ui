@@ -61,7 +61,7 @@ export function buildUI(
     events: {},
   };
 
-  if (!schema) return widget;
+  if (!schema || schema.ui?.hidden) return widget;
 
   let objectUI: AbstractWidgetDef | AbstractWidgetDef[];
 
@@ -245,6 +245,7 @@ function buildObject(
             (group) =>
               !('$include' in group) &&
               (group.$id === item.key || item.key === '#/*/') &&
+              !group.ui?.hidden &&
               !exclude.some((ex) => !ex.wildcard && (ex.key === '#/*/' || ex.key === item.key))
           );
           if (!item.wildcard)
@@ -263,7 +264,11 @@ function buildObject(
               if ('$include' in group) return;
               const propLevel = item.wildcard === '**' ? Infinity : 0;
               getPropertiesFromSchema(group, propLevel)
-                .filter((prop) => !exclude.some((ex) => !ex.wildcard && ex.key === prop.property))
+                .filter(
+                  (prop) =>
+                    !prop.schema.ui?.hidden &&
+                    !exclude.some((ex) => !ex.wildcard && ex.key === prop.property)
+                )
                 .forEach((prop) =>
                   content.push(buildUI(prop.schema, `${bind}['${prop.property}']`, ui))
                 );
@@ -275,13 +280,16 @@ function buildObject(
 
         if (propLevel === null) {
           if (!exclude.some((ex) => ex.key === item.key || ex.key === '*' || ex.key === '**'))
-            getPropertySchemas(schema, item.key).forEach((propSchema) =>
-              content.push(buildUI(propSchema, `${bind}['${item.key}']`, ui))
+            getPropertySchemas(schema, item.key).forEach(
+              (propSchema) =>
+                !propSchema.ui?.hidden &&
+                content.push(buildUI(propSchema, `${bind}['${item.key}']`, ui))
             );
         } else
           getPropertiesFromSchema(schema, propLevel)
             .filter(
               (prop) =>
+                !prop.schema.ui?.hidden &&
                 !exclude.some((ex) => ex.key === prop.property || ex.key === '*' || ex.key === '**')
             )
             .forEach((prop) =>
@@ -296,8 +304,10 @@ function buildObject(
     if (schema.properties) {
       const properties = schema.properties;
 
-      Object.keys(properties).forEach((key) =>
-        content.push(buildUI(properties[key], `${bind}['${key}']`, nextUI))
+      Object.keys(properties).forEach(
+        (key) =>
+          !properties[key].ui?.hidden &&
+          content.push(buildUI(properties[key], `${bind}['${key}']`, nextUI))
       );
     }
 
@@ -306,7 +316,7 @@ function buildObject(
       schema.allOf.forEach((group) => {
         // `$include` should already be resolved and removed by this time (in `loadSchema`)
         // Ignore it just in case un unresolved schema is passed as input.
-        if (!('$include' in group)) content.push(buildUI(group, bind, nextUI));
+        if (!('$include' in group) && !group.ui?.hidden) content.push(buildUI(group, bind, nextUI));
       });
 
     if (content.length) widget.content = content;
