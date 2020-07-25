@@ -104,6 +104,9 @@ export interface SchemaArray extends SchemaHeader, SchemaBaseValidations {
 
   default?: any[];
 
+  /** Summary of the data */
+  value?: string;
+
   /** This value is the maximum (inclusive) allowed number of items in the array for the data to be valid. */
   maxItems?: number;
   /** This value is the minimum (inclusive) allowed number of items in the array for the data to be valid. */
@@ -150,6 +153,8 @@ export interface SchemaPartialObject extends SchemaHeader {
 
   'depends='?: string;
 
+  /** Summary of the data */
+  value?: string;
   properties?: { [name: string]: Schema };
 
   /**
@@ -231,20 +236,36 @@ export type SchemaOptions<T> = Omit<
 export interface WidgetMap {
   default: string;
   number: string;
+  range: string;
   integer: string;
   string: string;
-  enum: string;
+  select: string;
+  autocomplete: string;
   boolean: string;
   array: string;
   list: string;
   object: string;
   unheaderedObject: string;
+  objectLevel: string[];
 }
 
 /** Schema extension to provide custom options to build UI widgets from the schema definition */
 export interface SchemaUI {
   /** Widget to use to render the current schema */
   widget?: string;
+
+  /**
+   * Role of the field, used to change the mapping from schema to widget, instead of
+   * fixing the widget as with `widget`.
+   * It has lower priority.
+   */
+  role?: string;
+
+  /**
+   * Fixes the object nesting level of the current schema.
+   * Used to select an objectLevel mapping to widget.
+   */
+  level?: number;
 
   /**
    * Map of `type` to widgets to use to build UI.

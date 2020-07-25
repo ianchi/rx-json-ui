@@ -20,39 +20,39 @@ export const BUILDER_WIDGETS: WidgetMap = {
   default: 'default',
   number: 'set-input',
   integer: 'set-input',
+  range: 'set-slider',
   string: 'set-input',
-  enum: 'set-select',
+  select: 'set-select',
+  autocomplete: 'set-autocomplete',
   boolean: 'set-toggle',
   array: 'set-rowarray',
   list: 'set-list',
   object: 'set-expansion',
   unheaderedObject: 'set-container',
+  objectLevel: ['set-page', 'set-section', 'set-expansion'],
 };
 
-export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWidgetDef;
+export function buildUI(schema: Schema, bind: string, uiOrInclude?: SchemaUI): AbstractWidgetDef;
 export function buildUI(
   schema: Schema,
   bind: string,
   uiOrInclude?: SchemaUI | string | string[],
-  include?: string | string[]
+  ui?: SchemaUI
 ): AbstractWidgetDef | AbstractWidgetDef[];
 export function buildUI(
   schema: Schema,
   bind: string,
   uiOrInclude?: SchemaUI | string | string[],
-  include?: string | string[]
+  ui?: SchemaUI
 ): AbstractWidgetDef | AbstractWidgetDef[] {
-  if (typeof uiOrInclude === 'string' || Array.isArray(uiOrInclude)) {
-    include = uiOrInclude;
-    uiOrInclude = {};
-  }
+  let include: string | string[] | undefined;
+  if (typeof uiOrInclude === 'string' || Array.isArray(uiOrInclude)) include = uiOrInclude;
+  else if (typeof uiOrInclude === 'object') ui = uiOrInclude;
+  ui = ui ?? {};
 
-  const widgetMap: WidgetMap =
-    uiOrInclude && 'widgets' in uiOrInclude
-      ? { ...BUILDER_WIDGETS, ...uiOrInclude.widgets }
-      : { ...BUILDER_WIDGETS };
+  const widgetMap: WidgetMap = { ...BUILDER_WIDGETS, ...ui.widgets };
 
-  const ui = { ...schema.ui, ...uiOrInclude };
+  ui = { ...schema.ui, ...ui, ...{ widgets: widgetMap } };
 
   let widget: AbstractWidgetDef = {
     widget: widgetMap.default,
@@ -72,10 +72,11 @@ export function buildUI(
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'number':
       widget.options!.inputType = 'number';
-
+      widget.widget = hasProp('enum', schema) ? widgetMap.select : widgetMap[schema.type];
+      break;
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'string':
-      widget.widget = hasProp('enum', schema) ? widgetMap.enum : widgetMap.string;
+      widget.widget = hasProp('enum', schema) ? widgetMap.select : widgetMap.string;
       break;
 
     case 'boolean':
@@ -83,12 +84,12 @@ export function buildUI(
       break;
 
     case 'array':
-      widget = buildArray(schema, bind, widgetMap);
+      widget = buildArray(schema, bind, ui);
       // TODO: add newRow
       break;
 
     case 'object':
-      objectUI = buildObject(schema, bind, include, widgetMap);
+      objectUI = buildObject(schema, bind, include, ui);
 
       if (Array.isArray(objectUI)) return objectUI;
       else widget = objectUI;
@@ -99,6 +100,8 @@ export function buildUI(
   }
 
   if (ui.widget) widget.widget = ui.widget;
+  else if (ui.role && typeof widgetMap[ui.role as keyof WidgetMap] === 'string')
+    widget.widget = widgetMap[ui.role as keyof WidgetMap] as string;
 
   if (ui.events) {
     for (const e in ui.events) widget.events![e] = ui.events[e];
@@ -119,13 +122,13 @@ interface FilterMatch {
   group: boolean;
   wildcard: string;
 }
-function buildArray(schema: SchemaArray, bind: string, widgetMap: WidgetMap): AbstractWidgetDef {
+function buildArray(schema: SchemaArray, bind: string, ui: SchemaUI): AbstractWidgetDef {
+  const widgetMap = (ui.widgets as WidgetMap) ?? BUILDER_WIDGETS;
   const widget: AbstractWidgetDef = {
     widget: widgetMap.list,
     bind,
   };
   let additionalItems: Schema | undefined;
-  const ui: SchemaUI = { widgets: widgetMap };
 
   if (Array.isArray(schema.items)) {
     // TODO: express tuple case
@@ -189,17 +192,30 @@ function buildObject(
   schema: SchemaObject,
   bind: string,
   filter: string | string[] | undefined,
-  widgetMap: WidgetMap
+  ui: SchemaUI
 ): AbstractWidgetDef | AbstractWidgetDef[] {
+  const widgetMap = (ui.widgets as WidgetMap) ?? BUILDER_WIDGETS;
+  const hasHeader = !!(hasProp('title', schema) || hasProp('description', schema));
   const widget: AbstractFieldWidgetDef = {
-    widget: schema.title || schema.description ? widgetMap.object : widgetMap.unheaderedObject,
+    widget: !hasHeader
+      ? widgetMap.unheaderedObject
+      : typeof ui.level !== 'number'
+      ? widgetMap.object
+      : ui.level >= widgetMap.objectLevel.length
+      ? widgetMap.objectLevel[widgetMap.objectLevel.length - 1]
+      : widgetMap.objectLevel[ui.level],
     bind,
   };
-  const ui: SchemaUI = { widgets: widgetMap };
   const content = [] as AbstractWidgetDef[];
   const include: FilterMatch[] = [];
   const exclude: FilterMatch[] = [];
   const excludeFilter: string[] = [];
+  const nextUI = {
+    ...ui,
+    level: typeof ui.level !== 'number' ? undefined : ui.level + (hasHeader ? 1 : 0),
+  };
+  delete nextUI.widget;
+  delete nextUI.role;
 
   // parse filter
   if (filter) {
@@ -220,12 +236,10 @@ function buildObject(
   }
 
   // if there is some include, return only the elements as array
-
   if (include.length) {
     include.forEach((item) => {
       if (item.group) {
         // it is group
-
         if (schema.allOf) {
           const matchedGroups = schema.allOf.filter(
             (group) =>
@@ -239,16 +253,16 @@ function buildObject(
                 buildUI(
                   group as SchemaPartialObject,
                   `${bind}`,
-                  ui,
-                  excludeFilter
+                  excludeFilter,
+                  ui
                 ) as AbstractWidgetDef
               )
             );
           else
             matchedGroups.forEach((group) => {
               if ('$include' in group) return;
-              const level = item.wildcard === '**' ? Infinity : 0;
-              getPropertiesFromSchema(group, level)
+              const propLevel = item.wildcard === '**' ? Infinity : 0;
+              getPropertiesFromSchema(group, propLevel)
                 .filter((prop) => !exclude.some((ex) => !ex.wildcard && ex.key === prop.property))
                 .forEach((prop) =>
                   content.push(buildUI(prop.schema, `${bind}['${prop.property}']`, ui))
@@ -257,15 +271,15 @@ function buildObject(
         }
       } else {
         // It is a plain property
-        const level = item.key === '*' ? 0 : item.key === '**' ? Infinity : null;
+        const propLevel = item.key === '*' ? 0 : item.key === '**' ? Infinity : null;
 
-        if (level === null) {
+        if (propLevel === null) {
           if (!exclude.some((ex) => ex.key === item.key || ex.key === '*' || ex.key === '**'))
             getPropertySchemas(schema, item.key).forEach((propSchema) =>
-              content.push(buildUI(propSchema, `${bind}['${item}']`, ui))
+              content.push(buildUI(propSchema, `${bind}['${item.key}']`, ui))
             );
         } else
-          getPropertiesFromSchema(schema, level)
+          getPropertiesFromSchema(schema, propLevel)
             .filter(
               (prop) =>
                 !exclude.some((ex) => ex.key === prop.property || ex.key === '*' || ex.key === '**')
@@ -283,7 +297,7 @@ function buildObject(
       const properties = schema.properties;
 
       Object.keys(properties).forEach((key) =>
-        content.push(buildUI(properties[key], `${bind}['${key}']`, ui))
+        content.push(buildUI(properties[key], `${bind}['${key}']`, nextUI))
       );
     }
 
@@ -292,7 +306,7 @@ function buildObject(
       schema.allOf.forEach((group) => {
         // `$include` should already be resolved and removed by this time (in `loadSchema`)
         // Ignore it just in case un unresolved schema is passed as input.
-        if (!('$include' in group)) content.push(buildUI(group, bind, ui));
+        if (!('$include' in group)) content.push(buildUI(group, bind, nextUI));
       });
 
     if (content.length) widget.content = content;
