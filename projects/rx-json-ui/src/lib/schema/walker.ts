@@ -6,7 +6,9 @@
  */
 
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
+
+import { Context, Expressions } from '../core';
 
 import { Schema, SchemaInclude, SchemaPartialObject } from './interface';
 export type SchemaWalkFn = (schema: Schema | SchemaInclude, lastId?: string) => void;
@@ -61,27 +63,34 @@ export function walkSchema(
 export function loadSchema(
   path: string,
   includeFn: SchemaIncludeFn,
-  id?: string
+  id?: string,
+  expr?: Expressions,
+  context: Context = {}
 ): Observable<Schema[]> {
   if (!path) throw new Error('Must provide Schema path');
 
   return includeFn(path, id).pipe(
     switchMap((schemaOrArray) => {
       const included: Array<Observable<Schema | Schema[]>> = [];
-      const schemas = Array.isArray(schemaOrArray) ? schemaOrArray : [schemaOrArray];
+      // flatten array to allow import of SchemaPartialObject | SchemaPartialObject[]
+      const schemas = Array.isArray(schemaOrArray) ? schemaOrArray.flat() : [schemaOrArray];
 
-      schemas.forEach((schema) =>
+      schemas.forEach((schema) => {
+        // execute $onLoad handler
+        if (schema.$onLoad && expr)
+          included.push(expr.eval(schema.$onLoad, context, true).pipe(take(1)));
+
+        // load $include
         walkSchema(schema, (subSchema, lastId) => {
           if ('$include' in subSchema) {
             included.push(
-              loadSchema(subSchema.$include, includeFn, lastId).pipe(
-                // flatten array to allow import of SchemaPartialObject | SchemaPartialObject[]
-                tap((includedSchemas) => ((subSchema as any).__resolved = includedSchemas.flat()))
+              loadSchema(subSchema.$include, includeFn, lastId, expr, context).pipe(
+                tap((includedSchemas) => ((subSchema as any).__resolved = includedSchemas))
               )
             );
           }
-        })
-      );
+        });
+      });
 
       return !included.length
         ? of(schemas)

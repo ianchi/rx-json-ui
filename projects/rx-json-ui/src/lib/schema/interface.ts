@@ -21,6 +21,16 @@ interface SchemaHeader {
 
   /** Allows to leave a comment for developers in the schema file. */
   $comment?: string;
+
+  /**
+   * Expression to evaluate after schema loading.
+   * Only executed on first schema of the file.
+   *
+   * @parser ES6
+   */
+  $onLoad: string;
+
+  /** Customization for building UI from schema */
   ui?: SchemaUI;
 }
 
