@@ -10,14 +10,31 @@ import { AbstractEventsDef, AbstractOptionsDef, IconOption, SubtitleOption } fro
 export type Schema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
 
 /**
- * Generic schema definition, with keywords valid for all types
+ * Metadata schema keywords, valid for all types
  */
 interface SchemaHeader {
+  /** Short descriptive name of the field */
   title?: string;
+
+  /** Explanation of the purpose of the field */
   description?: string;
+
+  /** Allows to leave a comment for developers in the schema file. */
+  $comment?: string;
   ui?: SchemaUI;
 }
 
+/**
+ * Base validation keywords, valid for all types
+ */
+export interface SchemaBaseValidations {
+  type?: string;
+
+  'depends='?: string;
+  required?: boolean;
+
+  readonly?: boolean;
+}
 export interface SchemaPrimitiveValidations<T> extends SchemaBaseValidations {
   type: 'string' | 'number' | 'integer' | 'boolean';
   enum?: T[];
@@ -25,14 +42,7 @@ export interface SchemaPrimitiveValidations<T> extends SchemaBaseValidations {
   enumDescription?: string[];
   default?: T;
 }
-export interface SchemaBaseValidations {
-  type?: string | string[];
 
-  'depends='?: string;
-  required?: boolean;
-
-  readonly?: boolean;
-}
 /**
  * Schema Keywords specific for validating number and integer types
  */
@@ -92,6 +102,8 @@ export interface SchemaBoolean extends SchemaHeader, SchemaPrimitiveValidations<
 export interface SchemaArray extends SchemaHeader, SchemaBaseValidations {
   type: 'array';
 
+  default?: any[];
+
   /** This value is the maximum (inclusive) allowed number of items in the array for the data to be valid. */
   maxItems?: number;
   /** This value is the minimum (inclusive) allowed number of items in the array for the data to be valid. */
@@ -119,22 +131,48 @@ export interface SchemaArray extends SchemaHeader, SchemaBaseValidations {
    * then the result of the validation depends on the value of `additionalItems` keyword:
    *
    * * `false`: data is invalid
-   * * `true`: data is valid
    * * `object`: data is valid if all additional items
    * (i.e. items with indices greater or equal than `items` keyword value length)
    * are valid according to the schema in `additionalItems` keyword.
    */
-  additionalItems?: Schema | boolean;
+  additionalItems?: Schema;
 }
 
-export interface SchemaObject extends SchemaHeader, SchemaBaseValidations {
+/**
+ * Schema Keywords specific for validating additional properties of an object.
+ * Useful for splitting object definition in multiple files or to group related
+ * properties in subsets.
+ */
+export interface SchemaPartialObject extends SchemaHeader {
   type: 'object';
+
+  $id?: string;
+
+  'depends='?: string;
+
+  properties?: { [name: string]: Schema };
+
+  /**
+   * Allows to extend the current schema with external file(s). Valid only for `object` type.
+   * It must be an array of `PartialObject` schemas or of `SchemaIncludes` (an object
+   * with just an `$include` property with the path (or glob) to the external schema(s)
+   * of `PartialObject` to load.
+   * It should not redefine properties defined in the base schema.
+   */
+  allOf?: Array<SchemaPartialObject | SchemaInclude>;
+}
+
+/**
+ * Schema Keywords specific for validating objects
+ */
+export interface SchemaObject extends SchemaPartialObject, SchemaBaseValidations {
+  type: 'object';
+
+  default?: {};
   /** This value is the maximum (inclusive) allowed number of properties in the object for the data to be valid. */
   maxProperties?: number;
   /** This value is the minimum (inclusive) allowed number of properties in the object for the data to be valid. */
   minProperties?: number;
-
-  properties?: { [name: string]: Schema };
 
   /**
    * The value of this keyword should be a map where keys should be regular expressions
@@ -165,6 +203,18 @@ export interface SchemaObject extends SchemaHeader, SchemaBaseValidations {
   propertyNames?: Schema;
 }
 
+/** Pointer to external schema(s) of `PartialObject` to load. */
+export interface SchemaInclude {
+  /** Path to an external schema file or glob of files. Fragments URI are not supported. */
+  $include: string;
+
+  /**
+   * Used internally to expand the $included files
+   * @ignore
+   */
+  resolved?: Schema | Schema[];
+}
+
 export interface SchemaError {
   code: number;
   [keyword: string]: any;
@@ -172,13 +222,23 @@ export interface SchemaError {
 
 export type ValidatorFn = (value: any) => SchemaError | null;
 
-/** Converts Schema type to OptionsWidgetDef type */
-export type SchemaOptions<T> = Omit<T & IconOption & SubtitleOption, 'ui' | 'depends='>;
+/** Converts Schema type to OptionsWidgetDef type. Used for generating widget's schemas from type information */
+export type SchemaOptions<T> = Omit<
+  T & IconOption & SubtitleOption,
+  'ui' | 'depends=' | '$comment'
+>;
+
+/** Schema extension to provide custom options to build UI widgets from the schema definition */
 export interface SchemaUI {
-  titles?: string[];
-  include?: string[] | string[][];
-  exclude?: string[];
+  /** Widget to use to render the current schema */
   widget?: string;
+
+  /** Event handlers to add to the widget */
   events?: AbstractEventsDef;
+
+  /**
+   * Additional options to add to the widget's definition.
+   * Overrides computed ones
+   */
   options?: AbstractOptionsDef;
 }

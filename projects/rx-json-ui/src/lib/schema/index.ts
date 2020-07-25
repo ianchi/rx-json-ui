@@ -9,3 +9,4 @@ export * from './validation/index';
 export * from './interface';
 export * from './builder';
 export * from './utils';
+export * from './walker';
