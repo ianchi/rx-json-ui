@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core/index';
+import { AbstractFormWidgetComponent } from '../../../core/index';
 
 @Component({
   selector: 'wdg-container',
@@ -16,4 +16,4 @@ import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core/
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContainerWidgetComponent extends BaseWidget<CommonOptionsDef, MainSlotContentDef> {}
+export class ContainerWidgetComponent extends AbstractFormWidgetComponent {}

@@ -7,7 +7,7 @@
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
-import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core';
+import { AbstractFormWidgetComponent } from '../../../core';
 
 @Component({
   selector: 'set-container',
@@ -17,4 +17,4 @@ import { BaseWidget, CommonOptionsDef, MainSlotContentDef } from '../../../core'
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'set-row' },
 })
-export class SetContainerWidgetComponent extends BaseWidget<CommonOptionsDef, MainSlotContentDef> {}
+export class SetContainerWidgetComponent extends AbstractFormWidgetComponent {}
