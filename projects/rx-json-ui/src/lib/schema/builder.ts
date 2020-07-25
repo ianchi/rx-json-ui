@@ -7,7 +7,7 @@
 
 import { AbstractFieldWidgetDef, AbstractWidgetDef } from '../core/index';
 
-import { Schema, SchemaArray, SchemaObject, SchemaUI } from './interface';
+import { Schema, SchemaArray, SchemaObject, SchemaPartialObject, SchemaUI } from './interface';
 
 export const BUILDER_WIDGETS = {
   default: 'default',
@@ -22,7 +22,19 @@ export const BUILDER_WIDGETS = {
   set: 'set-container',
 };
 
-export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWidgetDef {
+export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWidgetDef;
+export function buildUI(
+  schema: Schema,
+  bind: string,
+  uiOrInclude?: SchemaUI | string | string[],
+  include?: string | string[]
+): AbstractWidgetDef | AbstractWidgetDef[];
+export function buildUI(
+  schema: Schema,
+  bind: string,
+  uiOrInclude?: SchemaUI | string | string[],
+  include?: string | string[]
+): AbstractWidgetDef | AbstractWidgetDef[] {
   let widget: AbstractWidgetDef = {
     widget: BUILDER_WIDGETS.default,
     bind,
@@ -31,7 +43,14 @@ export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWi
   };
 
   if (!schema) return widget;
-  ui = { ...schema.ui, ...ui };
+
+  if (typeof uiOrInclude === 'string' || Array.isArray(uiOrInclude)) {
+    include = uiOrInclude;
+    uiOrInclude = {};
+  }
+
+  const ui = { ...schema.ui, ...uiOrInclude };
+  let objectUI: AbstractWidgetDef | AbstractWidgetDef[];
 
   switch (schema.type) {
     case 'integer':
@@ -56,7 +75,10 @@ export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWi
       break;
 
     case 'object':
-      widget = buildObject(schema, bind, ui);
+      objectUI = buildObject(schema, bind, include);
+
+      if (Array.isArray(objectUI)) return objectUI;
+      else widget = objectUI;
       break;
 
     default:
@@ -77,6 +99,13 @@ export function buildUI(schema: Schema, bind: string, ui?: SchemaUI): AbstractWi
   return widget;
 }
 
+interface FilterMatch {
+  full: string;
+  exclude: boolean;
+  key: string;
+  group: boolean;
+  wildcard: string;
+}
 function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
   const widget: AbstractWidgetDef = {
     widget: BUILDER_WIDGETS.list,
@@ -123,78 +152,183 @@ function buildArray(schema: SchemaArray, bind: string): AbstractWidgetDef {
 
   return widget;
 }
-function buildObject(schema: SchemaObject, bind: string, ui?: SchemaUI): AbstractWidgetDef {
+
+/**
+ * Generate widget definition from SchemaObject
+ *
+ * @return When a property/group is included, the return is an array without the wrapper widget.
+ * @param filter Property/Group (s) to include or exclude from the schema.
+ * It can be any individual or array of:
+ * - `property` to include a single property
+ * - `#/group` to include all the group (with a wrapping widget)
+ * - `*` to include root properties and groups
+ * - `**` to include root properties and nested properties extracted from the groups
+ * - `#/group/*` to include group's main properties and subgroups
+ * - `#/group/**` to include group's main properties and nested properties extracted from the subgroups
+ *
+ * If you include a property multiple times it will be translated into multiple widgets for the same.
+ *
+ * Any of this options can also be negated prepending a `!` to excluded from the resulting set.
+ */
+
+function buildObject(schema: SchemaObject, bind: string): AbstractWidgetDef;
+function buildObject(
+  schema: SchemaObject,
+  bind: string,
+  filter?: string | string[]
+): AbstractWidgetDef | AbstractWidgetDef[];
+function buildObject(
+  schema: SchemaObject,
+  bind: string,
+  filter?: string | string[]
+): AbstractWidgetDef | AbstractWidgetDef[] {
   const widget: AbstractFieldWidgetDef = {
     widget: BUILDER_WIDGETS.object,
     bind,
   };
+  const content = [] as AbstractWidgetDef[];
+  const include: FilterMatch[] = [];
+  const exclude: FilterMatch[] = [];
+  const excludeFilter: string[] = [];
 
-  ui = ui || {};
-  const include = Array.isArray(ui.include) ? ui.include : ['*'];
-  const exclude = Array.isArray(ui.exclude) ? ui.exclude : [];
+  // parse filter
+  if (filter) {
+    if (!Array.isArray(filter)) filter = [filter];
 
-  if (schema.properties) {
-    const allKeys = Object.keys(schema.properties);
-    const includedKeys: string[] = [];
-    let hasRest = false,
-      hasSets = false;
+    const re = /^(!)?((#\/)?.+?)(?:\/(\*{1,2}))?$/;
+    filter.forEach((propName) => {
+      const [full, negate, key, group, wildcard] = re.exec(propName) ?? [];
 
-    widget.content = [] as AbstractWidgetDef[];
+      if (full) {
+        const match: FilterMatch = { full, exclude: !!negate, key, wildcard, group: !!group };
+        if (negate) {
+          exclude.push(match);
+          excludeFilter.push(full);
+        } else include.push(match);
+      }
+    });
+  }
 
-    // get all included properties
-    for (const fieldOrSet of include) {
-      if (Array.isArray(fieldOrSet)) {
-        hasSets = true;
-        for (const field of fieldOrSet) {
-          if (field === '*') hasRest = true;
-          includedKeys.push(field);
+  // if there is some include, return only the elements as array
+
+  if (include.length) {
+    include.forEach((item) => {
+      if (item.group) {
+        // it is group
+
+        if (schema.allOf) {
+          const matchedGroups = schema.allOf.filter(
+            (group) =>
+              !('$include' in group) &&
+              (group.$id === item.key || item.key === '#/*/') &&
+              !exclude.some((ex) => !ex.wildcard && (ex.key === '#/*/' || ex.key === item.key))
+          );
+          if (!item.wildcard)
+            matchedGroups.forEach((group) =>
+              content.push(
+                buildUI(group as SchemaPartialObject, `${bind}`, excludeFilter) as AbstractWidgetDef
+              )
+            );
+          else
+            matchedGroups.forEach((group) => {
+              if ('$include' in group) return;
+              const level = item.wildcard === '**' ? Infinity : 0;
+              getPropertiesFromSchema(group, level)
+                .filter((prop) => !exclude.some((ex) => !ex.wildcard && ex.key === prop.property))
+                .forEach((prop) =>
+                  content.push(buildUI(prop.schema, `${bind}['${prop.property}']`))
+                );
+            });
         }
       } else {
-        if (fieldOrSet === '*') hasRest = true;
-        includedKeys.push(fieldOrSet);
+        // It is a plain property
+        const level = item.key === '*' ? 0 : item.key === '**' ? Infinity : null;
+
+        if (level === null) {
+          if (!exclude.some((ex) => ex.key === item.key || ex.key === '*' || ex.key === '**'))
+            getPropertySchemas(schema, item.key).forEach((propSchema) =>
+              content.push(buildUI(propSchema, `${bind}['${item}']`))
+            );
+        } else
+          getPropertiesFromSchema(schema, level)
+            .filter(
+              (prop) =>
+                !exclude.some((ex) => ex.key === prop.property || ex.key === '*' || ex.key === '**')
+            )
+            .forEach((prop) => content.push(buildUI(prop.schema, `${bind}['${prop.property}']`)));
       }
+    });
+
+    return content;
+  } else {
+    // first add main properties outside any grouping
+    if (schema.properties) {
+      const properties = schema.properties;
+
+      Object.keys(properties).forEach((key) =>
+        content.push(buildUI(properties[key], `${bind}['${key}']`))
+      );
     }
 
-    // calculate rest properties
-    const restKeys = !hasRest
-      ? []
-      : allKeys
-          .filter((key) => !includedKeys.includes(key))
-          .filter((key) => !exclude.includes(key));
+    // then add groups of properties from `allOf`
+    if (schema.allOf)
+      schema.allOf.forEach((group) => {
+        // `$include` should already be resolved and removed by this time (in `loadSchema`)
+        // Ignore it just in case un unresolved schema is passed as input.
+        if (!('$include' in group)) content.push(buildUI(group, bind));
+      });
 
-    function addProp(key: string, content: AbstractWidgetDef[]): void {
-      if (allKeys.includes(key)) {
-        content.push(buildUI(schema.properties![key], `${bind}['${key}']`));
-      } else if (key === '*')
-        content.push(
-          ...restKeys.map((rest) => buildUI(schema.properties![rest], `${bind}['${rest}']`))
-        );
-    }
-
-    for (let i = 0; i < include.length; i++) {
-      const fieldOrSet = include[i];
-      // check if it is a set
-      if (Array.isArray(fieldOrSet)) {
-        const setWidget: AbstractWidgetDef = { widget: BUILDER_WIDGETS.object, bind: `${bind}` };
-        setWidget.content = [];
-        if (ui.titles && ui.titles[i]) setWidget.options = { title: ui.titles[i], class: '' };
-
-        for (const key of fieldOrSet) addProp(key, setWidget.content as AbstractWidgetDef[]);
-        widget.content.push(setWidget);
-      } else if (!hasSets) {
-        addProp(fieldOrSet, widget.content as AbstractWidgetDef[]);
-      }
-    }
-
-    if (hasSets) {
-      widget.widget = BUILDER_WIDGETS.set;
-      widget.options = { titles: ui.titles, class: '' };
-    }
+    if (content.length) widget.content = content;
+    return widget;
   }
-  return widget;
 }
 
 function hasProp<T>(prop: keyof T, obj: T): boolean {
   // tslint:disable-next-line:prefer-template
   return prop in obj || prop + '=' in obj;
+}
+
+/**
+ * Get the schema of an individual property from an object's schema.
+ * Returns an array as the property can potentially be defined in multiple `allOf` groups
+ */
+export function getPropertySchemas(schema: SchemaPartialObject, propName: string): Schema[] {
+  const results: Schema[] = [];
+  // main properties
+  if (schema.properties && propName in schema.properties) results.push(schema.properties[propName]);
+
+  // groups
+
+  if (schema.allOf)
+    schema.allOf.forEach(
+      // TODO: prepend groups `depends=` with property's one
+      (group) => !('$include' in group) && results.push(...getPropertySchemas(group, propName))
+    );
+
+  return results;
+}
+
+/**
+ * Returns all property's names from the schema, getting from main outer properties
+ * and nested groups (optionally limiting the depth)
+ */
+export function getPropertiesFromSchema(
+  schema: SchemaPartialObject,
+  includeLevel?: number
+): Array<{ property: string; schema: Schema }> {
+  let properties: Array<{ property: string; schema: Schema }> = schema.properties
+    ? Object.keys(schema.properties).map((property) => ({
+        property,
+        schema: schema.properties![property],
+      }))
+    : [];
+
+  if (includeLevel && schema.allOf)
+    schema.allOf.forEach(
+      (group) =>
+        !('$include' in group) &&
+        (properties = properties.concat(getPropertiesFromSchema(group, includeLevel - 1)))
+    );
+
+  return properties;
 }
