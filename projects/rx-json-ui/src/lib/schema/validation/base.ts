@@ -15,7 +15,7 @@ export const ERR_CUSTOM = 1000,
   ERR_CNST = 3,
   ERR_REQ = 4;
 
-ERROR_MSG[ERR_TYPE] = "`Invalid data type '${$err.type}'`";
+ERROR_MSG[ERR_TYPE] = "`Invalid data type, expected '${$err.type}'`";
 ERROR_MSG[ERR_ENUM] = '`Not a valid option`';
 ERROR_MSG[ERR_CNST] = '`Not a valid option`';
 ERROR_MSG[ERR_REQ] = '`Value is required`';

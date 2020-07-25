@@ -13,7 +13,8 @@ export function booleanValidator(schema: SchemaBoolean): ValidatorFn {
   const base = baseValidator(schema);
 
   return (value: any) => {
-    if (typeof value !== 'boolean') return { code: ERR_TYPE, type: 'boolean' };
+    if (typeof value !== 'boolean' && typeof value !== 'undefined')
+      return { code: ERR_TYPE, type: 'boolean' };
     return base(value);
   };
 }
