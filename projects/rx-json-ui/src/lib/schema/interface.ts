@@ -228,11 +228,29 @@ export type SchemaOptions<T> = Omit<
   'ui' | 'depends=' | '$comment'
 >;
 
+export interface WidgetMap {
+  default: string;
+  number: string;
+  integer: string;
+  string: string;
+  enum: string;
+  boolean: string;
+  array: string;
+  list: string;
+  object: string;
+  unheaderedObject: string;
+}
+
 /** Schema extension to provide custom options to build UI widgets from the schema definition */
 export interface SchemaUI {
   /** Widget to use to render the current schema */
   widget?: string;
 
+  /**
+   * Map of `type` to widgets to use to build UI.
+   * Can be a partial to override only some defaults.
+   */
+  widgets?: Partial<WidgetMap>;
   /** Event handlers to add to the widget */
   events?: AbstractEventsDef;
 
