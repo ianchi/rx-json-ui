@@ -6,7 +6,11 @@
   [error]="getError()"
 >
   <mat-form-field appearance="fill" class="set-row-ctrl">
-    <mat-select [formControl]="formControl" [required]="options.required">
+    <mat-select
+      [formControl]="formControl"
+      [required]="options.required"
+      [multiple]="options.multiple"
+    >
       <mat-option *ngFor="let option of values; index as optIndex" [value]="option">
         {{ descriptions[optIndex] }}
       </mat-option>

@@ -12,10 +12,9 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 
 import { SchemaArray } from '../../schema';
-import { ERR_CUSTOM } from '../../schema/validation/base';
+import { ERROR_MSG, ERR_CUSTOM } from '../../schema/validation/base';
 import {
   BindWidgetDef,
-  CommonOptionsDef,
   ConstrainEvents,
   ConstrainSlots,
   FieldEventDef,
@@ -23,10 +22,11 @@ import {
   WidgetDef,
 } from '../base/public.interface';
 import { Context } from '../expressions/index';
+import { IconOption, TitleDescOption } from '../mixins';
 
 import { AbstractBaseFormControlWidget } from './baseformcontrol';
 
-export interface ArrayOptionsDef extends SchemaArray, CommonOptionsDef {}
+export interface ArrayOptionsDef extends SchemaArray, TitleDescOption, IconOption {}
 
 export interface ArrayEventsDef extends FieldEventDef {
   /**
@@ -156,6 +156,17 @@ export class AbstractArrayWidgetComponent<
     return this.boundData;
   }
 
+  getError(): string {
+    if (!this.formControl?.errors || !this.formControl?.errors.code) return '';
+
+    return (
+      this.expr.eval(
+        ERROR_MSG[this.formControl.errors.code],
+        { $err: this.formControl.errors },
+        false
+      ) || ''
+    );
+  }
   addRow(): void {
     this.emit('onNewRow', undefined, (newRow) => {
       if (typeof newRow === 'object' && !isReactive(newRow)) newRow = RxObject(newRow);

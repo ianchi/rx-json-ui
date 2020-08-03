@@ -20,6 +20,11 @@ export interface SelectWidgetOptions
   emptyLabel?: string;
 }
 
+export interface MultiSelectWidgetOptions extends SelectWidgetOptions {
+  /** Allows to select multiple options */
+  multiple?: boolean;
+}
+
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export class SelectWidgetMixin<

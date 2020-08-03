@@ -5,7 +5,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { AbstractEventsDef, AbstractOptionsDef, IconOption, SubtitleOption } from '../core/index';
+import {
+  AbstractEventsDef,
+  AbstractOptionsDef,
+  AbstractWidgetDef,
+  IconOption,
+  SubtitleOption,
+} from '../core/index';
 
 export type Schema = SchemaNumber | SchemaString | SchemaBoolean | SchemaArray | SchemaObject;
 
@@ -266,19 +272,21 @@ export type SchemaOptions<T> = Omit<
 >;
 
 export interface WidgetMap {
-  default: string;
-  number: string;
-  range: string;
-  integer: string;
-  string: string;
-  select: string;
-  autocomplete: string;
-  boolean: string;
-  array: string;
-  list: string;
-  object: string;
-  unheaderedObject: string;
-  objectLevel: string[];
+  default: string | AbstractWidgetDef;
+  number: string | AbstractWidgetDef;
+  range: string | AbstractWidgetDef;
+  integer: string | AbstractWidgetDef;
+  string: string | AbstractWidgetDef;
+  select: string | AbstractWidgetDef;
+  autocomplete: string | AbstractWidgetDef;
+  radio: string | AbstractWidgetDef;
+  boolean: string | AbstractWidgetDef;
+  array: string | AbstractWidgetDef;
+  list: string | AbstractWidgetDef;
+  multiselect: string | AbstractWidgetDef;
+  object: string | AbstractWidgetDef;
+  unheaderedObject: string | AbstractWidgetDef;
+  objectLevel: Array<string | AbstractWidgetDef>;
 }
 
 /** Schema extension to provide custom options to build UI widgets from the schema definition */
@@ -291,7 +299,7 @@ export interface SchemaUI {
    * fixing the widget as with `widget`.
    * It has lower priority.
    */
-  role?: string;
+  role?: keyof Omit<WidgetMap, 'objectLevel'>;
 
   /**
    * Fixes the object nesting level of the current schema.

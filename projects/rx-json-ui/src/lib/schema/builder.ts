@@ -24,9 +24,11 @@ export const BUILDER_WIDGETS: WidgetMap = {
   string: 'set-input',
   select: 'set-select',
   autocomplete: 'set-autocomplete',
+  radio: 'set-radio',
   boolean: 'set-toggle',
   array: 'set-rowarray',
   list: 'set-list',
+  multiselect: { widget: 'set-select', options: { multiple: true } },
   object: 'set-expansion',
   unheaderedObject: 'set-container',
   objectLevel: ['set-page', 'set-section', 'set-expansion'],
@@ -54,12 +56,7 @@ export function buildUI(
 
   ui = { ...schema.ui, ...ui, ...{ widgets: widgetMap } };
 
-  let widget: AbstractWidgetDef = {
-    widget: widgetMap.default,
-    bind,
-    options: { class: '' },
-    events: {},
-  };
+  let widget: AbstractWidgetDef = setRole({ widget: '', bind }, widgetMap.default);
 
   if (!schema || schema.ui?.hidden) return widget;
 
@@ -74,16 +71,18 @@ export function buildUI(
       widget.options!.inputType = 'number';
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'string':
-      widget.widget =
+      widget = setRole(
+        widget,
         hasProp('enum', schema) || hasProp('enumEntries', schema)
           ? widgetMap.select
           : hasProp('hints', schema)
           ? widgetMap.autocomplete
-          : widgetMap.string;
+          : widgetMap.string
+      );
       break;
 
     case 'boolean':
-      widget.widget = widgetMap.boolean;
+      widget = setRole(widget, widgetMap.boolean);
       break;
 
     case 'array':
@@ -99,22 +98,34 @@ export function buildUI(
       break;
 
     default:
-      widget.widget = widgetMap.default;
   }
 
   if (ui.widget) widget.widget = ui.widget;
-  else if (ui.role && typeof widgetMap[ui.role as keyof WidgetMap] === 'string')
-    widget.widget = widgetMap[ui.role as keyof WidgetMap] as string;
+  else if (ui.role && ui.role in widgetMap) widget = setRole(widget, widgetMap[ui.role]);
 
-  if (ui.events) {
-    for (const e in ui.events) widget.events![e] = ui.events[e];
-  }
+  if (ui.events) widget.events = { ...widget.events, ...ui.events };
+
   if (schema['depends=']) widget.if = schema['depends='];
 
   widget.options = { class: '', ...schema, ...widget.options, ...ui.options };
   delete widget.options!.ui;
   delete widget.options!.properties;
   delete widget.options!['depends='];
+  return widget;
+}
+
+function setRole(widget: AbstractWidgetDef, role: string | AbstractWidgetDef): AbstractWidgetDef {
+  if (typeof role === 'string') {
+    widget.widget = role;
+    return widget;
+  }
+  widget = {
+    ...widget,
+    ...role,
+    options: { ...widget.options, ...role.options },
+    events: { ...widget.events, ...role.events },
+  };
+
   return widget;
 }
 
@@ -127,10 +138,7 @@ interface FilterMatch {
 }
 function buildArray(schema: SchemaArray, bind: string, ui: SchemaUI): AbstractWidgetDef {
   const widgetMap = (ui.widgets as WidgetMap) ?? BUILDER_WIDGETS;
-  const widget: AbstractWidgetDef = {
-    widget: widgetMap.list,
-    bind,
-  };
+  let widget: AbstractWidgetDef = setRole({ widget: '', bind }, widgetMap.list);
   let additionalItems: Schema | undefined;
 
   if (Array.isArray(schema.items)) {
@@ -148,19 +156,16 @@ function buildArray(schema: SchemaArray, bind: string, ui: SchemaUI): AbstractWi
 
     switch (additionalItems.type) {
       case 'object':
-        widget.events.onNewRow = '{}';
-        widget.widget = widgetMap.array;
-        break;
       case 'array':
-        widget.events.onNewRow = '[]';
-        widget.widget = widgetMap.array;
+        widget.events.onNewRow = additionalItems.type === 'array' ? '[]' : '{}';
+        widget = setRole(widget, widgetMap.array);
         break;
       case 'string':
-        widget.events.onNewRow = '""';
-        break;
       case 'number':
       case 'integer':
-        widget.events.onNewRow = '0';
+        if (hasProp('enum', additionalItems) || hasProp('enumEntries', additionalItems))
+          widget = setRole(widget, widgetMap.multiselect);
+        else widget.events.onNewRow = additionalItems.type === 'string' ? '""' : '0';
         break;
       case 'boolean':
         widget.events.onNewRow = 'false';
@@ -199,16 +204,16 @@ function buildObject(
 ): AbstractWidgetDef | AbstractWidgetDef[] {
   const widgetMap = (ui.widgets as WidgetMap) ?? BUILDER_WIDGETS;
   const hasHeader = !!(hasProp('title', schema) || hasProp('description', schema));
-  const widget: AbstractFieldWidgetDef = {
-    widget: !hasHeader
+  const widget = setRole(
+    { widget: '', bind },
+    !hasHeader
       ? widgetMap.unheaderedObject
       : typeof ui.level !== 'number'
       ? widgetMap.object
       : ui.level >= widgetMap.objectLevel.length
       ? widgetMap.objectLevel[widgetMap.objectLevel.length - 1]
-      : widgetMap.objectLevel[ui.level],
-    bind,
-  };
+      : widgetMap.objectLevel[ui.level]
+  ) as AbstractFieldWidgetDef;
   const content = [] as AbstractWidgetDef[];
   const include: FilterMatch[] = [];
   const exclude: FilterMatch[] = [];
