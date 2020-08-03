@@ -7,11 +7,8 @@
 >
   <mat-form-field appearance="fill" class="set-row-ctrl">
     <mat-select [formControl]="formControl" [required]="options.required">
-      <mat-option *ngIf="!options.required">
-        {{ options.emptyLabel }}
-      </mat-option>
-      <mat-option *ngFor="let option of options.enum; index as optIndex" [value]="option">
-        {{ getLabel(option) }}
+      <mat-option *ngFor="let option of values; index as optIndex" [value]="option">
+        {{ descriptions[optIndex] }}
       </mat-option>
     </mat-select>
   </mat-form-field>

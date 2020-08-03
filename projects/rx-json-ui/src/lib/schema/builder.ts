@@ -72,11 +72,14 @@ export function buildUI(
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'number':
       widget.options!.inputType = 'number';
-      widget.widget = hasProp('enum', schema) ? widgetMap.select : widgetMap[schema.type];
-      break;
     // tslint:disable-next-line:no-switch-case-fall-through
     case 'string':
-      widget.widget = hasProp('enum', schema) ? widgetMap.select : widgetMap.string;
+      widget.widget =
+        hasProp('enum', schema) || hasProp('enumEntries', schema)
+          ? widgetMap.select
+          : hasProp('hints', schema)
+          ? widgetMap.autocomplete
+          : widgetMap.string;
       break;
 
     case 'boolean':

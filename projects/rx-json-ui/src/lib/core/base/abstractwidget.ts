@@ -207,6 +207,14 @@ export class BaseWidget<
 
   // Helper functions
 
+  /** Test if an option is present in the widget definition as value or expression */
+  protected hasOption(option: keyof O): boolean {
+    return (
+      !!this.widgetDef?.options &&
+      (option in this.widgetDef.options || `${option}=` in this.widgetDef.options)
+    );
+  }
+
   /**
    * Helper function to add a `map` pipe to the corresponding input observable
    */
@@ -258,6 +266,7 @@ export class BaseWidget<
 
         if (!this.isInitialized) {
           this.isInitialized = true;
+          this.dynOnInit();
           this.emit('onInit');
         }
 
@@ -319,6 +328,8 @@ export class BaseWidget<
    */
   dynOnAfterBind(): void {}
 
+  /** Hook called once after all bound values are initialized to their first value */
+  dynOnInit(): void {}
   /** Hook called once all bound values are updated and each time that a bound value changes */
   dynOnChange(): void {}
 

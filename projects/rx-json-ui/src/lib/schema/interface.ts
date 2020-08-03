@@ -51,6 +51,28 @@ export interface SchemaPrimitiveValidations<T> extends SchemaBaseValidations {
   const?: T;
   enumDescription?: string[];
   default?: T;
+
+  /**
+   * Alternate way of defining enum options as an array of objects where one property
+   * is the value an optionally another is the description.
+   * If `enum` is also present it takes precedence and this property is ignored
+   */
+  enumEntries?: Array<{ [key: string]: any } | any[]>;
+
+  /**
+   * Properties of `enumEntry` to map to [value, description, icon]
+   * If omitted it defaults to
+   * `[0, 1]` if entry is an array
+   * `['value', 'description'] if entry is an object
+   */
+  enumProperties?: string[];
+
+  /**
+   * Similar to `enum` but used in UI to show alternatives in an autocomplete.
+   * It is not used in validation and is only indicative.
+   * Other values are also possible.
+   */
+  hints?: T[];
 }
 
 /**

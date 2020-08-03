@@ -22,10 +22,19 @@ ERROR_MSG[ERR_REQ] = '`Value is required`';
 ERROR_MSG[ERR_CUSTOM] = '`${$err.message || "Invalid entry"}`';
 
 export function baseValidator<T>(schema: SchemaPrimitiveValidations<T>): ValidatorFn {
-  const enumVal = Array.isArray(schema.enum) ? schema.enum.concat() : null,
-    constVal = typeof schema.const !== 'undefined' ? schema.const : null,
-    complex = !!enumVal && enumVal.some((e) => typeof e === 'object'),
-    required = schema.required === true;
+  const enumVal = Array.isArray(schema.enum) ? schema.enum.concat() : null;
+  const entryProp =
+    schema.enumProperties?.[0] ??
+    (Array.isArray(schema.enumEntries) &&
+      schema.enumEntries.length &&
+      !Array.isArray(schema.enumEntries[0]))
+      ? 'value'
+      : '0';
+  const enumEntries = Array.isArray(schema.enumEntries)
+    ? schema.enumEntries.map((e) => (e as any)[entryProp])
+    : null;
+  const constVal = typeof schema.const !== 'undefined' ? schema.const : null;
+  const required = schema.required === true;
 
   return (value: any) => {
     // allow 'undefined' or '' as it should be checked by required validation
@@ -33,8 +42,11 @@ export function baseValidator<T>(schema: SchemaPrimitiveValidations<T>): Validat
     if (value === '' || typeof value === 'undefined') return required ? { code: ERR_REQ } : null;
 
     if (constVal && value !== constVal) return { code: ERR_CNST, const: constVal };
-    // TODO: case of complex enum values
-    if (enumVal && !complex && enumVal.indexOf(value) < 0) return { code: ERR_ENUM, enum: enumVal };
+    if (enumVal) {
+      if (enumVal.indexOf(value) < 0) return { code: ERR_ENUM, enum: enumVal };
+    } else if (enumEntries && enumEntries.indexOf(value) < 0)
+      return { code: ERR_ENUM, enum: enumEntries };
+
     return null;
   };
 }

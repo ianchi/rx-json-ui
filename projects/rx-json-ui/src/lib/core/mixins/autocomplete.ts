@@ -30,12 +30,12 @@ export class AutocompleteWidgetMixin<
   filteredOptions$: Observable<any[]> | undefined;
   private enumSubject = new Subject<any>();
 
-  dynOnAfterBind(): void {
-    super.dynOnAfterBind();
+  updateEntries(): void {
+    super.updateEntries();
 
     // We need to update filtered options both when text or enum changes
     // so emit on `enum` to later merge with value changes
-    this.map('enum', (val) => (this.enumSubject.next(undefined), val));
+    this.enumSubject.next(undefined);
   }
 
   dynOnSetup(def: WidgetDef<O, S, E, BindWidgetDef>): WidgetDef<O, S, E, BindWidgetDef> {
@@ -60,14 +60,11 @@ export class AutocompleteWidgetMixin<
    * filter is made by label
    */
   private filter(value: string): any[] {
-    if (typeof value === 'undefined') return this.options.enum || [];
-    value = this.getLabel(value);
+    if (typeof value === 'undefined') return this.values;
     const filterValue = (typeof value === 'string' && value.toLowerCase()) || value;
 
-    return this.options.enum
-      ? this.options.enum.filter((option) =>
-          this.getLabel(option).toLowerCase().includes(filterValue)
-        )
-      : [];
+    return this.values.filter((_option, idx) =>
+      this.descriptions[idx].toLowerCase().includes(filterValue)
+    );
   }
 }
