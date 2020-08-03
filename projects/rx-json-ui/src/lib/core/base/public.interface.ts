@@ -162,7 +162,7 @@ export interface AbstractOptionsDef extends CommonOptionsDef {
  * They are handled directly by the AbstractBaseWidget
  */
 export interface CommonOptionsDef {
-  class: ClassDef;
+  class?: ClassDef;
 }
 
 /**

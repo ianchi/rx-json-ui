@@ -1,0 +1,12 @@
+set-radio {
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .radio-button {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+}

@@ -22,6 +22,7 @@ import { SetLinkWidgetComponent } from './link/link.component';
 import { SetListWidgetComponent } from './list/list.component';
 import { SetPageWidgetComponent } from './page/page.component';
 import { SetPopupWidgetComponent } from './popup/popup.component';
+import { SetRadioWidgetComponent } from './radio/radio.component';
 import { SetRowArrayWidgetComponent } from './rowArray/rowArray.component';
 import { SetSectionWidgetComponent } from './section/section.component';
 import { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.component';
@@ -42,6 +43,7 @@ export { SetLinkWidgetComponent } from './link/link.component';
 export { SetListWidgetComponent } from './list/list.component';
 export { SetPageWidgetComponent } from './page/page.component';
 export { SetPopupWidgetComponent } from './popup/popup.component';
+export { SetRadioWidgetComponent } from './radio/radio.component';
 export { SetRowArrayWidgetComponent } from './rowArray/rowArray.component';
 export { SetSectionWidgetComponent } from './section/section.component';
 export { SetSectionGroupWidgetComponent } from './sectiongroup/sectiongroup.component';
@@ -77,6 +79,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
         { type: 'set-container', component: SetContainerWidgetComponent },
         { type: 'set-text', component: SetTextWidgetComponent },
         { type: 'set-file', component: SetFileWidgetComponent },
+        { type: 'set-radio', component: SetRadioWidgetComponent },
       ],
     }),
   ],
@@ -100,6 +103,7 @@ export { SetToggleWidgetComponent } from './toggle/toggle.component';
     SetContainerWidgetComponent,
     SetTextWidgetComponent,
     SetFileWidgetComponent,
+    SetRadioWidgetComponent,
   ],
 })
 export class SettingsWidgetsModule {}

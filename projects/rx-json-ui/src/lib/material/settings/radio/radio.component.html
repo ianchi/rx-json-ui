@@ -1,0 +1,18 @@
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [error]="getError()"
+>
+  <mat-radio-group [formControl]="formControl" [required]="options.required" class="radio-group">
+    <mat-radio-button
+      labelPosition="before"
+      *ngFor="let option of values; index as optIndex"
+      [value]="option"
+      class="radio-button"
+    >
+      {{ descriptions[optIndex] }}
+    </mat-radio-button>
+  </mat-radio-group>
+</set-base>
