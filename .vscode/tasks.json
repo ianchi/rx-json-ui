@@ -41,22 +41,6 @@
       "type": "npm",
       "script": "build-lib",
       "problemMatcher": ["$tsc"]
-    },
-    {
-      "type": "npm",
-      "script": "bundle-styles",
-      "problemMatcher": []
-    },
-    {
-      "type": "npm",
-      "script": "deploy-lib",
-      "problemMatcher": []
-    },
-    {
-      "type": "npm",
-      "script": "watch-lib",
-      "isBackground": true,
-      "problemMatcher": []
     }
   ]
 }
