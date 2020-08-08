@@ -11,7 +11,7 @@ import { AS_OBSERVABLE, isReactive, RxObject } from 'espression-rx';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 
-import { SchemaArray } from '../../schema';
+import { SchemaArray, schemaValidator } from '../../schema';
 import { ERROR_MSG, ERR_CUSTOM } from '../../schema/validation/base';
 import {
   BindWidgetDef,
@@ -138,6 +138,11 @@ export class AbstractArrayWidgetComponent<
     });
   }
 
+  dynOnChange(): void {
+    // once bound options are resolved, update schema Validator
+    this.schemaValidator = schemaValidator(<any>this.options);
+    this.formControl!.updateValueAndValidity();
+  }
   validateFn(ctrl: AbstractControl): Observable<ValidationErrors | null> {
     return this.expr
       .evaluate(this.events.onValidate, Context.create(this.context, { $value: ctrl.value }), true)

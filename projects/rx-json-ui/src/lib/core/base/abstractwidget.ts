@@ -129,6 +129,7 @@ export class BaseWidget<
       this.contentBind = this.parseContentDef(widgetDef.content).pipe(
         tap((content) => {
           this.content = content;
+          this.dynOnContentChange();
           this.emit('onContentChange');
         })
       );
@@ -332,6 +333,9 @@ export class BaseWidget<
   dynOnInit(): void {}
   /** Hook called once all bound values are updated and each time that a bound value changes */
   dynOnChange(): void {}
+
+  /** Hook called when the content definition changed */
+  dynOnContentChange(): void {}
 
   // following code is based on code from Angular ngStyle directive
   setClass(value: ClassDef): void {

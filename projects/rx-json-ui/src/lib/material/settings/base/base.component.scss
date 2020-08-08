@@ -117,6 +117,12 @@ set-base {
   display: flex;
   align-items: center;
 }
+
+.set-row-multictrl-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
 /*** Style for the nav section ***/
 
 .set-row-nav-container.expanded > .rotating-icon {

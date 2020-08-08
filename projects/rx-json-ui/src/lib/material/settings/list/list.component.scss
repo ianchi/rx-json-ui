@@ -6,7 +6,25 @@
  */
 
 set-list {
-  & > .add-button {
-    padding-bottom: 6px;
+  mat-form-field {
+    max-width: 150px;
   }
+  .set-row-ctrl {
+    max-width: 190px;
+  }
+  .set-row-label {
+    align-self: flex-start;
+  }
+  .set-row-main {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .set-row-multictrl-container {
+    align-items: flex-start;
+  }
+}
+
+.set-list-action {
+  color: rgba(0, 0, 0, 0.6);
 }

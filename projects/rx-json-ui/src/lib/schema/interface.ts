@@ -273,6 +273,8 @@ export type SchemaOptions<T> = Omit<
 
 export interface WidgetMap {
   default: string | AbstractWidgetDef;
+  /** Plain input box */
+  input: string | AbstractWidgetDef;
   number: string | AbstractWidgetDef;
   range: string | AbstractWidgetDef;
   integer: string | AbstractWidgetDef;

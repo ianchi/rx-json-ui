@@ -67,6 +67,9 @@ export class WidgetDirective implements OnChanges, OnDestroy {
     private differs: IterableDiffers
   ) {}
 
+  getWidgets(): AbstractWidget[] {
+    return this.widgetRef.map((ref) => ref.instance);
+  }
   /**
    * Initializes the widget instantiation process.
    * Recreates everything on each change of inputs.

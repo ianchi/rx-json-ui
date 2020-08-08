@@ -1,35 +1,53 @@
-<div class="set-row-main">
-  <div class="set-row-label">
-    <div class="set-row-title">
-      {{ options.title }}
-    </div>
-
-    <div class="set-row-description">
-      {{ options.description }}
-    </div>
-  </div>
-</div>
-<div class="set-row-content">
-  <div
-    class="set-row set-row-main"
-    *ngFor="let row of boundData; trackBy: bindTrackBy; index as idx"
-  >
-    <div class="set-row-label">
-      <ng-container [wdgWidget]="itemOptions" [parentContext]="rowContext[idx]"></ng-container>
+<set-base
+  [icon]="options.icon"
+  [title]="options.title"
+  [subtitle]="options.subtitle"
+  [description]="options.description"
+  [error]="getError()"
+>
+  <div class="set-row-multictrl-container set-row-ctrl">
+    <div
+      class="set-row set-row-ctrl-container"
+      *ngFor="let row of boundData; trackBy: bindTrackBy; index as idx"
+    >
+      <div class="set-row-ctrl">
+        <ng-container [wdgWidget]="itemOptions" [parentContext]="rowContext[idx]"></ng-container>
+      </div>
+      <div
+        class="set-row-ctrl-container"
+        *ngIf="events.onDeleteRow && (!options?.minItems || boundData?.length > options.minItems!)"
+      >
+        <button mat-icon-button (click)="deleteRow(idx)" class="set-list-action">
+          <mat-icon svgIcon="minus-circle-outline"></mat-icon>
+        </button>
+      </div>
     </div>
     <div
-      class="set-row-ctrl-container"
-      (click)="deleteRow(idx)"
-      *ngIf="events.onDeleteRow && (!options?.minItems || boundData?.length > options.minItems!)"
+      class="set-row set-row-ctrl-container"
+      *ngIf="events.onNewRow && (!options?.maxItems || boundData?.length < options.maxItems!)"
+      (keyup.enter)="addNewItem()"
     >
-      <button mat-icon-button>
-        <mat-icon svgIcon="close"></mat-icon>
-      </button>
+      <div class="set-row-ctrl">
+        <ng-container
+          [wdgWidget]="newItemOptions"
+          [parentContext]="newItemContext"
+          #newItem
+        ></ng-container>
+      </div>
+      <div class="set-row-ctrl-container">
+        <button
+          mat-icon-button
+          (click)="addNewItem()"
+          [disabled]="
+            !newItemControl ||
+            newItemControl!.invalid ||
+            newItemContext?.$newItem.value === undefined
+          "
+          class="set-list-action"
+        >
+          <mat-icon svgIcon="plus-circle-outline"></mat-icon>
+        </button>
+      </div>
     </div>
   </div>
-  <div class="set-row set-row-main" *ngIf="events.onNewRow">
-    <div class="set-row-label add-button">
-      <button mat-button (click)="addRow()" color="primary">Add</button>
-    </div>
-  </div>
-</div>
+</set-base>

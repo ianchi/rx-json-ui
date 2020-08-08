@@ -18,6 +18,7 @@ import {
 
 export const BUILDER_WIDGETS: WidgetMap = {
   default: 'default',
+  input: 'input',
   number: 'set-input',
   integer: 'set-input',
   range: 'set-slider',
@@ -56,7 +57,7 @@ export function buildUI(
 
   ui = { ...schema.ui, ...ui, ...{ widgets: widgetMap } };
 
-  let widget: AbstractWidgetDef = setRole({ widget: '', bind }, widgetMap.default);
+  let widget: AbstractWidgetDef = setRole({ widget: '', bind, options: {} }, widgetMap.default);
 
   if (!schema || schema.ui?.hidden) return widget;
 
@@ -107,7 +108,7 @@ export function buildUI(
 
   if (schema['depends=']) widget.if = schema['depends='];
 
-  widget.options = { class: '', ...schema, ...widget.options, ...ui.options };
+  widget.options = { ...schema, ...widget.options, ...ui.options };
   delete widget.options!.ui;
   delete widget.options!.properties;
   delete widget.options!['depends='];
@@ -151,7 +152,6 @@ function buildArray(schema: SchemaArray, bind: string, ui: SchemaUI): AbstractWi
     }
   } else if (typeof schema.items === 'object') {
     additionalItems = schema.items;
-    widget.content = [buildUI(schema.items, `$row.array[$row.index]`, ui)];
     widget.events = { onDeleteRow: 'true' };
 
     switch (additionalItems.type) {
@@ -159,13 +159,19 @@ function buildArray(schema: SchemaArray, bind: string, ui: SchemaUI): AbstractWi
       case 'array':
         widget.events.onNewRow = additionalItems.type === 'array' ? '[]' : '{}';
         widget = setRole(widget, widgetMap.array);
+        widget.content = [buildUI(schema.items, '$row.array[$row.index]', ui)];
         break;
       case 'string':
       case 'number':
       case 'integer':
         if (hasProp('enum', additionalItems) || hasProp('enumEntries', additionalItems))
           widget = setRole(widget, widgetMap.multiselect);
-        else widget.events.onNewRow = additionalItems.type === 'string' ? '""' : '0';
+        else {
+          widget.events.onNewRow = additionalItems.type === 'string' ? '""' : '0';
+          widget.content = [
+            buildUI(schema.items, '$row.array[$row.index]', { ...ui, role: 'input' }),
+          ];
+        }
         break;
       case 'boolean':
         widget.events.onNewRow = 'false';
