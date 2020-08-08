@@ -38,7 +38,7 @@ export abstract class AbstractBaseFormControlWidget<
   lvalue$: ILvalue | undefined;
 
   /** setup parent */
-  formSetParent(): void {
+  formSetParent(bind?: string): void {
     if (!this.formControl) return;
 
     this.parentForm = this.context[FORM_CONTROL]?._control;
@@ -47,7 +47,7 @@ export abstract class AbstractBaseFormControlWidget<
       let lastID = (this.parentForm as any).LAST_ID ?? 0;
       (this.parentForm as any).LAST_ID = ++lastID;
       this.ctrlID = `CTRL_${lastID}_${
-        !this.lvalue$ || isObservable(this.lvalue$.m) ? '' : this.lvalue$.m
+        !this.lvalue$ || isObservable(this.lvalue$) ? bind ?? '' : this.lvalue$.m
       }`;
 
       if (this.parentForm instanceof FormGroup)

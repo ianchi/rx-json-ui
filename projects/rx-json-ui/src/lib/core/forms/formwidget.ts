@@ -35,7 +35,7 @@ export class AbstractFormWidgetComponent<
   dynOnSetup(def: WidgetDef<O, S, E, B>): WidgetDef<O, S, E, B> {
     this.formControl = new FormGroup({});
 
-    this.formSetParent();
+    this.formSetParent(def.bind);
     this.formSetContext();
 
     // get bound model if it has one or create aux unbound model

@@ -111,7 +111,7 @@ export class AbstractArrayWidgetComponent<
       def?.events?.['onValidate'] ? this.validateFn : null
     );
 
-    this.formSetParent();
+    this.formSetParent(def.bind);
     this.formSetContext();
 
     return def;

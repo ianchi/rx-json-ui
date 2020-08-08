@@ -90,7 +90,7 @@ export class AbstractFormFieldWidget<
       this.validateFn
     );
 
-    this.formSetParent();
+    this.formSetParent(def.bind);
 
     // TODO: this won't work for a dynamic default
     if (def.options) this.default = def.options.default;
