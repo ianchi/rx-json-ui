@@ -63,8 +63,14 @@ export class AutocompleteWidgetMixin<
     if (typeof value === 'undefined') return this.values;
     const filterValue = (typeof value === 'string' && value.toLowerCase()) || value;
 
-    return this.values.filter((_option, idx) =>
-      this.descriptions[idx].toLowerCase().includes(filterValue)
-    );
+    return this.values.filter((_option, idx) => {
+      const opt =
+        typeof this.descriptions[idx] === 'string'
+          ? this.descriptions[idx].toLowerCase()
+          : typeof this.descriptions[idx] === 'undefined' || this.descriptions[idx] === null
+          ? ''
+          : this.descriptions[idx].toString();
+      return opt.includes(filterValue);
+    });
   }
 }
