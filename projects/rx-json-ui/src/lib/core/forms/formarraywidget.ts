@@ -58,6 +58,15 @@ export interface ArrayEventsDef extends FieldEventDef {
    * The handler must be present for the move action to be available
    */
   onMoveRow?: multilineExpr;
+
+  /**
+   * Emitted before showing a row.
+   * It runs in the row context, so it can access the row data using `$row`
+   * If it returns falsey the row is not rendered.
+   * This event continues to listen to the event expression, so any changes will reflect
+   * in showing hiding the row
+   */
+  onShowRow?: multilineExpr;
 }
 
 /**
@@ -195,6 +204,12 @@ export class AbstractArrayWidgetComponent<
       { $idx: idx, $dir: dir },
       (result) => result && this.boundData!.splice(idx + dir, 0, this.boundData!.splice(idx, 1)[0])
     );
+  }
+
+  shouldShowRow(idx: number): Observable<boolean> {
+    if (!this.events.onShowRow) return of(true);
+
+    return this.expr.evaluate(this.events.onShowRow, Context.create(this.rowContext[idx]), true);
   }
 
   private applyChanges(value: any[]): void {

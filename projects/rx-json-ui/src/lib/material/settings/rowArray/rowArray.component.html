@@ -1,50 +1,52 @@
-<div class="set-row set-row-combined" *ngFor="let row of boundData; index as rowIndex">
-  <ng-container
-    *ngFor="let element of content?.main"
-    [wdgWidget]="element"
-    [parentContext]="rowContext[rowIndex]"
-  >
-  </ng-container>
+<ng-container *ngFor="let row of boundData; index as rowIndex">
+  <div class="set-row set-row-combined" *ngIf="shouldShowRow(rowIndex) | async">
+    <ng-container
+      *ngFor="let element of content?.main"
+      [wdgWidget]="element"
+      [parentContext]="rowContext[rowIndex]"
+    >
+    </ng-container>
 
-  <div class="set-row-actions">
-    <button mat-icon-button [matMenuTriggerFor]="actionMenu">
-      <mat-icon svgIcon="dots-vertical"></mat-icon>
-    </button>
-    <mat-menu #actionMenu="matMenu">
-      <button
-        *ngIf="events.onMoveRow"
-        mat-menu-item
-        (click)="moveRow(rowIndex, -1)"
-        [disabled]="rowIndex === 0"
-      >
-        <mat-icon svgIcon="arrow-up-thick"></mat-icon><span>Move Up</span>
+    <div class="set-row-actions">
+      <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+        <mat-icon svgIcon="dots-vertical"></mat-icon>
       </button>
-      <button
-        *ngIf="events.onMoveRow"
-        mat-menu-item
-        (click)="moveRow(rowIndex, 1)"
-        [disabled]="rowIndex >= boundData!.length - 1"
-      >
-        <mat-icon svgIcon="arrow-down-thick"></mat-icon><span>Move Down</span>
-      </button>
+      <mat-menu #actionMenu="matMenu">
+        <button
+          *ngIf="events.onMoveRow"
+          mat-menu-item
+          (click)="moveRow(rowIndex, -1)"
+          [disabled]="rowIndex === 0"
+        >
+          <mat-icon svgIcon="arrow-up-thick"></mat-icon><span>Move Up</span>
+        </button>
+        <button
+          *ngIf="events.onMoveRow"
+          mat-menu-item
+          (click)="moveRow(rowIndex, 1)"
+          [disabled]="rowIndex >= boundData!.length - 1"
+        >
+          <mat-icon svgIcon="arrow-down-thick"></mat-icon><span>Move Down</span>
+        </button>
 
-      <button mat-menu-item><mat-icon svgIcon="pencil"></mat-icon><span>Edit</span></button>
+        <button mat-menu-item><mat-icon svgIcon="pencil"></mat-icon><span>Edit</span></button>
 
-      <button *ngIf="events.onDeleteRow" mat-menu-item (click)="deleteRow(rowIndex)">
-        <mat-icon svgIcon="delete"></mat-icon><span>Delete</span>
-      </button>
+        <button *ngIf="events.onDeleteRow" mat-menu-item (click)="deleteRow(rowIndex)">
+          <mat-icon svgIcon="delete"></mat-icon><span>Delete</span>
+        </button>
 
-      <button
-        mat-menu-item
-        *ngFor="let action of options.actions; index as actionIndex"
-        (click)="actionClick(row, actionIndex)"
-      >
-        <mat-icon [svgIcon]="action.icon" *ngIf="action.icon"></mat-icon>
-        <span>{{ action.label }}</span>
-      </button>
-    </mat-menu>
+        <button
+          mat-menu-item
+          *ngFor="let action of options.actions; index as actionIndex"
+          (click)="actionClick(row, actionIndex)"
+        >
+          <mat-icon [svgIcon]="action.icon" *ngIf="action.icon"></mat-icon>
+          <span>{{ action.label }}</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
-</div>
+</ng-container>
 
 <div class="set-row set-row-main" *ngIf="events.onNewRow">
   <div class="set-row-label add-button">

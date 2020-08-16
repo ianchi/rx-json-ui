@@ -1,14 +1,16 @@
 <div>
   <button mat-button *ngIf="events.onNewRow" (click)="addRow()">New row</button>
-  <div *ngFor="let row of boundData; index as idx">
-    <ng-container
-      *ngFor="let element of content?.main"
-      [wdgWidget]="element"
-      [parentContext]="rowContext[idx]"
-    >
-    </ng-container>
-    <button mat-button *ngIf="events.onDeleteRow" (click)="deleteRow(idx)">
-      Delete
-    </button>
-  </div>
+  <ng-container *ngFor="let row of boundData; index as idx">
+    <div *ngIf="shouldShowRow(idx) | async">
+      <ng-container
+        *ngFor="let element of content?.main"
+        [wdgWidget]="element"
+        [parentContext]="rowContext[idx]"
+      >
+      </ng-container>
+      <button mat-button *ngIf="events.onDeleteRow" (click)="deleteRow(idx)">
+        Delete
+      </button>
+    </div>
+  </ng-container>
 </div>
