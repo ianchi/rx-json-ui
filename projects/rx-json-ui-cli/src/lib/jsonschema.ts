@@ -36,8 +36,7 @@ export function generateSchemas(
     validationKeywords: ['parser'],
   };
 
-  fs.rmdirSync(path.resolve(outPath), { recursive: true });
-  fs.mkdirSync(path.resolve(outPath), { recursive: true });
+  if (!fs.existsSync(outPath)) fs.mkdirSync(path.resolve(outPath), { recursive: true });
 
   const widgetSchema = {
     $schema: 'http://json-schema.org/draft-07/schema#',

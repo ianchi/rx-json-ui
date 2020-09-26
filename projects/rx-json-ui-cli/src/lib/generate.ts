@@ -24,7 +24,7 @@ export function generate(outPath: string, opts: GenerateOptions): void {
   const widgets = getWidgets(program, file, module);
   if (!widgets.length) process.exit(1);
 
-  if (opts.remove) fs.rmdirSync(outPath, { recursive: true });
+  if (opts.remove && fs.existsSync(outPath)) fs.rmdirSync(outPath, { recursive: true });
   generateSchemas(program.getTsProgram(), widgets, outPath, opts.base);
 
   process.exit(0);

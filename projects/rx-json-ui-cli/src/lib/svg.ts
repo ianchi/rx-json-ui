@@ -98,7 +98,7 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
 
     for (const icon of set.icons) spriter.add(icon);
 
-    if (opts.remove) fs.rmdirSync(outPath, { recursive: true });
+    if (opts.remove && fs.existsSync(outPath)) fs.rmdirSync(outPath, { recursive: true });
     if (!fs.existsSync(outPath)) fs.mkdirSync(outPath, { recursive: true });
 
     let num = 0;
