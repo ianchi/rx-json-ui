@@ -23,8 +23,8 @@
     "typescript": "~3.8.3"
   },
   "dependencies": {
-    "@mdi/svg": "^5.4.55",
-    "commander": "^6.0.0",
+    "@mdi/svg": "^5.6.55",
+    "commander": "^6.1.0",
     "glob": "^7.1.6",
     "js-yaml": "^3.14.0",
     "read-pkg-up": "^7.0.1",
@@ -32,13 +32,13 @@
     "resolve-package-path": "^2.0.0",
     "svg-sprite": "^1.5.0",
     "typescript-json-schema": "^0.42.0",
-    "vinyl": "^2.2.0",
-    "vscode-json-languageservice": "^3.8.0",
+    "vinyl": "^2.2.1",
+    "vscode-json-languageservice": "^3.8.4",
     "vscode-uri": "^2.1.2"
   },
   "devDependencies": {
     "@types/js-yaml": "^3.12.5",
-    "@types/node": "^12.12.53",
+    "@types/node": "^12.12.62",
     "@types/svg-sprite": "0.0.32",
     "typescript": "~3.8.3"
   },
