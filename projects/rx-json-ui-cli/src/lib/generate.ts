@@ -6,6 +6,7 @@
  */
 
 import * as fs from 'fs';
+import * as rm from 'rimraf';
 
 import { generateSchemas } from './jsonschema';
 import { getWidgets, ngCompile } from './metadata';
@@ -24,7 +25,7 @@ export function generate(outPath: string, opts: GenerateOptions): void {
   const widgets = getWidgets(program, file, module);
   if (!widgets.length) process.exit(1);
 
-  if (opts.remove && fs.existsSync(outPath)) fs.rmdirSync(outPath, { recursive: true });
+  if (opts.remove && fs.existsSync(outPath)) rm.sync(outPath);
   generateSchemas(program.getTsProgram(), widgets, outPath, opts.base);
 
   process.exit(0);
