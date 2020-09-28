@@ -1,7 +1,7 @@
 {
   "name": "rx-json-ui-cli",
   "description": "rx-json-ui CLI for validations",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "Adrian Panella <ianchi74@outlook.com>",
   "license": "MIT",
   "repository": "https://github.com/ianchi/rx-json-ui.git",
