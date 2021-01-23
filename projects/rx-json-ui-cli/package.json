@@ -32,6 +32,7 @@
     "resolve-package-path": "^3.1.0",
     "rimraf": "^3.0.2",
     "svg-sprite": "^1.5.0",
+    "tslib": "^2.0.0",
     "typescript-json-schema": "^0.47.0",
     "vinyl": "^2.2.1",
     "vscode-json-languageservice": "^4.0.0",

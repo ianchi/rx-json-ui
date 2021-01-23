@@ -93,7 +93,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/rx-json-ui/tsconfig.lib.json",
             "project": "projects/rx-json-ui/ng-package.json"
@@ -132,14 +132,14 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/rx-json-ui-cli/tsconfig.json",
             "project": "projects/rx-json-ui-cli/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/rx-json-ui-cli/tsconfig.lib.prod.json"
+              "tsConfig": "projects/rx-json-ui-cli/tsconfig.json"
             }
           }
         },
@@ -157,17 +157,17 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "dyn",
-      "styleext": "scss",
+      "style": "scss",
       "changeDetection": "OnPush",
       "viewEncapsulation": "None",
-      "spec": false
+      "skipTests": true
     },
     "@schematics/angular:directive": {
       "prefix": "app"
     },
     "@schematics/angular:module": {
       "flat": true,
-      "spec": false
+      "skipTests": true
     }
   },
   "cli": {
