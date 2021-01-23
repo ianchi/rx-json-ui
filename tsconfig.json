@@ -26,9 +26,9 @@
   },
   "angularCompilerOptions": {
     "preserveWhitespaces": false,
-    "annotateForClosureCompiler": true,
-    "strictMetadataEmit": true,
+    "annotateForClosureCompiler": false,
     "strictInjectionParameters": true,
+    "strictTemplates": true,
     "fullTemplateTypeCheck": true
   }
 }

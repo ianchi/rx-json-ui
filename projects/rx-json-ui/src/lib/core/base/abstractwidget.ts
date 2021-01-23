@@ -137,6 +137,23 @@ export class BaseWidget<
     this.subscribeOptions();
   }
 
+  /** Emit widget event an run corresponding hook */
+  emit(event: keyof E, subContext?: object, nextFn?: (value: any) => void): void {
+    const ast = this.events[event];
+    if (!ast) return;
+
+    this.addSubscription = this.expr
+      .evaluate(ast, Context.create(this.context, subContext), true)
+      .pipe(take(1))
+      .subscribe((value) => {
+        if (nextFn) {
+          nextFn(value);
+          // in case some internal state has changed in the callback
+          this._cdr.markForCheck();
+        }
+      });
+  }
+
   // Angular Lifecycle hooks
   // -----------------------
 
@@ -244,22 +261,6 @@ export class BaseWidget<
   protected map(option: keyof O, callback: (v: any) => any): void {
     const opt = this.bindings[option];
     if (opt) this.bindings[option] = opt.pipe(map(callback));
-  }
-
-  protected emit(event: keyof E, subContext?: object, nextFn?: (value: any) => void): void {
-    const ast = this.events[event];
-    if (!ast) return;
-
-    this.addSubscription = this.expr
-      .evaluate(ast, Context.create(this.context, subContext), true)
-      .pipe(take(1))
-      .subscribe((value) => {
-        if (nextFn) {
-          nextFn(value);
-          // in case some internal state has changed in the callback
-          this._cdr.markForCheck();
-        }
-      });
   }
 
   private parseContentDef(content: ContentDef<S>): Observable<S> {

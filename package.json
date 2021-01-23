@@ -9,7 +9,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -22,7 +22,7 @@
     "build-cli": "rm -rf  ./projects/rx-json-ui-cli/dist && cd projects/rx-json-ui-cli && rollup -c ",
     "watch-cli": "rm -rf  ./projects/rx-json-ui-cli/dist && cd projects/rx-json-ui-cli && rollup -w -c ",
     "publish-cli": "npm run build-cli && cd projects/rx-json-ui-cli && npm version patch && npm publish && git push --tags",
-    "generate-schemas": "rm -rf dist/schema && node ./projects/rx-json-ui-cli/bin/cli.js g -p src/ -m src/app/app.module#AppModule -o WidgetsDef.json dist/schema"
+    "generate-schemas": "rm -rf dist/schema && node ./projects/rx-json-ui-cli/bin/cli.js g -p src/ -m src/app/app.module#AppModule dist/schema"
   },
   "husky": {
     "hooks": {
@@ -48,6 +48,10 @@
     "espression-jsonpath": "^0.1.5",
     "espression-rx": "^0.3.13",
     "rxjs": "^6.6.3",
+    "stylelint": "^13.8.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^20.0.0",
+    "tsickle": "^0.39.1",
     "tslib": "^2.0.0",
     "zone.js": "^0.10.3"
   },

@@ -1,6 +1,0 @@
-{
-  "bundlerOptions": {
-    "entryFile": "./projects/rx-json-ui/src/lib/material/settings/settings.scss",
-    "outFile": "dist/rx-json-ui/styles.scss"
-  }
-}
