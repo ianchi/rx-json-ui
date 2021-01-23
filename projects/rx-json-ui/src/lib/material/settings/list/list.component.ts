@@ -38,12 +38,12 @@ import {
 export class SetListWidgetComponent
   extends AbstractArrayWidgetComponent<ArrayOptionsDef, MainSlotContentDef>
   implements AfterViewInit {
+  @ViewChild('newItem', { read: WidgetDirective }) newItem!: WidgetDirective;
   itemOptions: AbstractWidgetDef = { widget: 'input', bind: '$row.array[$row.index]', options: {} };
   newItemOptions: AbstractWidgetDef = { widget: 'input', bind: '$newItem.value', options: {} };
 
   newItemContext: Context | undefined;
   newItemControl: FormControl | undefined;
-  @ViewChild('newItem', { read: WidgetDirective }) newItem!: WidgetDirective;
 
   ngAfterViewInit(): void {
     const widgets = this.newItem.getWidgets();

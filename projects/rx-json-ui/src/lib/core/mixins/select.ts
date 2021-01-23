@@ -26,7 +26,7 @@ export interface MultiSelectWidgetOptions extends SelectWidgetOptions {
 }
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class SelectWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
   S extends ConstrainSlots<S> | undefined = undefined,
@@ -78,7 +78,7 @@ export class SelectWidgetMixin<
       this.descriptions = entries.map(
         (entry) => (entry as any)[properties[1]] ?? (entry as any)[properties[0]]
       );
-      // tslint:disable-next-line: prefer-conditional-expression
+      // eslint-disable-next-line
     } else if (Array.isArray(this.options.hints)) {
       this.values = this.descriptions = this.options.hints;
     } else this.values = [];

@@ -19,7 +19,7 @@ import { FieldControl } from './fieldcontrol';
 export const FORM_CONTROL = '$form';
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class AbstractBaseFormControlWidget<
   O extends CommonOptionsDef,
   S extends ConstrainSlots<S>,

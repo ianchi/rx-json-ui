@@ -15,6 +15,9 @@ export interface ContextDef {
  * It has static methods to manage inheritance and adding properties and builtins
  */
 export class Context {
+  /** User defined properties */
+  [key: string]: any;
+
   /** Helper definition of built-in objects */
   static builtinsDef: ContextDef = {
     // Builtin functions:
@@ -24,20 +27,19 @@ export class Context {
     isFinite,
 
     // Fundamental objects:
-    Number,
-    Math,
-    Date,
-    Array,
-    JSON,
-    Object,
-  };
 
-  /** User defined properties */
-  [key: string]: any;
+    Number, // eslint-disable-line @typescript-eslint/naming-convention, id-blacklist
+    Math, // eslint-disable-line @typescript-eslint/naming-convention, id-blacklist
+    Date, // eslint-disable-line @typescript-eslint/naming-convention, id-blacklist
+    Array, // eslint-disable-line @typescript-eslint/naming-convention, id-blacklist
+    JSON, // eslint-disable-line @typescript-eslint/naming-convention, id-blacklist
+    Object, // eslint-disable-line @typescript-eslint/naming-convention, id-blacklist
+  };
 
   /**
    * Creates a Context object, inheriting from an optional `parent` and adding custom properties
    * and optionally builtin objects
+   *
    * @param builtins Boolean. If true adds builtinobjects as public properties,
    */
   static create(
@@ -62,7 +64,7 @@ export class Context {
 
   /** Adds readonly properties to a Context */
   static defineReadonly(context: Context, props: ContextDef): Context {
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const prop in props) {
       Object.defineProperty(context, prop, {
         enumerable: true,
@@ -76,7 +78,7 @@ export class Context {
 
   /** Adds hidden (non enumerable) properties to a Context */
   static defineHidden(context: Context, hiddenProps: ContextDef): Context {
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const prop in hiddenProps) {
       Object.defineProperty(context, prop, {
         enumerable: false,
@@ -90,7 +92,7 @@ export class Context {
 
   /** adds public properties only if they don't exist in parent */
   static defineWeak(context: Context, props: ContextDef): Context {
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const prop in props) {
       if (prop in context) continue;
       Object.defineProperty(context, prop, {

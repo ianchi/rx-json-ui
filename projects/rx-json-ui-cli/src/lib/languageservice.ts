@@ -6,7 +6,7 @@
  */
 
 import { ESnextParser, esNextRules, Parser, StringRule, toRawPosition } from 'espression';
-// tslint:disable-next-line: no-implicit-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {
   ArrayASTNode,
   ASTNode,
@@ -22,6 +22,7 @@ import {
 } from 'vscode-json-languageservice';
 
 const esParser = new ESnextParser(true);
+// eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
 const rules = { string: [new StringRule({ LT: false, hex: true, raw: false, escapes: true })] };
 const stringParser = new Parser(rules, 'string');
 const lvalueParser = new Parser(esNextRules(), 'lvalue');
@@ -50,7 +51,7 @@ export function hoverData(
       matchingSchemas.forEach((s: any) => {
         if (s.node === nodeAST && !s.inverted && s.schema && s.schema.parser) {
           content.push(
-            // tslint:disable-next-line: prefer-template
+            // eslint-disable-next-line prefer-template
             `#### ${s.schema.parser} Expression\n\n` + '```js\n' + getCookedExpr(nodeAST) + '\n```'
           );
         }
@@ -84,7 +85,7 @@ export function validateExpr(
     const addProblem = (problem: Diagnostic) => {
       // remove duplicated messages
       const signature =
-        // tslint:disable-next-line: prefer-template
+        // eslint-disable-next-line prefer-template
         problem.range.start.line + ' ' + problem.range.start.character + ' ' + problem.message;
       if (!added[signature]) {
         added[signature] = true;

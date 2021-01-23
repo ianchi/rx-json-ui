@@ -1,0 +1,17 @@
+{
+  "extends": "../../.eslintrc.json",
+  "ignorePatterns": ["!**/*", "dist/", "node_modules/"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["projects/rx-json-ui-cli/tsconfig.json"],
+        "createDefaultProgram": true
+      }
+    },
+    {
+      "files": ["*.html"],
+      "rules": {}
+    }
+  ]
+}

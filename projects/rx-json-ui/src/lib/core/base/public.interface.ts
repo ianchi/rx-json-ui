@@ -123,7 +123,7 @@ interface BindDef<
    *
    * @parser lvalue
    */
-  bind: lvalueExpr;
+  bind: LvalueExpr;
 }
 interface OptBindDef<
   O extends CommonOptionsDef,
@@ -135,7 +135,7 @@ interface OptBindDef<
    *
    * @parser lvalue
    */
-  bind?: lvalueExpr;
+  bind?: LvalueExpr;
 }
 export type AbstractWidgetDef = WidgetDef<
   AbstractOptionsDef,
@@ -198,17 +198,17 @@ export interface AbstractSlotContentDef extends MainSlotContentDef {
 /**
  * @parser ES6
  */
-export type expr = string;
+export type Expr = string;
 
 /**
  * @parser lvalue
  */
-export type lvalueExpr = string;
+export type LvalueExpr = string;
 
 /**
  * @parser ES6
  */
-export type multiExpr = string[];
+export type MultiExpr = string[];
 
 /**
  * An expression to be evaluated that can optionally be split to be written in multiple lines.
@@ -217,7 +217,8 @@ export type multiExpr = string[];
  * It can be a *normal* single line string, or an *array of strings* that will be joined together by a line break
  * (`\n`) to form a single expression before evaluating.
  */
-export type multilineExpr = expr | multiExpr;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type multilineExpr = Expr | MultiExpr;
 
 /**
  * Object with expressions to execute as event listener.
@@ -302,6 +303,7 @@ export interface FieldEventDef extends CommonEventsDef {
    * If it returns a `string` it will be displayed as error message.
    *
    * It receives `$value` in the context with the value to validate
+   *
    * @parser ES6
    */
   onValidate?: multilineExpr;

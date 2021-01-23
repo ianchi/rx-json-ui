@@ -35,6 +35,7 @@ export interface BaseTableWidgetOptions extends CommonOptionsDef {
   columns: string[];
 
   /** Optional order list of column keys to use on small screen */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   columns_sm: string[];
   /**
    * Map of column keys to headers display names.
@@ -110,15 +111,15 @@ interface TableWidgetEvents extends CommonEventsDef {
 export class TableWidgetComponent
   extends BaseWidget<TableWidgetOptions, undefined, TableWidgetEvents>
   implements OnInit {
-  tableDataSource: MatTableDataSource<object[]> = new MatTableDataSource();
-
-  showCols: string[] = [];
-  keyCols: string[] = [];
-
   @ViewChild(MatPaginator, { static: true })
   matPaginator: MatPaginator | undefined;
   @ViewChild(MatSort, { static: true })
   matSort: MatSort | undefined;
+
+  tableDataSource: MatTableDataSource<object[]> = new MatTableDataSource();
+
+  showCols: string[] = [];
+  keyCols: string[] = [];
   disableSort: string[] | undefined = [];
 
   trackBy: ((index: number, item: any) => any) | undefined;

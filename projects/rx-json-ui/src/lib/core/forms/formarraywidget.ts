@@ -80,7 +80,7 @@ export interface ArrayEventsDef extends FieldEventDef {
  * `index` the index of the current element in the array
  */
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class AbstractArrayWidgetComponent<
   T extends ArrayOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
@@ -91,8 +91,9 @@ export class AbstractArrayWidgetComponent<
   rowContext: Context[] = [];
   schemaValidator: ValidatorFn | undefined;
 
-  private bindDiffer: IterableDiffer<any[]> | undefined;
   bindTrackBy: TrackByFunction<any> | undefined;
+
+  private bindDiffer: IterableDiffer<any[]> | undefined;
 
   dynOnSetup(def: WidgetDef<T, S, E, BindWidgetDef>): WidgetDef<T, S, E, BindWidgetDef> {
     // get bound model
@@ -142,14 +143,14 @@ export class AbstractArrayWidgetComponent<
     }
 
     // sync the row contexts if the data changed
-    this.addSubscription = (<any>this.boundData)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
+    this.addSubscription = (this.boundData as any)[AS_OBSERVABLE]().subscribe((arr: any[]) => {
       this.applyChanges(arr);
     });
   }
 
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
-    this.schemaValidator = schemaValidator(<any>this.options);
+    this.schemaValidator = schemaValidator(this.options as any);
     this.formControl!.updateValueAndValidity();
   }
   validateFn(ctrl: AbstractControl): Observable<ValidationErrors | null> {

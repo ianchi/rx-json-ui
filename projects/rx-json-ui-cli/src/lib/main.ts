@@ -5,8 +5,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-import program from 'commander';
 import * as path from 'path';
+
+import program from 'commander';
 import { sync as readPkg } from 'read-pkg-up';
 
 import { generate } from './generate';

@@ -109,12 +109,14 @@ export interface SchemaString extends SchemaHeader, SchemaPrimitiveValidations<s
   type: 'string';
   /**
    * The data to be valid should have at least this minimum number of characters (inclusive).
+   *
    * @remark Unicode pairs are NOT counted as a single character.
    */
 
   minLength?: number;
   /**
    * The data to be valid should have at most this maximum number of characters (inclusive).
+   *
    * @remark Unicode pairs are NOT counted as a single character.
    */
 
@@ -253,14 +255,15 @@ export interface SchemaInclude {
 
   /**
    * Used internally to expand the $included files
+   *
    * @ignore
    */
   resolved?: Schema | Schema[];
 }
 
 export interface SchemaError {
-  code: number;
   [keyword: string]: any;
+  code: number;
 }
 
 export type ValidatorFn = (value: any) => SchemaError | null;
@@ -275,14 +278,14 @@ export interface WidgetMap {
   default: string | AbstractWidgetDef;
   /** Plain input box */
   input: string | AbstractWidgetDef;
-  number: string | AbstractWidgetDef;
+  number: string | AbstractWidgetDef; // eslint-disable-line id-blacklist
   range: string | AbstractWidgetDef;
   integer: string | AbstractWidgetDef;
-  string: string | AbstractWidgetDef;
+  string: string | AbstractWidgetDef; // eslint-disable-line id-blacklist
   select: string | AbstractWidgetDef;
   autocomplete: string | AbstractWidgetDef;
   radio: string | AbstractWidgetDef;
-  boolean: string | AbstractWidgetDef;
+  boolean: string | AbstractWidgetDef; // eslint-disable-line id-blacklist
   array: string | AbstractWidgetDef;
   list: string | AbstractWidgetDef;
   multiselect: string | AbstractWidgetDef;

@@ -78,10 +78,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": ["src/tsconfig.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html", "!src/node_modules/*"]
           }
         }
       }
@@ -114,13 +113,13 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/rx-json-ui/tsconfig.lib.json",
-              "projects/rx-json-ui/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": [
+              "projects/rx-json-ui/**/*.ts",
+              "projects/rx-json-ui/**/*.html",
+              "!**/node_modules/*"
+            ]
           }
         }
       }
@@ -144,10 +143,13 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": ["projects/rx-json-ui-cli/tsconfig.json"],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": [
+              "projects/rx-json-ui-cli/**/*.ts",
+              "projects/rx-json-ui-cli/**/*.html",
+              "!**/node_modules/*"
+            ]
           }
         }
       }

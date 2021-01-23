@@ -9,11 +9,11 @@ import { SchemaPrimitiveValidations, ValidatorFn } from '../interface';
 
 export const ERROR_MSG: string[] = [];
 
-export const ERR_CUSTOM = 1000,
-  ERR_TYPE = 1,
-  ERR_ENUM = 2,
-  ERR_CNST = 3,
-  ERR_REQ = 4;
+export const ERR_CUSTOM = 1000;
+export const ERR_TYPE = 1;
+export const ERR_ENUM = 2;
+export const ERR_CNST = 3;
+export const ERR_REQ = 4;
 
 ERROR_MSG[ERR_TYPE] = "`Invalid data type, expected '${$err.type}'`";
 ERROR_MSG[ERR_ENUM] = '`Not a valid option`';

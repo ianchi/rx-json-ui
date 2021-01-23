@@ -5,9 +5,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { JsonPath } from 'espression-jsonpath';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import { JsonPath } from 'espression-jsonpath';
 import * as TJS from 'typescript-json-schema';
 
 import { WidgetRef } from './metadata';
@@ -155,6 +156,7 @@ export function generateSchemas(
   saveSchema(contentSchema, `${path.basename(outSchemaFile, 'json')}content.json`);
 
   // generate meta schema for schemas
+  // eslint-disable-next-line guard-for-in
   for (const key in generator!.ReffedDefinitions) delete generator!.ReffedDefinitions[key];
   const metaSchema = generator.getSchemaForSymbol('Schema', false);
   walkRefs(metaSchema, generator!.ReffedDefinitions);
@@ -191,14 +193,12 @@ function exprOptions(
   schema: TJS.Definition,
   exclude: string[]
 ): void {
-  let optionsSchema: TJS.DefinitionOrBoolean[];
-
   if (schema.definitions) schema.definitions.multilineExpr = EXPR_SCHEMA;
   else schema.definitions = { multilineExpr: EXPR_SCHEMA };
 
   if (typeof options !== 'object') return;
 
-  optionsSchema = options.anyOf || options.oneOf || [options];
+  const optionsSchema: TJS.DefinitionOrBoolean[] = options.anyOf || options.oneOf || [options];
 
   optionsSchema.forEach((opt) => exprAddOptions(opt, schema, exclude));
 }

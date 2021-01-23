@@ -28,7 +28,7 @@ import { AbstractBaseFormControlWidget } from './baseformcontrol';
 
 export interface FormFieldOptionsDef extends SchemaPrimitiveValidations<any>, CommonOptionsDef {}
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class AbstractFormFieldWidget<
   O extends FormFieldOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
@@ -138,7 +138,7 @@ export class AbstractFormFieldWidget<
 
   dynOnChange(): void {
     // once bound options are resolved, update schema Validator
-    this.schemaValidator = schemaValidator(<any>this.options);
+    this.schemaValidator = schemaValidator(this.options as any);
     this.formControl!.updateValueAndValidity();
   }
 

@@ -64,7 +64,7 @@ interface StringInputOptions extends SchemaOptions<SchemaString>, SubtitleOption
     | 'number';
   autocomplete?: string;
 }
-// tslint:disable-next-line: interface-over-type-literal
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type PopupSlotsDef = {
   main: SimpleContentDef;
   actions: SimpleContentDef;

@@ -7,11 +7,11 @@ import { SchemaNumber, ValidatorFn } from '../interface';
 
 import { baseValidator, ERROR_MSG, ERR_TYPE } from './base';
 
-export const ENUM_MIN = 10,
-  ENUM_MAX = 11,
-  ENUM_EMIN = 12,
-  ENUM_EMAX = 13,
-  ENUM_MULT = 14;
+export const ENUM_MIN = 10;
+export const ENUM_MAX = 11;
+export const ENUM_EMIN = 12;
+export const ENUM_EMAX = 13;
+export const ENUM_MULT = 14;
 
 ERROR_MSG[ENUM_MIN] = "`Must be greater or equal to '${$err.minimum}'`";
 ERROR_MSG[ENUM_MAX] = "`Must be lower or equal to '${$err.maximum}'`";
@@ -20,13 +20,15 @@ ERROR_MSG[ENUM_EMAX] = "`Must be lower than '${$err.exclusiveMaximum}'`";
 ERROR_MSG[ENUM_MULT] = "`Must be multiple of '${$err.multipleOf}'`";
 
 export function numberValidator(schema: SchemaNumber): ValidatorFn {
-  const isInteger = schema.type === 'integer',
-    multipleOf = typeof schema.multipleOf === 'number' ? schema.multipleOf : null,
-    minimum = typeof schema.minimum === 'number' ? schema.minimum : null,
-    maximum = typeof schema.maximum === 'number' ? schema.maximum : null,
-    exclusiveMinimum = typeof schema.exclusiveMinimum === 'number' ? schema.exclusiveMinimum : null,
-    exclusiveMaximum = typeof schema.exclusiveMaximum === 'number' ? schema.exclusiveMaximum : null,
-    base = baseValidator(schema);
+  const isInteger = schema.type === 'integer';
+  const multipleOf = typeof schema.multipleOf === 'number' ? schema.multipleOf : null;
+  const minimum = typeof schema.minimum === 'number' ? schema.minimum : null;
+  const maximum = typeof schema.maximum === 'number' ? schema.maximum : null;
+  const exclusiveMinimum =
+    typeof schema.exclusiveMinimum === 'number' ? schema.exclusiveMinimum : null;
+  const exclusiveMaximum =
+    typeof schema.exclusiveMaximum === 'number' ? schema.exclusiveMaximum : null;
+  const base = baseValidator(schema);
 
   return (value: any) => {
     if (value === '' || typeof value === 'undefined' || value === null) return base(value);

@@ -46,7 +46,7 @@ export function formatValue(value: any, format: string): any {
             num,
             match[4],
             match[7] ? parseFloat(match[7]) : undefined,
-            // tslint:disable-next-line: no-eval
+            // eslint-disable-next-line no-eval
             match[8] ? eval(match[8]) : undefined
           );
     default:
@@ -64,8 +64,9 @@ export function formatDuration(value: string | number, format: string): string {
 
   const groups = re.slice(1);
   groups.splice(2, 1);
-  let result = '',
-    part: number;
+
+  let result = '';
+  let part: number;
 
   if (typeof value !== 'number') {
     value = parseFloat(value);

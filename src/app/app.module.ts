@@ -5,6 +5,8 @@
  * https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable max-classes-per-file */
+
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -34,6 +36,7 @@ import { AppComponent } from './app.component';
 @Injectable({ providedIn: 'root' })
 export class Backend implements Resolve<any> {
   constructor(private _http: HttpClient) {}
+  // eslint-disable-next-line @typescript-eslint/ban-types
   resolve(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<object> {
     return this._http.get(`assets/views${state.url}${state.url === '/' ? 'default' : ''}.json`);
   }
@@ -47,6 +50,7 @@ export const appRoutes: Routes = [
 export const ROOT = Context.create(
   undefined,
   {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     RxObject,
     of,
     interval(period: number, count: number): Observable<number> {
@@ -77,7 +81,6 @@ export const ROOT = Context.create(
   true
 );
 
-// tslint:disable-next-line: max-classes-per-file
 @NgModule({
   declarations: [AppComponent],
   imports: [

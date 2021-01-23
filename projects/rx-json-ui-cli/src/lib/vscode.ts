@@ -11,10 +11,11 @@
  */
 
 import * as fs from 'fs';
-import * as glob from 'glob';
 import * as path from 'path';
-import { getErrorStatusDescription, xhr, XHRResponse } from 'request-light';
 import * as URL from 'url';
+
+import * as glob from 'glob';
+import { getErrorStatusDescription, xhr, XHRResponse } from 'request-light';
 import {
   ClientCapabilities,
   Diagnostic,
@@ -134,13 +135,14 @@ function getSchemaRequestService(
 function fileRequestService(uri: string): Promise<string> {
   const fsPath = URI.parse(uri).fsPath;
   return new Promise<string>((c, e) => {
-    fs.readFile(fsPath, 'UTF-8', (err, result) => {
-      err ? e(err.message || err.toString()) : c(result.toString());
-    });
+    fs.readFile(fsPath, 'UTF-8', (err, result) =>
+      err ? e(err.message || err.toString()) : c(result.toString())
+    );
   });
 }
 
 function httpRequestService(uri: string): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const headers = { 'Accept-Encoding': 'gzip, deflate' };
   return xhr({ url: uri, followRedirects: 5, headers }).then(
     (response) => {

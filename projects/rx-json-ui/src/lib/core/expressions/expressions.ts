@@ -13,10 +13,6 @@ import { catchError } from 'rxjs/operators';
 import { Context } from './context';
 
 export abstract class Expressions {
-  abstract parseKey(expression: string): INode | undefined;
-
-  abstract parse(expression: string): INode | undefined;
-
   /**
    * Evaluates an expression in the given context.
    * It uses the general parser.
@@ -46,6 +42,10 @@ export abstract class Expressions {
       return asObservable ? of(undefined) : undefined;
     }
   }
+
+  abstract parseKey(expression: string): INode | undefined;
+
+  abstract parse(expression: string): INode | undefined;
 
   abstract evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;
   abstract evaluate(ast: INode | undefined, context: Context, asObservable: true): Observable<any>;

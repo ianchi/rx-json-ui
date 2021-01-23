@@ -40,7 +40,7 @@ import { AbstractWidgetDef } from './public.interface';
  * </ng-container>
  * ```
  */
-@Directive({ selector: '[wdgWidget]' }) // tslint:disable-line: directive-selector
+@Directive({ selector: '[wdgWidget]' }) // eslint-disable-line @angular-eslint/directive-selector
 export class WidgetDirective implements OnChanges, OnDestroy {
   /** Object with the widget definition */
   @Input('wdgWidget')

@@ -19,14 +19,14 @@ import {
 export const BUILDER_WIDGETS: WidgetMap = {
   default: 'default',
   input: 'input',
-  number: 'set-input',
+  number: 'set-input', // eslint-disable-line id-blacklist
   integer: 'set-input',
   range: 'set-slider',
-  string: 'set-input',
+  string: 'set-input', // eslint-disable-line id-blacklist
   select: 'set-select',
   autocomplete: 'set-autocomplete',
   radio: 'set-radio',
-  boolean: 'set-toggle',
+  boolean: 'set-toggle', // eslint-disable-line id-blacklist
   array: 'set-rowarray',
   list: 'set-list',
   multiselect: { widget: 'set-select', options: { multiple: true } },
@@ -67,10 +67,10 @@ export function buildUI(
     case 'integer':
       widget.options!.multipleOf = 1;
 
-    // tslint:disable-next-line:no-switch-case-fall-through
+    // eslint-disable-next-line no-fallthrough
     case 'number':
       widget.options!.inputType = 'number';
-    // tslint:disable-next-line:no-switch-case-fall-through
+    // eslint-disable-next-line no-fallthrough
     case 'string':
       widget = setRole(
         widget,
@@ -339,7 +339,7 @@ function buildObject(
 }
 
 function hasProp<T>(prop: keyof T, obj: T): boolean {
-  // tslint:disable-next-line:prefer-template
+  // eslint-disable-next-line prefer-template
   return prop in obj || prop + '=' in obj;
 }
 

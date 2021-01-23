@@ -76,6 +76,7 @@ export class ESpression extends Expressions {
 
   /**
    * Evaluate an AST in the given context.
+   *
    * @param asObservable Always converts result to observable
    */
   evaluate(ast: INode | undefined, context: Context, asObservable?: boolean): any;

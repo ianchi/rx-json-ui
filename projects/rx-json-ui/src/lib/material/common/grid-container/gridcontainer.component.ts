@@ -18,7 +18,7 @@ export interface GridContainerWidgetOptions extends CommonOptionsDef {
   templateUrl: './gridcontainer.component.html',
   styleUrls: ['./gridcontainer.component.scss'],
 
-  // tslint:disable-next-line:use-host-property-decorator
+  // eslint-disable-next-line
   host: {
     '[class.wdg-grid]': 'true',
     '[style.flex-direction]': 'options.direction',

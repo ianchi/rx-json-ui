@@ -6,8 +6,9 @@
  */
 
 import * as fs from 'fs';
-import * as yaml from 'js-yaml';
 import * as path from 'path';
+
+import * as yaml from 'js-yaml';
 import * as resolvepkg from 'resolve-package-path';
 import * as rm from 'rimraf';
 import * as svgSprite from 'svg-sprite';
@@ -32,7 +33,7 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
 
   try {
     const src = fs.readFileSync(path.resolve(opts.icons)).toString();
-    icons = yaml.safeLoadAll(src);
+    icons = yaml.load(src) as IconsYaml[];
   } catch (e) {
     console.error(e.message);
     process.exit(1);
@@ -74,9 +75,8 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
 
   // generate sprites
 
+  // eslint-disable-next-line guard-for-in
   for (const ns in iconsets) {
-    // tslint:disable-line: forin
-
     const set = iconsets[ns];
     const spriter = new svgSprite.default({
       dest: path.resolve(outPath),
@@ -107,17 +107,17 @@ export function svgGenerate(outPath: string, opts: SvgOptions): void {
     spriter.compile((e, result) => {
       try {
         if (e) throw e;
-        for (const type in result.defs) {
-          // tslint:disable-line: forin
 
+        // eslint-disable-next-line guard-for-in
+        for (const type in result.defs) {
           fs.writeFileSync(path.resolve(outPath, `${ns}.svg`), result.defs[type].contents, {
             encoding: 'utf8',
             flag: 'w',
           });
           num++;
         }
-      } catch (e) {
-        console.error(e.message);
+      } catch (er) {
+        console.error(er.message);
         process.exit(1);
       }
 

@@ -20,17 +20,17 @@ import { stringValidator } from './string';
 
 export { ERROR_MSG } from './base';
 
-export const EARR_MIN = 30,
-  EARR_MAX = 31,
-  EARR_UNQ = 32,
-  EARR_ITM = 33,
-  EARR_ADD = 34;
+export const EARR_MIN = 30;
+export const EARR_MAX = 31;
+export const EARR_UNQ = 32;
+export const EARR_ITM = 33;
+export const EARR_ADD = 34;
 
-export const EOBJ_MIN = 40,
-  EOBJ_MAX = 41,
-  EOBJ_NAME = 42,
-  EOBJ_ADD = 43,
-  EOBJ_PROP = 44;
+export const EOBJ_MIN = 40;
+export const EOBJ_MAX = 41;
+export const EOBJ_NAME = 42;
+export const EOBJ_ADD = 43;
+export const EOBJ_PROP = 44;
 
 ERROR_MSG[EARR_MIN] = "`Must have at least '${$err.minItems}' items`";
 ERROR_MSG[EARR_MAX] = "`Must at most '${$err.maxItems}' items`";
@@ -64,18 +64,18 @@ export function schemaValidator(schema: Schema): ValidatorFn {
         return objectValidator(schema);
       default:
         // invalid type in input json schema
-        return (_val) => ({ code: ERR_TYPE, type: (<any>schema).type });
+        return (_val) => ({ code: ERR_TYPE, type: (schema as any).type });
     }
 
   // case or multiple types or any type
   const validators: ValidatorMap = {
-    number: numberValidator(<SchemaNumber>schema),
-    string: stringValidator(<SchemaString>schema),
-    boolean: booleanValidator(<SchemaBoolean>schema),
-    array: arrayValidator(<SchemaArray>schema),
-    object: objectValidator(<SchemaObject>schema),
+    number: numberValidator(schema as SchemaNumber), // eslint-disable-line id-blacklist
+    string: stringValidator(schema as SchemaString), // eslint-disable-line id-blacklist
+    boolean: booleanValidator(schema as SchemaBoolean), // eslint-disable-line id-blacklist
+    array: arrayValidator(schema as SchemaArray),
+    object: objectValidator(schema as SchemaObject),
   };
-  const types = Array.isArray((<any>schema).type) ? (<any>schema).type : null;
+  const types = Array.isArray((schema as any).type) ? (schema as any).type : null;
 
   return (val) => {
     const type = Array.isArray(val) ? 'array' : typeof val;
@@ -90,17 +90,19 @@ export function arrayValidator(schema: SchemaArray): ValidatorFn {
   // schema definitions for items of an array
 
   const minItems =
-      typeof schema.minItems === 'number' && schema.minItems >= 0 ? schema.minItems : null,
-    maxItems = typeof schema.maxItems === 'number' && schema.maxItems >= 0 ? schema.maxItems : null,
-    uniqueItems = !!schema.uniqueItems,
-    itemsValidator =
-      Array.isArray(schema.items) || !schema.items ? null : schemaValidator(schema.items),
-    tupleValidator = Array.isArray(schema.items)
-      ? schema.items.map((e) => schemaValidator(e))
-      : null,
-    additionalItems = typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null,
-    additionalValidator =
-      typeof schema.additionalItems === 'object' ? schemaValidator(schema.additionalItems) : null;
+    typeof schema.minItems === 'number' && schema.minItems >= 0 ? schema.minItems : null;
+  const maxItems =
+    typeof schema.maxItems === 'number' && schema.maxItems >= 0 ? schema.maxItems : null;
+  const uniqueItems = !!schema.uniqueItems;
+  const itemsValidator =
+    Array.isArray(schema.items) || !schema.items ? null : schemaValidator(schema.items);
+  const tupleValidator = Array.isArray(schema.items)
+    ? schema.items.map((e) => schemaValidator(e))
+    : null;
+  const additionalItems =
+    typeof schema.additionalItems === 'boolean' ? schema.additionalItems : null;
+  const additionalValidator =
+    typeof schema.additionalItems === 'object' ? schemaValidator(schema.additionalItems) : null;
 
   return (value: any) => {
     if (typeof value === 'undefined' && !schema.required) return null;
@@ -137,30 +139,30 @@ export function objectValidator(schema: SchemaObject): ValidatorFn {
   // schema definitions for items of an array
 
   const minProperties =
-      typeof schema.minProperties === 'number' && schema.minProperties >= 0
-        ? schema.minProperties
-        : null,
-    maxProperties =
-      typeof schema.maxProperties === 'number' && schema.maxProperties >= 0
-        ? schema.maxProperties
-        : null,
-    propertyNames = schema.propertyNames ? schemaValidator(schema.propertyNames) : null,
-    additional =
-      typeof schema.additionalProperties === 'boolean' ? schema.additionalProperties : null,
-    additionalFn =
-      typeof schema.additionalProperties === 'object'
-        ? schemaValidator(schema.additionalProperties)
-        : null,
-    properties = Object.entries(schema.properties || {}).reduce(
-      (res, [k, s]) => ((res[k] = schemaValidator(s)), res),
-      {} as ValidatorMap
-    ),
-    patternProperties = schema.patternProperties
-      ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(([pattern, s]) => [
-          new RegExp(pattern),
-          schemaValidator(s),
-        ])
+    typeof schema.minProperties === 'number' && schema.minProperties >= 0
+      ? schema.minProperties
       : null;
+  const maxProperties =
+    typeof schema.maxProperties === 'number' && schema.maxProperties >= 0
+      ? schema.maxProperties
+      : null;
+  const propertyNames = schema.propertyNames ? schemaValidator(schema.propertyNames) : null;
+  const additional =
+    typeof schema.additionalProperties === 'boolean' ? schema.additionalProperties : null;
+  const additionalFn =
+    typeof schema.additionalProperties === 'object'
+      ? schemaValidator(schema.additionalProperties)
+      : null;
+  const properties = Object.entries(schema.properties || {}).reduce(
+    (res, [k, s]) => ((res[k] = schemaValidator(s)), res),
+    {} as ValidatorMap
+  );
+  const patternProperties = schema.patternProperties
+    ? Object.entries(schema.patternProperties).map<[RegExp, ValidatorFn]>(([pattern, s]) => [
+        new RegExp(pattern),
+        schemaValidator(s),
+      ])
+    : null;
   return (value: any) => {
     if ((typeof value === 'undefined' || value === null) && !schema.required) return null;
     if (typeof value !== 'object' || Array.isArray(value) || value === null)

@@ -34,15 +34,13 @@ export interface FileWidgetEvents extends CommonEventsDef {
 }
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class FileWidgetMixin<O extends FileWidgetOptions = FileWidgetOptions> extends BaseWidget<
   O,
   undefined,
   FileWidgetEvents,
   OptBindWidgetDef
 > {
-  private lvalue: ILvalue | undefined;
-
   /**
    * @important Needs to be overridden and decorated in derived Component class
    *
@@ -54,6 +52,7 @@ export class FileWidgetMixin<O extends FileWidgetOptions = FileWidgetOptions> ex
   files: File[] = [];
   running = false;
 
+  private lvalue: ILvalue | undefined;
   dynOnSetup(
     def: WidgetDef<O, undefined, FileWidgetEvents, OptBindWidgetDef>
   ): WidgetDef<O, undefined, FileWidgetEvents, OptBindWidgetDef> {
@@ -80,6 +79,7 @@ export class FileWidgetMixin<O extends FileWidgetOptions = FileWidgetOptions> ex
     const files: FileList = this.fileInput.nativeElement.files;
 
     this.files = [];
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < files.length; i++) {
       this.files.push(files[i]);
     }

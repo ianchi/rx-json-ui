@@ -28,7 +28,7 @@ import { FieldControl, PopupSlotsDef } from '../../../core/index';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class PopupComponent implements OnInit {
   content = { main: [], actions: [] } as PopupSlotsDef;
   parentContext: Context | undefined;

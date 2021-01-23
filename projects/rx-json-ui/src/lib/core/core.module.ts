@@ -28,7 +28,7 @@ export class WidgetsCoreModule {
       providers: [
         { provide: AF_CONFIG_TOKEN, useValue: config, multi: true },
         {
-          // tslint:disable-next-line: deprecation
+          // eslint-disable-next-line import/no-deprecated
           provide: ANALYZE_FOR_ENTRY_COMPONENTS,
           useValue: config,
           multi: true,

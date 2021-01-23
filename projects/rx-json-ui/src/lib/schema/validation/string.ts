@@ -10,9 +10,9 @@ import { SchemaString, ValidatorFn } from '../interface';
 import { baseValidator, ERROR_MSG, ERR_TYPE } from './base';
 import { formatValidator } from './format';
 
-export const ESTR_MIN = 20,
-  ESTR_MAX = 21,
-  ESTR_PAT = 22;
+export const ESTR_MIN = 20;
+export const ESTR_MAX = 21;
+export const ESTR_PAT = 22;
 
 ERROR_MSG[ESTR_MIN] = '`Must be longer than ${$err.minLength} characters`';
 ERROR_MSG[ESTR_MAX] = '`Must be shorter than ${$err.maxLength} characters`';
@@ -20,12 +20,12 @@ ERROR_MSG[ESTR_PAT] = '`Must comply with pattern: ${$err.pattern}`';
 
 export function stringValidator(schema: SchemaString): ValidatorFn {
   const minLength =
-      typeof schema.minLength === 'number' && schema.minLength >= 0 ? schema.minLength : null,
-    maxLength =
-      typeof schema.maxLength === 'number' && schema.maxLength >= 0 ? schema.maxLength : null,
-    pattern = schema.pattern ? new RegExp(schema.pattern) : null,
-    formatFn = schema.format ? formatValidator(schema.format) : null,
-    base = baseValidator(schema);
+    typeof schema.minLength === 'number' && schema.minLength >= 0 ? schema.minLength : null;
+  const maxLength =
+    typeof schema.maxLength === 'number' && schema.maxLength >= 0 ? schema.maxLength : null;
+  const pattern = schema.pattern ? new RegExp(schema.pattern) : null;
+  const formatFn = schema.format ? formatValidator(schema.format) : null;
+  const base = baseValidator(schema);
 
   return (value: any) => {
     if (typeof value === 'undefined' || value === null || value === '') return base(value);

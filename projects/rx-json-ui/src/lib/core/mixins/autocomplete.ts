@@ -20,7 +20,7 @@ import {
 import { SelectWidgetMixin, SelectWidgetOptions } from './select';
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class AutocompleteWidgetMixin<
   O extends SelectWidgetOptions = SelectWidgetOptions,
   S extends ConstrainSlots<S> | undefined = undefined,

@@ -58,7 +58,7 @@ export type AbstractWidget = BaseWidget<
  * Base class for all dynamic widget elements
  */
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class BaseWidget<
   O extends CommonOptionsDef,
   S extends ConstrainSlots<S> | undefined = undefined,
@@ -135,154 +135,6 @@ export class BaseWidget<
       );
 
     this.subscribeOptions();
-  }
-
-  private parseContentDef(content: ContentDef<S>): Observable<S> {
-    let sloted: S;
-    // check invalid definition and convert to slotted
-    if (typeof content === 'undefined' || typeof content !== 'object') {
-      this.content = { main: [] as SimpleContentDef } as S;
-      throw new Error('Invalid content definition');
-    }
-
-    if (Array.isArray(content)) sloted = { main: content as SimpleContentDef } as S;
-    else if (!('main' in content)) {
-      this.content = { main: [] as AbstractWidgetDef[] } as S;
-      throw new Error('Missing "main" slot in content definition');
-    } else sloted = content as S;
-
-    // parse each slot definition
-    const slots: Array<keyof S> = Object.keys(sloted!) as Array<keyof S>;
-
-    return combineLatest(
-      slots.map((slot: keyof S) => this.parseSimpleContentDef(sloted![slot]))
-    ).pipe(
-      map((simple) =>
-        slots.reduce(
-          (cont, slot, idx) => {
-            if (cont) cont[slot as keyof S] = simple[idx] as any;
-            return cont;
-          },
-          { main: [] as SimpleContentDef } as S
-        )
-      )
-    );
-  }
-
-  private parseEventsDef(eventsDef: E): void {
-    let expr: multilineExpr | undefined;
-    // tslint:disable-next-line: forin
-    for (const event in eventsDef) {
-      expr = eventsDef[event];
-      if (expr)
-        this.events[event as keyof E] = this.expr.parse(
-          Array.isArray(expr) ? expr.join('\n') : expr
-        );
-    }
-  }
-  private parseSimpleContentDef(
-    content: SimpleContentDef | AbstractWidgetDef
-  ): Observable<AbstractWidgetDef[]> {
-    if (typeof content !== 'object') return of([]);
-    if (!Array.isArray(content)) return of([content]);
-
-    const args = content.map((item) => {
-      // allow multiline expressions
-      if (Array.isArray(item)) item = item.join('\n');
-
-      return typeof item !== 'string'
-        ? item
-        : this.expr
-            .eval(item, this.context, true)
-            .pipe(switchMap((resItem) => this.parseSimpleContentDef(resItem)));
-    });
-    return combineMixed(args, true).pipe(
-      map((items) => [].concat(...items) as AbstractWidgetDef[]),
-      map((items: any[]) =>
-        items.map((item) =>
-          !item || typeof item !== 'object' || !item.widget ? { widget: 'none' } : item
-        )
-      )
-    );
-  }
-
-  // Helper functions
-
-  /** Test if an option is present in the widget definition as value or expression */
-  protected hasOption(option: keyof O): boolean {
-    return (
-      !!this.widgetDef?.options &&
-      (option in this.widgetDef.options || `${option}=` in this.widgetDef.options)
-    );
-  }
-
-  /**
-   * Helper function to add a `map` pipe to the corresponding input observable
-   */
-  protected map(option: keyof O, callback: (v: any) => any): void {
-    const opt = this.bindings[option];
-    if (opt) this.bindings[option] = opt.pipe(map(callback));
-  }
-
-  emit(event: keyof E, subContext?: object, nextFn?: (value: any) => void): void {
-    const ast = this.events[event];
-    if (!ast) return;
-
-    this.addSubscription = this.expr
-      .evaluate(ast, Context.create(this.context, subContext), true)
-      .pipe(take(1))
-      .subscribe((value) => {
-        if (nextFn) {
-          nextFn(value);
-          // in case some internal state has changed in the callback
-          this._cdr.markForCheck();
-        }
-      });
-  }
-
-  private subscribeOptions(): void {
-    // tslint:disable-next-line:no-any
-    const observables: Array<Observable<any>> = [];
-
-    // get dynamic content
-    if (this.contentBind) observables.push(this.contentBind);
-
-    // call hook for configuration of options before updating the bound value
-    this.dynOnBeforeBind();
-
-    for (const prop in this.bindings) // tslint:disable-line:forin
-      this.bindings[prop] = this.bindings[prop].pipe(tap((res) => (this.options[prop] = res)));
-
-    this.map('class', (klass) => (this.setClass(klass), klass));
-
-    // call hook after updating the bound value
-    this.dynOnAfterBind();
-
-    for (const prop in this.bindings) // tslint:disable-line:forin
-      observables.push(this.bindings[prop]);
-
-    if (observables.length)
-      this.addSubscription = combineLatest(observables).subscribe(() => {
-        this.dynOnChange();
-
-        if (!this.isInitialized) {
-          this.isInitialized = true;
-          this.dynOnInit();
-          this.emit('onInit');
-        }
-
-        this.emit('onChange', { $options: this.options });
-        this._cdr.markForCheck();
-      });
-    else {
-      this.isInitialized = true;
-      this._cdr.markForCheck();
-    }
-  }
-
-  private unsubscribe(): void {
-    for (const subs of this.subscriptions) subs.unsubscribe();
-    this.subscriptions = [];
   }
 
   // Angular Lifecycle hooks
@@ -376,6 +228,180 @@ export class BaseWidget<
     }
   }
 
+  // Helper functions
+
+  /** Test if an option is present in the widget definition as value or expression */
+  protected hasOption(option: keyof O): boolean {
+    return (
+      !!this.widgetDef?.options &&
+      (option in this.widgetDef.options || `${option}=` in this.widgetDef.options)
+    );
+  }
+
+  /**
+   * Helper function to add a `map` pipe to the corresponding input observable
+   */
+  protected map(option: keyof O, callback: (v: any) => any): void {
+    const opt = this.bindings[option];
+    if (opt) this.bindings[option] = opt.pipe(map(callback));
+  }
+
+  protected emit(event: keyof E, subContext?: object, nextFn?: (value: any) => void): void {
+    const ast = this.events[event];
+    if (!ast) return;
+
+    this.addSubscription = this.expr
+      .evaluate(ast, Context.create(this.context, subContext), true)
+      .pipe(take(1))
+      .subscribe((value) => {
+        if (nextFn) {
+          nextFn(value);
+          // in case some internal state has changed in the callback
+          this._cdr.markForCheck();
+        }
+      });
+  }
+
+  private parseContentDef(content: ContentDef<S>): Observable<S> {
+    let sloted: S;
+    // check invalid definition and convert to slotted
+    if (typeof content === 'undefined' || typeof content !== 'object') {
+      this.content = { main: [] as SimpleContentDef } as S;
+      throw new Error('Invalid content definition');
+    }
+
+    if (Array.isArray(content)) sloted = { main: content as SimpleContentDef } as S;
+    else if (!('main' in content)) {
+      this.content = { main: [] as AbstractWidgetDef[] } as S;
+      throw new Error('Missing "main" slot in content definition');
+    } else sloted = content as S;
+
+    // parse each slot definition
+    const slots: Array<keyof S> = Object.keys(sloted!) as Array<keyof S>;
+
+    return combineLatest(
+      slots.map((slot: keyof S) => this.parseSimpleContentDef(sloted![slot]))
+    ).pipe(
+      map((simple) =>
+        slots.reduce(
+          (cont, slot, idx) => {
+            if (cont) cont[slot as keyof S] = simple[idx] as any;
+            return cont;
+          },
+          { main: [] as SimpleContentDef } as S
+        )
+      )
+    );
+  }
+
+  private parseEventsDef(eventsDef: E): void {
+    let expr: multilineExpr | undefined;
+    // eslint-disable-next-line guard-for-in
+    for (const event in eventsDef) {
+      expr = eventsDef[event];
+      if (expr)
+        this.events[event as keyof E] = this.expr.parse(
+          Array.isArray(expr) ? expr.join('\n') : expr
+        );
+    }
+  }
+  private parseSimpleContentDef(
+    content: SimpleContentDef | AbstractWidgetDef
+  ): Observable<AbstractWidgetDef[]> {
+    if (typeof content !== 'object') return of([]);
+    if (!Array.isArray(content)) return of([content]);
+
+    const args = content.map((item) => {
+      // allow multiline expressions
+      if (Array.isArray(item)) item = item.join('\n');
+
+      return typeof item !== 'string'
+        ? item
+        : this.expr
+            .eval(item, this.context, true)
+            .pipe(switchMap((resItem) => this.parseSimpleContentDef(resItem)));
+    });
+    return combineMixed(args, true).pipe(
+      map((items) => [].concat(...items) as AbstractWidgetDef[]),
+      map((items: any[]) =>
+        items.map((item) =>
+          !item || typeof item !== 'object' || !item.widget ? { widget: 'none' } : item
+        )
+      )
+    );
+  }
+
+  private subscribeOptions(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const observables: Array<Observable<any>> = [];
+
+    // get dynamic content
+    if (this.contentBind) observables.push(this.contentBind);
+
+    // call hook for configuration of options before updating the bound value
+    this.dynOnBeforeBind();
+
+    for (const prop in this.bindings) // eslint-disable-line guard-for-in
+      this.bindings[prop] = this.bindings[prop].pipe(tap((res) => (this.options[prop] = res)));
+
+    this.map('class', (klass) => (this.setClass(klass), klass));
+
+    // call hook after updating the bound value
+    this.dynOnAfterBind();
+
+    for (const prop in this.bindings) // eslint-disable-line guard-for-in
+      observables.push(this.bindings[prop]);
+
+    if (observables.length)
+      this.addSubscription = combineLatest(observables).subscribe(() => {
+        this.dynOnChange();
+
+        if (!this.isInitialized) {
+          this.isInitialized = true;
+          this.dynOnInit();
+          this.emit('onInit');
+        }
+
+        this.emit('onChange', { $options: this.options });
+        this._cdr.markForCheck();
+      });
+    else {
+      this.isInitialized = true;
+      this._cdr.markForCheck();
+    }
+  }
+
+  private unsubscribe(): void {
+    for (const subs of this.subscriptions) subs.unsubscribe();
+    this.subscriptions = [];
+  }
+
+  /**
+   * Removes a collection of CSS classes from the DOM element.
+   */
+  private _removeClasses(rawClassVal?: ClassDef): void {
+    if (rawClassVal) {
+      if (Array.isArray(rawClassVal) || rawClassVal instanceof Set) {
+        (rawClassVal as any).forEach((klass: string) => this._toggleClass(klass, false));
+      } else {
+        Object.keys(rawClassVal).forEach((klass) => this._toggleClass(klass, false));
+      }
+    }
+  }
+
+  private _toggleClass(klass: string, enabled: boolean): void {
+    klass = klass.trim();
+    if (klass) {
+      klass.split(/\s+/g).forEach((kls) => {
+        if (enabled) {
+          this.renderer.addClass(this.ngElement.nativeElement, kls);
+        } else {
+          this.renderer.removeClass(this.ngElement.nativeElement, kls);
+        }
+      });
+    }
+  }
+
   private _applyKeyValueChanges(changes: KeyValueChanges<string, any>): void {
     changes.forEachAddedItem((record) => this._toggleClass(record.key, record.currentValue));
     changes.forEachChangedItem((record) => this._toggleClass(record.key, record.currentValue));
@@ -398,32 +424,6 @@ export class BaseWidget<
     });
 
     changes.forEachRemovedItem((record) => this._toggleClass(record.item, false));
-  }
-
-  /**
-   * Removes a collection of CSS classes from the DOM element.
-   */
-  private _removeClasses(rawClassVal?: ClassDef): void {
-    if (rawClassVal) {
-      if (Array.isArray(rawClassVal) || rawClassVal instanceof Set) {
-        (<any>rawClassVal).forEach((klass: string) => this._toggleClass(klass, false));
-      } else {
-        Object.keys(rawClassVal).forEach((klass) => this._toggleClass(klass, false));
-      }
-    }
-  }
-
-  private _toggleClass(klass: string, enabled: boolean): void {
-    klass = klass.trim();
-    if (klass) {
-      klass.split(/\s+/g).forEach((kls) => {
-        if (enabled) {
-          this.renderer.addClass(this.ngElement.nativeElement, kls);
-        } else {
-          this.renderer.removeClass(this.ngElement.nativeElement, kls);
-        }
-      });
-    }
   }
 }
 

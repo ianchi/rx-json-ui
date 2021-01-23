@@ -29,7 +29,7 @@ export function setSchemaDefaults(obj: any, schema?: Schema | boolean): void {
   } else {
     if (schema.type !== 'object' || !schema.properties) return;
 
-    // tslint:disable-next-line: forin
+    // eslint-disable-next-line guard-for-in
     for (const key in schema.properties) {
       const propSchema = schema.properties[key];
       if (typeof obj[key] === 'undefined') {
