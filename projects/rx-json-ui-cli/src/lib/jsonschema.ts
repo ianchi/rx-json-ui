@@ -21,7 +21,7 @@ const EXPR_SCHEMA = {
 
 const outSchemaFile = 'widgets.json';
 export function generateSchemas(
-  program: TJS.Program,
+  tsconfig: string,
   widgets: WidgetRef[],
   outPath: string,
 
@@ -55,6 +55,7 @@ export function generateSchemas(
 
   let parent: any = widgetSchema;
   const tags: string[] = [];
+  const program = TJS.programFromConfig(tsconfig);
   const generator = TJS.buildGenerator(program, settings);
 
   if (!generator) {

@@ -6,6 +6,7 @@
  */
 
 import * as fs from 'fs';
+import { resolve } from 'path';
 import * as rm from 'rimraf';
 
 import { generateSchemas } from './jsonschema';
@@ -26,7 +27,7 @@ export function generate(outPath: string, opts: GenerateOptions): void {
   if (!widgets.length) process.exit(1);
 
   if (opts.remove && fs.existsSync(outPath)) rm.sync(outPath);
-  generateSchemas(program.getTsProgram(), widgets, outPath, opts.base);
+  generateSchemas(resolve(opts.project, 'tsconfig.json'), widgets, outPath, opts.base);
 
   process.exit(0);
 }
