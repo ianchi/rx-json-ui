@@ -13,8 +13,8 @@
     "@angular/forms": "^11.0",
     "@angular/material": "^11.0",
     "@angular/router": "^11.0",
-    "espression": "^1.8.2",
-    "espression-rx": "^0.3.12",
+    "espression": "^1.8.3",
+    "espression-rx": "^0.3.13",
     "rxjs": "^6.5.4"
   },
   "dependencies": {
